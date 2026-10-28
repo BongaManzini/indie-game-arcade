@@ -19,10 +19,10 @@ Every graphic is drawn to an HTML5 Canvas, every sound effect (gunshots, sonar p
 
 | Game | Folder | Genre | Core Mechanics & Innovation |
 | :--- | :--- | :--- | :--- |
-| **Cipher Breach** | [`connect5/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/connect5/) | Tactical EW & Mech Grid Combat | Frequency SIGINT demodulation, harmonic bypass patchbay routing, 8x8 deterministic tactical grid combat, and boss telegraph displacement. |
-| **The Blightstead** | [`impostor/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/impostor/) | Gothic Agronomic Extraction | Closed-loop bio-industrial soil chemistry, living ammunition cultivation (Phosphor Flares, Kinetic Slugs, Suture Inhalers), raymarched 2D field-of-view flashlight beam, and extraction tether defense. |
-| **Resonance Ping** | [`scale/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/scale/) | Hadal Trench Acoustic Combat | 11,000m bathyscaphe operations, hydrophone frequency modulation (ELF to VLF), LSTR-100 reactor power distribution, thermal cavitation avoidance, and deep-sea benthic aggro. |
-| **Grand Cross: Crucible** | [`crucible/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/crucible/) | Normalized Asymmetric Auto-Brawler | The $15 Budget-Draft Engine across 4 sockets (Technique, Hands, Speed, Teammate), 4 battlefields (Tournament of Power Ring-Out, Culling Games Colony, Marineford Ice Floe, Forest of Death Chunin Exams), and normalized ECS physics. |
+| **Connect5: Cipher Breach** | [`connect5/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/connect5/) | Tactical EW & Mech Grid Combat | Frequency SIGINT demodulation, harmonic bypass patchbay routing, 8x8 deterministic tactical grid combat, and boss telegraph displacement. |
+| **Impostor: The Blightstead** | [`impostor/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/impostor/) | Gothic Agronomic Extraction | Closed-loop bio-industrial soil chemistry, living ammunition cultivation (Phosphor Flares, Kinetic Slugs, Suture Inhalers), raymarched 2D field-of-view flashlight beam, and extraction tether defense. |
+| **Scale: Resonance Ping** | [`scale/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/scale/) | Hadal Trench Acoustic Combat | 11,000m bathyscaphe operations, hydrophone frequency modulation (ELF to VLF), LSTR-100 reactor power distribution, thermal cavitation avoidance, and deep-sea benthic aggro. |
+| **Crucible: Zone 44 & Grand Cross** | [`crucible/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/crucible/) | Normalized Asymmetric Auto-Brawler | The Chunin Exams Zone 44 Forest of Death scroll extraction, 2.5x poise canopy ambush, and $15 Budget-Draft across 4 sockets (Technique, Hands, Speed, Teammate) with normalized physics. |
 
 ---
 
@@ -90,7 +90,7 @@ http://localhost:8080
 The arcade is deployed directly to GitHub Pages:
 - **Live Arcade URL:** [https://bongamanzini.github.io/indie-game-arcade/](https://bongamanzini.github.io/indie-game-arcade/)
 - **Individual Game Direct URLs:**
-  - Cipher Breach: `https://bongamanzini.github.io/indie-game-arcade/connect5/`
-  - The Blightstead: `https://bongamanzini.github.io/indie-game-arcade/impostor/`
-  - Resonance Ping: `https://bongamanzini.github.io/indie-game-arcade/scale/`
-  - Grand Cross Crucible: `https://bongamanzini.github.io/indie-game-arcade/crucible/`
+  - Connect5: `https://bongamanzini.github.io/indie-game-arcade/connect5/`
+  - Impostor: `https://bongamanzini.github.io/indie-game-arcade/impostor/`
+  - Scale: `https://bongamanzini.github.io/indie-game-arcade/scale/`
+  - Crucible: `https://bongamanzini.github.io/indie-game-arcade/crucible/`

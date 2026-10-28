@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grand Cross: Crucible - Normalized Asymmetric Auto-Brawler</title>
+  <title>Crucible: Zone 44 & Grand Cross - Normalized Anime Combat Arena</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Header -->
   <header class="crucible-header">
     <div>
-      <div class="brand-title">GRAND CROSS // CRUCIBLE</div>
-      <div class="brand-sub">NORMALIZED CROSS-VERSE COMBAT SIMULATOR &middot; $15 BUDGET DRAFT</div>
+      <div class="brand-title">CRUCIBLE // ZONE 44 (FOREST OF DEATH) & GRAND CROSS</div>
+      <div class="brand-sub">CHUNIN EXAMS SCROLL EXTRACTION & NORMALIZED ANIME COMBAT &middot; $15 BUDGET DRAFT</div>
     </div>
     <div class="header-status">
       <div class="budget-badge" id="budget-display">$12 / $15</div>
@@ -23,6 +23,15 @@
   <div class="app-container">
     <!-- View 1: $15 Budget-Draft Bay -->
     <div id="draft-view" class="draft-wrapper">
+      <!-- Preset Bar -->
+      <div class="draft-preset-bar">
+        <span class="preset-label">QUICK BUILDS:</span>
+        <button class="btn-preset active" id="preset-zone44" onclick="window.crucible.applyPreset('zone44')">CHUNIN EXAMS (ZONE 44)</button>
+        <button class="btn-preset" id="preset-multiverse" onclick="window.crucible.applyPreset('multiverse')">GRAND CROSS (MULTIVERSE)</button>
+        <button class="btn-preset" id="preset-minato" onclick="window.crucible.applyPreset('minato')">FLYING THUNDER GOD (HIRAISHIN)</button>
+        <button class="btn-preset" id="preset-taijutsu" onclick="window.crucible.applyPreset('taijutsu')">EIGHT GATES (ASAKUJAKU)</button>
+      </div>
+
       <!-- Scenario Selector & Meta Bar -->
       <div class="draft-meta-bar">
         <div>
@@ -119,7 +128,14 @@
           </div>
         </div>
 
-        <div style="display: flex; gap: 20px; align-items: center; font-family: var(--font-mono); font-size: 13px;">
+        <!-- Zone 44 Scroll Tracker & Stealth Indicator -->
+        <div id="hud-zone44-row" style="display: flex; gap: 10px; align-items: center; font-family: var(--font-mono); font-size: 11px;">
+          <span id="hud-scroll-heaven" style="padding: 3px 8px; border-radius: 3px; background: rgba(64, 200, 255, 0.1); border: 1px solid rgba(64, 200, 255, 0.3); color: var(--accent-blue);">HEAVEN: LOCKED</span>
+          <span id="hud-scroll-earth" style="padding: 3px 8px; border-radius: 3px; background: rgba(255, 170, 0, 0.1); border: 1px solid rgba(255, 170, 0, 0.3); color: var(--accent-amber);">EARTH: LOCKED</span>
+          <span id="hud-stealth-tag" style="padding: 3px 8px; border-radius: 3px; background: #1a2234; border: 1px solid #28344e; color: var(--text-muted);">STEALTH: REVEALED</span>
+        </div>
+
+        <div style="display: flex; gap: 16px; align-items: center; font-family: var(--font-mono); font-size: 13px;">
           <span id="hud-tech-cd" style="color: var(--accent-green);">TECH: READY [Q/RMB]</span>
           <span id="hud-timer" style="color: var(--text-main); font-weight: bold;">TIME: 180s</span>
           <button class="btn-ctrl" onclick="window.crucible.returnToDraft();">EXIT MATCH</button>
@@ -132,7 +148,7 @@
 
       <div class="battle-controls-hint">
         <span>CONTROLS: WASD to Move &middot; Left Click: Strike &middot; Right Click / Q: Active Technique &middot; Space: Dash &middot; E: Assist Rush</span>
-        <span>ENGINE: Normalized Physics &middot; Vector Knockback &middot; Frame Buffer</span>
+        <span>ZONE 44: Foliage Grants [HIDDEN] 2.5x Poise Ambush &middot; Guard Break Enemies to Drop Heaven/Earth Scrolls</span>
       </div>
     </div>
 
@@ -140,7 +156,7 @@
     <div id="post-match-view" class="post-match-modal" style="display: none;">
       <div class="post-card">
         <h2 id="post-title" style="font-family: var(--font-mono); font-size: 18px; margin-bottom: 8px;">
-          MISSION ACCOMPLISHED // CRUCIBLE VICTOR
+          CHUNIN EXAM CLEARED // CRUCIBLE VICTOR
         </h2>
         <p style="font-size: 12px; color: var(--text-muted);">Tactical engagement results recorded on normalized physics ledger.</p>
 
@@ -154,14 +170,18 @@
             <strong id="stat-kills">0</strong>
           </div>
           <div class="stat-item">
-            <span>RING-OUTS TRIGGERED</span>
-            <strong id="stat-ringouts">0</strong>
+            <span>SCROLLS SECURED</span>
+            <strong id="stat-scrolls" style="color: var(--accent-blue);">2 / 2</strong>
+          </div>
+          <div class="stat-item">
+            <span>AMBUSH STRIKES</span>
+            <strong id="stat-ambushes" style="color: var(--accent-green);">0</strong>
           </div>
           <div class="stat-item">
             <span>SCENARIO</span>
-            <strong id="stat-scenario" style="font-size: 12px; color: var(--accent-blue);">Null Realm</strong>
+            <strong id="stat-scenario" style="font-size: 12px; color: var(--accent-blue);">Zone 44 (Forest of Death)</strong>
           </div>
-          <div class="stat-item" style="grid-column: span 2;">
+          <div class="stat-item">
             <span>BUDGET UTILIZATION</span>
             <strong id="stat-budget">$12 / $15</strong>
           </div>
