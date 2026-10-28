@@ -3,199 +3,569 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crucible: Zone 44 & Grand Cross - Normalized Anime Combat Arena</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Crucible: $15 Anime Draft & Scenario Battle Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #0a0a0a;
+      --bg-surface: #111111;
+      --bg-card: #141414;
+      --border-subtle: #262626;
+      --border-focus: #383838;
+      --text-primary: #ededed;
+      --text-muted: #a1a1aa;
+      --accent-green: #10b981;
+      --accent-blue: #3b82f6;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+
+    header {
+      height: 48px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px;
+    }
+
+    .brand-group { display: flex; align-items: center; gap: 12px; }
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      background: #271e10;
+      color: var(--accent-amber);
+      border: 1px solid var(--border-subtle);
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+    .brand-title {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .nav-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 6px 12px;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { border-color: var(--border-focus); color: var(--text-primary); }
+
+    main {
+      flex: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Budget Header Bar */
+    .budget-bar {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 16px 20px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .budget-info { display: flex; flex-direction: column; gap: 4px; }
+    .budget-title {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+    .budget-val {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+    .scenario-selector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .scenario-select {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      border-radius: 2px;
+      outline: none;
+    }
+
+    /* Sockets Grid */
+    .sockets-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .sockets-grid { grid-template-columns: 1fr; }
+    }
+
+    .socket-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .socket-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 8px;
+    }
+    .socket-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-amber);
+      letter-spacing: 0.5px;
+    }
+    .socket-cost {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .skill-options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .skill-option-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 10px 12px;
+      border-radius: 2px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: all 0.15s ease;
+      color: var(--text-primary);
+    }
+    .skill-option-btn:hover {
+      border-color: var(--border-focus);
+      background: #181818;
+    }
+    .skill-option-btn.selected {
+      border-color: var(--accent-amber);
+      background: rgba(245, 158, 11, 0.08);
+    }
+    .skill-name {
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .skill-desc {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .skill-price-tag {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-amber);
+      margin-left: 12px;
+    }
+
+    /* Simulation Execution Bar */
+    .sim-bar {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .btn-sim {
+      background: var(--accent-green);
+      color: #000;
+      border: 1px solid var(--accent-green);
+      padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: filter 0.15s;
+    }
+    .btn-sim:hover:not(:disabled) { filter: brightness(1.15); }
+    .btn-sim:disabled {
+      background: var(--bg-card);
+      border-color: var(--border-subtle);
+      color: #555;
+      cursor: not-allowed;
+    }
+
+    /* Simulation Log Feed */
+    .battle-feed {
+      background: var(--bg-base);
+      border: 1px solid var(--border-subtle);
+      padding: 12px 16px;
+      border-radius: 2px;
+      max-height: 240px;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .log-line { color: var(--text-muted); line-height: 1.4; }
+    .log-win { color: var(--accent-green); font-weight: 700; }
+    .log-loss { color: var(--accent-red); font-weight: 700; }
+  </style>
 </head>
 <body>
-  <!-- Header -->
-  <header class="crucible-header">
-    <div>
-      <div class="brand-title">CRUCIBLE // ZONE 44 (FOREST OF DEATH) & GRAND CROSS</div>
-      <div class="brand-sub">CHUNIN EXAMS SCROLL EXTRACTION & NORMALIZED ANIME COMBAT &middot; $15 BUDGET DRAFT</div>
+  <header>
+    <div class="brand-group">
+      <span class="badge">GAME 04</span>
+      <span class="brand-title">CRUCIBLE // $15 DRAFT & SCENARIO BRAWLER</span>
     </div>
-    <div class="header-status">
-      <div class="budget-badge" id="budget-display">$12 / $15</div>
-      <button class="btn-ctrl" id="btn-audio-toggle" onclick="window.CrucibleAudio.toggleMute(); this.innerText = window.CrucibleAudio.muted ? 'AUDIO: MUTED' : 'AUDIO: ON';">AUDIO: ON</button>
-      <button class="btn-ctrl" id="btn-restart" onclick="window.crucible.returnToDraft();">RESET DRAFT</button>
-    </div>
+    <a href="../index.html" class="nav-btn">EXIT TO ARCADE</a>
   </header>
 
-  <div class="app-container">
-    <!-- View 1: $15 Budget-Draft Bay -->
-    <div id="draft-view" class="draft-wrapper">
-      <!-- Preset Bar -->
-      <div class="draft-preset-bar">
-        <span class="preset-label">QUICK BUILDS:</span>
-        <button class="btn-preset active" id="preset-zone44" onclick="window.crucible.applyPreset('zone44')">CHUNIN EXAMS (ZONE 44)</button>
-        <button class="btn-preset" id="preset-multiverse" onclick="window.crucible.applyPreset('multiverse')">GRAND CROSS (MULTIVERSE)</button>
-        <button class="btn-preset" id="preset-minato" onclick="window.crucible.applyPreset('minato')">FLYING THUNDER GOD (HIRAISHIN)</button>
-        <button class="btn-preset" id="preset-taijutsu" onclick="window.crucible.applyPreset('taijutsu')">EIGHT GATES (ASAKUJAKU)</button>
+  <main>
+    <!-- Budget Header Bar -->
+    <div class="budget-bar">
+      <div class="budget-info">
+        <div class="budget-title">REMAINING DRAFT BUDGET (HARD $15 CAP)</div>
+        <div class="budget-val" id="budget-display">$15 / $15</div>
       </div>
-
-      <!-- Scenario Selector & Meta Bar -->
-      <div class="draft-meta-bar">
-        <div>
-          <div style="font-size: 11px; font-family: var(--font-mono); color: var(--accent-blue); letter-spacing: 1px; margin-bottom: 8px;">
-            01 // SELECT BATTLEFIELD ENGAGEMENT
-          </div>
-          <div class="scenario-pills-row" id="scenario-selector">
-            <!-- Dynamic scenario pills -->
-          </div>
-        </div>
-        <div style="text-align: right;">
-          <div id="budget-remaining" style="font-family: var(--font-mono); font-size: 13px; font-weight: bold; color: var(--accent-green);">
-            Remaining: $3
-          </div>
-          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-            Resource Cap: Max $15 across 4 sockets
-          </div>
-        </div>
-      </div>
-
-      <!-- Sockets Grid -->
-      <div class="sockets-grid">
-        <!-- Socket 1: Technique -->
-        <div class="socket-column">
-          <div class="socket-header">
-            <span>SOCKET 1: TECHNIQUE</span>
-            <span>$1 - $5</span>
-          </div>
-          <div class="socket-body" id="tech-list">
-            <!-- Dynamic technique items -->
-          </div>
-        </div>
-
-        <!-- Socket 2: Hands -->
-        <div class="socket-column">
-          <div class="socket-header">
-            <span>SOCKET 2: HANDS</span>
-            <span>$1 - $5</span>
-          </div>
-          <div class="socket-body" id="hands-list">
-            <!-- Dynamic hands items -->
-          </div>
-        </div>
-
-        <!-- Socket 3: Speed -->
-        <div class="socket-column">
-          <div class="socket-header">
-            <span>SOCKET 3: SPEED</span>
-            <span>$1 - $5</span>
-          </div>
-          <div class="socket-body" id="speed-list">
-            <!-- Dynamic speed items -->
-          </div>
-        </div>
-
-        <!-- Socket 4: Teammate -->
-        <div class="socket-column">
-          <div class="socket-header">
-            <span>SOCKET 4: TEAMMATE</span>
-            <span>$1 - $5</span>
-          </div>
-          <div class="socket-body" id="teammate-list">
-            <!-- Dynamic teammate items -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Synergy Preview & Deploy Bar -->
-      <div class="deploy-footer">
-        <div id="synergy-preview" style="max-width: 600px;">
-          <!-- Dynamic synergy readout -->
-        </div>
-        <button class="btn-start" id="btn-start-battle" onclick="window.crucible.startBattle();">
-          ENTER THE CRUCIBLE
-        </button>
+      <div class="scenario-selector">
+        <span style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted);">BATTLEGROUND:</span>
+        <select id="scenario-choice" class="scenario-select" onchange="updateScenario()">
+          <option value="forest">Chunin Exams: Zone 44 (Forest of Death)</option>
+          <option value="culling">The Culling Games: Tokyo Colony 1</option>
+          <option value="tournament">Tournament of Power: Null Realm</option>
+        </select>
       </div>
     </div>
 
-    <!-- View 2: Live Tactical Combat Arena -->
-    <div id="battle-view" class="battle-wrapper" style="display: none;">
-      <div class="battle-hud-top">
-        <div class="stat-bar-group">
-          <div class="bar-box">
-            <div class="bar-label">OPERATIVE INTEGRITY (HP)</div>
-            <div class="bar-track"><div class="bar-fill bar-hp" id="hud-hp-bar" style="width: 100%;"></div></div>
-          </div>
-          <div class="bar-box">
-            <div class="bar-label">POISE SHIELD (STUN BARRIER)</div>
-            <div class="bar-track"><div class="bar-fill bar-poise" id="hud-poise-bar" style="width: 100%;"></div></div>
-          </div>
-          <div class="bar-box">
-            <div class="bar-label">STAMINA MOTOR</div>
-            <div class="bar-track"><div class="bar-fill bar-stam" id="hud-stam-bar" style="width: 100%;"></div></div>
-          </div>
-        </div>
-
-        <!-- Zone 44 Scroll Tracker & Stealth Indicator -->
-        <div id="hud-zone44-row" style="display: flex; gap: 10px; align-items: center; font-family: var(--font-mono); font-size: 11px;">
-          <span id="hud-scroll-heaven" style="padding: 3px 8px; border-radius: 3px; background: rgba(64, 200, 255, 0.1); border: 1px solid rgba(64, 200, 255, 0.3); color: var(--accent-blue);">HEAVEN: LOCKED</span>
-          <span id="hud-scroll-earth" style="padding: 3px 8px; border-radius: 3px; background: rgba(255, 170, 0, 0.1); border: 1px solid rgba(255, 170, 0, 0.3); color: var(--accent-amber);">EARTH: LOCKED</span>
-          <span id="hud-stealth-tag" style="padding: 3px 8px; border-radius: 3px; background: #1a2234; border: 1px solid #28344e; color: var(--text-muted);">STEALTH: REVEALED</span>
-        </div>
-
-        <div style="display: flex; gap: 16px; align-items: center; font-family: var(--font-mono); font-size: 13px;">
-          <span id="hud-tech-cd" style="color: var(--accent-green);">TECH: READY [Q/RMB]</span>
-          <span id="hud-timer" style="color: var(--text-main); font-weight: bold;">TIME: 180s</span>
-          <button class="btn-ctrl" onclick="window.crucible.returnToDraft();">EXIT MATCH</button>
-        </div>
-      </div>
-
-      <div class="canvas-container">
-        <canvas id="battleCanvas"></canvas>
-      </div>
-
-      <div class="battle-controls-hint">
-        <span>CONTROLS: WASD to Move &middot; Left Click: Strike &middot; Right Click / Q: Active Technique &middot; Space: Dash &middot; E: Assist Rush</span>
-        <span>ZONE 44: Foliage Grants [HIDDEN] 2.5x Poise Ambush &middot; Guard Break Enemies to Drop Heaven/Earth Scrolls</span>
-      </div>
+    <!-- 4 Sockets Grid -->
+    <div class="sockets-grid" id="sockets-container">
+      <!-- 4 sockets dynamically rendered -->
     </div>
 
-    <!-- View 3: Post-Match Debrief Modal -->
-    <div id="post-match-view" class="post-match-modal" style="display: none;">
-      <div class="post-card">
-        <h2 id="post-title" style="font-family: var(--font-mono); font-size: 18px; margin-bottom: 8px;">
-          CHUNIN EXAM CLEARED // CRUCIBLE VICTOR
-        </h2>
-        <p style="font-size: 12px; color: var(--text-muted);">Tactical engagement results recorded on normalized physics ledger.</p>
-
-        <div class="post-stats-grid">
-          <div class="stat-item">
-            <span>DAMAGE INFLICTED</span>
-            <strong id="stat-damage">0</strong>
-          </div>
-          <div class="stat-item">
-            <span>TARGETS ELIMINATED</span>
-            <strong id="stat-kills">0</strong>
-          </div>
-          <div class="stat-item">
-            <span>SCROLLS SECURED</span>
-            <strong id="stat-scrolls" style="color: var(--accent-blue);">2 / 2</strong>
-          </div>
-          <div class="stat-item">
-            <span>AMBUSH STRIKES</span>
-            <strong id="stat-ambushes" style="color: var(--accent-green);">0</strong>
-          </div>
-          <div class="stat-item">
-            <span>SCENARIO</span>
-            <strong id="stat-scenario" style="font-size: 12px; color: var(--accent-blue);">Zone 44 (Forest of Death)</strong>
-          </div>
-          <div class="stat-item">
-            <span>BUDGET UTILIZATION</span>
-            <strong id="stat-budget">$12 / $15</strong>
-          </div>
-        </div>
-
-        <div style="display: flex; gap: 12px; justify-content: center;">
-          <button class="btn-start" onclick="window.crucible.startBattle();">RETRY BATTLE</button>
-          <button class="btn-ctrl" style="padding: 12px 20px;" onclick="window.crucible.returnToDraft();">TWEAK DRAFT</button>
-        </div>
+    <!-- Battle Simulation Console -->
+    <div class="sim-bar">
+      <button id="btn-run-sim" class="btn-sim" onclick="runBattleSimulation()">
+        DEPLOY $15 SQUAD & SIMULATE BATTLE
+      </button>
+      <div class="battle-feed" id="battle-feed">
+        <div class="log-line">// Draft 1 option from each socket ($1 to $5) staying within your $15 budget, then run the simulation.</div>
       </div>
     </div>
-  </div>
+  </main>
 
-  <script src="src/audio.js"></script>
-  <script src="src/game.js"></script>
+  <script>
+    // Web Audio Synthesizer
+    class SoundEngine {
+      constructor() { this.ctx = null; }
+      init() {
+        if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+      }
+      playSelect() {
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(600, now + 0.08);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.1);
+      }
+      playClang() {
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(800, now);
+        osc.frequency.exponentialRampToValueAtTime(200, now + 0.15);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.2);
+      }
+      playWin() {
+        this.init();
+        [440, 554, 659, 880].forEach((f, idx) => {
+          const now = this.ctx.currentTime + (idx * 0.1);
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(f, now);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.26);
+        });
+      }
+    }
+    const audio = new SoundEngine();
+
+    // Sockets Catalog with $1 to $5 Options
+    const SOCKETS = [
+      {
+        id: 'technique',
+        title: 'SOCKET 1: CORE TECHNIQUE',
+        options: [
+          { cost: 1, name: 'Paper Bomb Wire Detonation', desc: 'Cheap zoning; setup explosive tripwires across branches.' },
+          { cost: 2, name: 'Boogie Woogie (Clap Warp)', desc: 'Instant spatial swap with any cursed object or ally.' },
+          { cost: 3, name: 'Shadow Possession (Kagemane)', desc: 'Elastic shadow tether; paralyzes and mirrors damage.' },
+          { cost: 4, name: 'Kamui / Dimensional Intangibility', desc: 'Phase body through attacks with 0.8s invulnerability.' },
+          { cost: 5, name: 'Edo Tensei / Domain Expansion', desc: 'Summon undead titan vanguard or activate guaranteed-hit barrier.' }
+        ]
+      },
+      {
+        id: 'hands',
+        title: 'SOCKET 2: MARTIAL ARTS / HANDS',
+        options: [
+          { cost: 1, name: 'Street Boxing & Brawling', desc: 'Basic kinetic punches; reliable short-range knockback.' },
+          { cost: 2, name: 'Gentle Fist (Juken)', desc: 'Injects chakra into tenketsu; drains enemy poise and stamina.' },
+          { cost: 3, name: 'Dynamic Entry', desc: 'High-speed flying dropkick with +100% poise breakthrough.' },
+          { cost: 4, name: 'Flowing Water Rock Smashing Fist', desc: 'Deflects incoming melee strikes with mirrored counter-force.' },
+          { cost: 5, name: 'Eight Gates (Night Guy)', desc: 'Sacrificial blood aura; distorts space with supersonic kicks.' }
+        ]
+      },
+      {
+        id: 'speed',
+        title: 'SOCKET 3: SPEED & MOBILITY',
+        options: [
+          { cost: 1, name: 'Base Ninja Branch Sprint', desc: 'Standard horizontal ground sprint and branch hopping.' },
+          { cost: 2, name: 'Body Flicker (Shunshin)', desc: 'Rapid linear burst dash leaving residual afterimages.' },
+          { cost: 3, name: 'Flash Step (Shunpo)', desc: 'Instant elevated air jump across canopy tiers.' },
+          { cost: 4, name: 'Gear Second (Blood Pump)', desc: 'Accelerated reflex state; +50% evasion and attack speed.' },
+          { cost: 5, name: 'Flying Thunder God (Hiraishin)', desc: 'Instantaneous teleportation between marked formula seals.' }
+        ]
+      },
+      {
+        id: 'teammate',
+        title: 'SOCKET 4: TEAMMATE / ALLY',
+        options: [
+          { cost: 1, name: 'Pakkun / Tenten', desc: 'Ninja hound radar tracker & ranged weapon support.' },
+          { cost: 2, name: 'Megumi Fushiguro', desc: 'Summons Divine Dog Totality and Nue electricity.' },
+          { cost: 3, name: 'Todoroki Shoto', desc: 'Massive Glacier freeze walls and fire zoning.' },
+          { cost: 4, name: 'Kakashi Hatake', desc: 'Sharingan tactical reads, Lightning Blade, and dog summons.' },
+          { cost: 5, name: 'Gojo Satoru', desc: 'Untouchable Infinity shield and Hollow Purple nuke.' }
+        ]
+      }
+    ];
+
+    let currentLoadout = {
+      technique: null,
+      hands: null,
+      speed: null,
+      teammate: null
+    };
+
+    function renderSockets() {
+      const container = document.getElementById('sockets-container');
+      container.innerHTML = '';
+
+      SOCKETS.forEach(sock => {
+        const selected = currentLoadout[sock.id];
+        const card = document.createElement('div');
+        card.className = 'socket-card';
+        card.innerHTML = `
+          <div class="socket-head">
+            <span class="socket-label">${sock.title}</span>
+            <span class="socket-cost">${selected ? `$${selected.cost} SELECTED` : 'EMPTY'}</span>
+          </div>
+          <div class="skill-options-list">
+            ${sock.options.map(opt => `
+              <div class="skill-option-btn ${selected && selected.name === opt.name ? 'selected' : ''}" 
+                   onclick="selectSkill('${sock.id}', ${opt.cost}, '${opt.name}')">
+                <div>
+                  <div class="skill-name">${opt.name}</div>
+                  <div class="skill-desc">${opt.desc}</div>
+                </div>
+                <div class="skill-price-tag">$${opt.cost}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      updateBudgetHUD();
+    }
+
+    function selectSkill(sockId, cost, name) {
+      audio.playSelect();
+      const current = currentLoadout[sockId];
+
+      if (current && current.name === name) {
+        // Deselect
+        currentLoadout[sockId] = null;
+      } else {
+        // Calculate new budget
+        let total = cost;
+        Object.keys(currentLoadout).forEach(k => {
+          if (k !== sockId && currentLoadout[k]) total += currentLoadout[k].cost;
+        });
+
+        if (total > 15) {
+          alert(`Budget exceeded! This choice would bring total cost to $${total} (Limit is $15). Deselect or choose lower tier skills first.`);
+          return;
+        }
+
+        const sockDef = SOCKETS.find(s => s.id === sockId);
+        const optDef = sockDef.options.find(o => o.name === name);
+        currentLoadout[sockId] = optDef;
+      }
+
+      renderSockets();
+    }
+
+    function updateBudgetHUD() {
+      let spent = 0;
+      Object.keys(currentLoadout).forEach(k => {
+        if (currentLoadout[k]) spent += currentLoadout[k].cost;
+      });
+
+      const rem = 15 - spent;
+      const disp = document.getElementById('budget-display');
+      disp.innerText = `$${rem} / $15`;
+      disp.style.color = rem === 0 ? 'var(--accent-amber)' : 'var(--accent-green)';
+
+      const btn = document.getElementById('btn-run-sim');
+      const allSocketsChosen = Object.values(currentLoadout).every(v => v !== null);
+      btn.disabled = !allSocketsChosen;
+      btn.innerText = allSocketsChosen ? 'DEPLOY $15 SQUAD & SIMULATE BATTLE' : `SELECT ALL 4 SOCKETS ($${rem} REMAINING)`;
+    }
+
+    function updateScenario() {
+      const feed = document.getElementById('battle-feed');
+      const sc = document.getElementById('scenario-choice').value;
+      if (sc === 'forest') {
+        feed.innerHTML = `<div class="log-line">// SCENARIO: Zone 44 Forest of Death selected. Ambush from canopy foliage deals +150% poise damage. Objective: Capture Heaven & Earth scrolls.</div>`;
+      } else if (sc === 'culling') {
+        feed.innerHTML = `<div class="log-line">// SCENARIO: The Culling Games (Tokyo Colony 1). Score 100 points against modern sorcerers without being ring-out eliminated.</div>`;
+      } else {
+        feed.innerHTML = `<div class="log-line">// SCENARIO: Tournament of Power. Ring-out battle royale on Null Realm stage. Flight prohibited.</div>`;
+      }
+    }
+
+    function runBattleSimulation() {
+      audio.playClang();
+      const feed = document.getElementById('battle-feed');
+      feed.innerHTML = '';
+
+      const t = currentLoadout.technique;
+      const h = currentLoadout.hands;
+      const s = currentLoadout.speed;
+      const a = currentLoadout.teammate;
+      const sc = document.getElementById('scenario-choice').value;
+
+      feed.innerHTML += `<div class="log-line">=== DEPLOYING LOADOUT ===</div>`;
+      feed.innerHTML += `<div class="log-line">&gt; Technique: ${t.name} ($${t.cost})</div>`;
+      feed.innerHTML += `<div class="log-line">&gt; Hands: ${h.name} ($${h.cost})</div>`;
+      feed.innerHTML += `<div class="log-line">&gt; Speed: ${s.name} ($${s.cost})</div>`;
+      feed.innerHTML += `<div class="log-line">&gt; Ally: ${a.name} ($${a.cost})</div>`;
+      feed.innerHTML += `<div class="log-line">------------------------------------</div>`;
+
+      // Simulation combat score computation
+      let totalRating = t.cost * 1.2 + h.cost * 1.1 + s.cost * 1.15 + a.cost * 1.3;
+
+      // Synergy bonuses
+      let synergies = [];
+      if (s.name.includes('Flying Thunder God') && t.name.includes('Kamui')) {
+        synergies.push('Space-Time Singularity (Invulnerable Flash Step)');
+        totalRating += 4;
+      }
+      if (h.name.includes('Eight Gates') && a.name.includes('Gojo')) {
+        synergies.push('Supreme Frontline Apex (Limitless Cover + Gate Overdrive)');
+        totalRating += 5;
+      }
+      if (t.name.includes('Boogie Woogie') && a.name.includes('Kakashi')) {
+        synergies.push('Tactical Substitution (Forced Chidori Swaps)');
+        totalRating += 3;
+      }
+
+      if (synergies.length > 0) {
+        synergies.forEach(syn => {
+          feed.innerHTML += `<div class="log-line" style="color: var(--accent-amber);">&gt; [SYNERGY ACTIVE]: ${syn}!</div>`;
+        });
+      }
+
+      setTimeout(() => {
+        audio.playClang();
+        if (sc === 'forest') {
+          feed.innerHTML += `<div class="log-line">&gt; Entering Zone 44 Canopy: You secure elevated [Hidden] status (+150% poise damage).</div>`;
+          feed.innerHTML += `<div class="log-line">&gt; Enemy Patrol Encountered: Holding the missing Heaven Scroll!</div>`;
+          feed.innerHTML += `<div class="log-line">&gt; Executing ${h.name} ambush from branch foliage... Guard Break inflicted!</div>`;
+        } else {
+          feed.innerHTML += `<div class="log-line">&gt; Entering Colony: High-grade cursed spirits converging on perimeter.</div>`;
+          feed.innerHTML += `<div class="log-line">&gt; Teammate ${a.name} engages vanguard forces with suppression fire!</div>`;
+        }
+
+        setTimeout(() => {
+          if (totalRating >= 16) {
+            audio.playWin();
+            feed.innerHTML += `<div class="log-line log-win">&gt;&gt; [MATCH VERDICT: VICTORY] Target shattered! Both Heaven & Earth scrolls secured. Extraction Tower unlocked!</div>`;
+          } else {
+            feed.innerHTML += `<div class="log-line log-loss">&gt;&gt; [MATCH VERDICT: DEFEAT] Enemy broke through poise threshold. Try adjusting skill synergy or allocating higher tier teammate!</div>`;
+          }
+        }, 600);
+      }, 500);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSockets();
+      updateScenario();
+    });
+  </script>
 </body>
 </html>

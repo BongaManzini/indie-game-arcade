@@ -3,302 +3,560 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scale: Resonance Ping - Hadal Trench Acoustic Combat Simulator</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>Scale Versus — 1-100 Hot & Cold Guessing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #0a0a0a;
+      --bg-surface: #111111;
+      --bg-card: #141414;
+      --border-subtle: #262626;
+      --border-focus: #383838;
+      --text-primary: #ededed;
+      --text-muted: #a1a1aa;
+      --accent-green: #10b981;
+      --accent-blue: #3b82f6;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+
+    header {
+      height: 48px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px;
+    }
+
+    .brand-group { display: flex; align-items: center; gap: 12px; }
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      background: #141f2d;
+      color: var(--accent-blue);
+      border: 1px solid var(--border-subtle);
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+    .brand-title {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .nav-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 6px 12px;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { border-color: var(--border-focus); color: var(--text-primary); }
+
+    main {
+      flex: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Target Meter Bar */
+    .meter-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 20px;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .meter-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .meter-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .meter-temp-val {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent-blue);
+    }
+    .track-bg {
+      height: 12px;
+      background: var(--bg-base);
+      border: 1px solid var(--border-subtle);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .track-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-blue);
+      transition: width 0.3s ease, background 0.3s ease;
+    }
+
+    /* Guess Input Panel */
+    .input-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 16px;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+    .search-row {
+      display: flex;
+      gap: 12px;
+    }
+    .search-input {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      padding: 10px 14px;
+      border-radius: 2px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--border-focus); }
+    .btn-ping {
+      background: var(--accent-green);
+      color: #000;
+      border: 1px solid var(--accent-green);
+      padding: 10px 20px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: filter 0.15s;
+    }
+    .btn-ping:hover { filter: brightness(1.15); }
+
+    /* Auto-complete Suggestions */
+    .suggestions-box {
+      position: absolute;
+      top: 68px;
+      left: 16px;
+      right: 120px;
+      background: #161616;
+      border: 1px solid var(--border-focus);
+      border-radius: 2px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 20;
+      display: none;
+    }
+    .suggestion-item {
+      padding: 8px 12px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      cursor: pointer;
+      border-bottom: 1px solid #222;
+    }
+    .suggestion-item:hover { background: #222; }
+
+    /* Feed History */
+    .history-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .history-head {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 8px;
+    }
+    .feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 360px;
+      overflow-y: auto;
+    }
+    .feed-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 8px 12px;
+      border-radius: 2px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    .feed-score {
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 10, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+    }
+    .modal-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 28px 32px;
+      border-radius: 4px;
+      max-width: 460px;
+      width: 90%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+  </style>
 </head>
 <body>
-  <div class="cockpit-chassis">
-    <!-- TOP HEADER / BRIDGE CLASSIFICATION -->
-    <header class="bridge-header">
-      <div class="header-left">
-        <span class="vessel-tag">BATHYSCAPHE TRITON-IV</span>
-        <span class="dept-tag">DEPT. OF BENTHIC BIO-ACOUSTICS // HADAL SURVEY</span>
+  <header>
+    <div class="brand-group">
+      <span class="badge">GAME 03</span>
+      <span class="brand-title">SCALE VERSUS // 1–100 PROXIMITY GUESSER</span>
+    </div>
+    <a href="../index.html" class="nav-btn">EXIT TO ARCADE</a>
+  </header>
+
+  <main>
+    <!-- Meter Card -->
+    <div class="meter-card">
+      <div class="meter-head">
+        <div class="meter-title">TRIANGULATE THE SECRET CHARACTER</div>
+        <div class="meter-temp-val" id="peak-temp">HOTTEST: 0 / 100</div>
       </div>
-      <div class="header-center">
-        <h1 class="game-title">SCALE // RESONANCE PING</h1>
-        <span class="sub-status">SECTOR: TARTARUS CHASM [DEPTH: 9,200m - 11,000m]</span>
-      </div>
-      <div class="header-right">
-        <button id="help-toggle-btn" class="chunky-btn btn-secondary">MISSION DOSSIER [?]</button>
-      </div>
-    </header>
-
-    <!-- MAIN CONSOLE GRID: 4 DIEGETIC STATIONS -->
-    <main class="console-grid">
-
-      <!-- ============================================== -->
-      <!-- STATION 1: SENSOR & TELEMETRY ARRAY            -->
-      <!-- ============================================== -->
-      <section class="panel station-sensor">
-        <div class="panel-header">
-          <span class="panel-num">STATION 01</span>
-          <h2>ACOUSTIC TELEMETRY & RESONANCE PROBE</h2>
-          <span class="panel-cap">CAPACITOR: <strong id="sensor-cap-disp">100%</strong></span>
-        </div>
-
-        <div class="crt-frame main-crt">
-          <canvas id="tac-canvas" width="620" height="340"></canvas>
-          <div class="crt-glass-glare"></div>
-        </div>
-
-        <div class="telemetry-controls">
-          <div class="control-row">
-            <div class="control-group">
-              <label for="domain-select">TAXONOMIC DOMAIN</label>
-              <select id="domain-select" class="analog-select"></select>
-            </div>
-            <div class="control-group">
-              <label for="matrix-select">STRUCTURAL MATRIX</label>
-              <select id="matrix-select" class="analog-select"></select>
-            </div>
-            <div class="control-group">
-              <label for="metab-select">METABOLIC OUTPUT</label>
-              <select id="metab-select" class="analog-select"></select>
-            </div>
-          </div>
-
-          <div class="control-row dials-row">
-            <div class="dial-control">
-              <label>CARRIER FREQ: <span id="freq-display" class="val-pill">14.2 kHz</span></label>
-              <input type="range" id="freq-slider" min="3.0" max="30.0" step="0.2" value="14.2" class="slider">
-              <div class="range-labels"><span>3 kHz (ELF)</span><span>30 kHz (VLF)</span></div>
-            </div>
-
-            <div class="dial-control">
-              <label>AZIMUTH BEARING: <span id="azimuth-display" class="val-pill">280°</span></label>
-              <input type="range" id="azimuth-slider" min="0" max="359" step="1" value="280" class="slider">
-              <div class="range-labels"><span>000° (N)</span><span>180° (S)</span><span>359°</span></div>
-            </div>
-
-            <div class="fire-control">
-              <button id="fire-ping-btn" class="chunky-btn btn-fire-ping">
-                DISCHARGE PROBE [PING]
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ============================================== -->
-      <!-- STATION 2: LIQUID SODIUM REACTOR & ACOUSTICS   -->
-      <!-- ============================================== -->
-      <section class="panel station-reactor">
-        <div class="panel-header">
-          <span class="panel-num">STATION 02</span>
-          <h2>LSTR-100 REACTOR & ACOUSTIC SIGNATURE</h2>
-          <span class="panel-cap" id="total-power-disp">100 / 100 PU</span>
-        </div>
-
-        <!-- ACOUSTIC NOISE & THREAT METER -->
-        <div class="acoustic-meter-box">
-          <div class="meter-head">
-            <span>WATER COLUMN NOISE: <strong id="db-meter-disp">38 dB</strong></span>
-            <div class="led-strip">
-              <span id="cav-led" class="led-pill">CAVITATION</span>
-              <span id="aggro-led" class="led-pill">STALKER AGGRO</span>
-            </div>
-          </div>
-          <div class="meter-track">
-            <div id="db-meter-bar" class="meter-fill" style="width: 15%;"></div>
-          </div>
-          <div class="meter-thresholds">
-            <span>35dB (AMBIENT)</span>
-            <span>65dB (CAV)</span>
-            <span>75dB (AGGRO)</span>
-            <span>95dB (APEX CHARGE)</span>
-          </div>
-        </div>
-
-        <!-- POWER DISTRIBUTION BUS MATRIX (FTL-STYLE) -->
-        <div class="power-matrix">
-          <div class="power-channel">
-            <label>TELEMETRY <span id="pwr-telemetry-disp">30 PU</span></label>
-            <input type="range" id="pwr-telemetry" min="0" max="50" value="30" class="slider pwr-slider">
-          </div>
-          <div class="power-channel">
-            <label>PROPULSION <span id="pwr-propulsion-disp">20 PU</span></label>
-            <input type="range" id="pwr-propulsion" min="0" max="50" value="20" class="slider pwr-slider">
-          </div>
-          <div class="power-channel">
-            <label>BALLAST PUMPS <span id="pwr-ballast-disp">15 PU</span></label>
-            <input type="range" id="pwr-ballast" min="0" max="50" value="15" class="slider pwr-slider">
-          </div>
-          <div class="power-channel">
-            <label>WEAPONS BANK <span id="pwr-weapons-disp">25 PU</span></label>
-            <input type="range" id="pwr-weapons" min="0" max="50" value="25" class="slider pwr-slider">
-          </div>
-          <div class="power-channel">
-            <label>LIFE SUPPORT <span id="pwr-lifeSupport-disp">10 PU</span></label>
-            <input type="range" id="pwr-lifeSupport" min="0" max="50" value="10" class="slider pwr-slider">
-          </div>
-        </div>
-
-        <div class="reactor-actions">
-          <button id="silent-run-btn" class="chunky-btn btn-silent">SILENT RUNNING: OFF</button>
-          <div class="vessel-stats-mini">
-            <span>BATTERY: <strong id="battery-disp">100%</strong></span>
-            <span>O2: <strong id="o2-disp">100%</strong></span>
-          </div>
-        </div>
-      </section>
-
-      <!-- ============================================== -->
-      <!-- STATION 3: HELM, BALLAST & OCEANOGRAPHY        -->
-      <!-- ============================================== -->
-      <section class="panel station-helm">
-        <div class="panel-header">
-          <span class="panel-num">STATION 03</span>
-          <h2>HELM TELEGRAPH & TRENCH BATHYMETRY</h2>
-          <span class="panel-cap">HULL: <strong id="hull-integrity-disp">100%</strong></span>
-        </div>
-
-        <div class="gauges-cluster">
-          <div class="gauge-pod">
-            <span class="gauge-label">HEADING</span>
-            <span class="gauge-val" id="heading-disp">000°</span>
-          </div>
-          <div class="gauge-pod">
-            <span class="gauge-label">BENTHIC DEPTH</span>
-            <span class="gauge-val" id="depth-disp">9,200 m</span>
-            <span class="gauge-sub">CRUSH: 11,000m</span>
-          </div>
-          <div class="gauge-pod">
-            <span class="gauge-label">SPEED</span>
-            <span class="gauge-val" id="speed-disp">0.0 KTS</span>
-          </div>
-        </div>
-
-        <div class="helm-controls">
-          <div class="throttle-telegraph">
-            <span class="sub-label">ENGINE TELEGRAPH:</span>
-            <div class="btn-group">
-              <button id="throttle-stop" class="telegraph-btn">STOP</button>
-              <button id="throttle-slow" class="telegraph-btn">1/3 (SLOW)</button>
-              <button id="throttle-std" class="telegraph-btn">2/3 (STD)</button>
-              <button id="throttle-flank" class="telegraph-btn btn-danger">FLANK</button>
-            </div>
-          </div>
-
-          <div class="ballast-section">
-            <div class="ballast-slider-box">
-              <label>FWD BALLAST: <span id="fwd-ballast-disp">50%</span></label>
-              <input type="range" id="fwd-ballast" min="0" max="100" value="50" class="slider">
-            </div>
-            <div class="ballast-slider-box">
-              <label>AFT BALLAST: <span id="aft-ballast-disp">50%</span></label>
-              <input type="range" id="aft-ballast" min="0" max="100" value="50" class="slider">
-            </div>
-            <button id="blow-ballast-btn" class="chunky-btn btn-warning">BLOW BALLAST</button>
-          </div>
-
-          <div class="rudder-control">
-            <label>RUDDER ANGLE: <span id="rudder-display">0° MID</span></label>
-            <input type="range" id="rudder-slider" min="-30" max="30" value="0" class="slider">
-          </div>
-        </div>
-      </section>
-
-      <!-- ============================================== -->
-      <!-- STATION 4: TACTICAL WEAPONS & TELEMETRY DECRYPT-->
-      <!-- ============================================== -->
-      <section class="panel station-weapons">
-        <div class="panel-header">
-          <span class="panel-num">STATION 04</span>
-          <h2>TACTICAL COMBAT & HARMONIC OSCILLOSCOPE</h2>
-          <span class="panel-cap" id="weap-lock-status">INTERLOCK LOCKED [R < 90%]</span>
-        </div>
-
-        <div class="crt-frame sub-crt">
-          <canvas id="tel-canvas" width="460" height="230"></canvas>
-          <div class="crt-glass-glare"></div>
-        </div>
-
-        <div class="torpedo-bays">
-          <div class="tube-card">
-            <div class="tube-info">
-              <span class="tube-title">TUBE 1: HADAL-8 TORPEDO</span>
-              <span id="tube1-status" class="tube-state">DRY // LOADED</span>
-            </div>
-            <div class="tube-btns">
-              <button id="tube1-flood-btn" class="chunky-btn btn-small">FLOOD TUBE</button>
-              <button id="tube1-fire-btn" class="chunky-btn btn-fire-torp">FIRE TUBE 1</button>
-            </div>
-          </div>
-
-          <div class="tube-card">
-            <div class="tube-info">
-              <span class="tube-title">TUBE 2: ACOUSTIC DECOY</span>
-              <span id="tube2-status" class="tube-state">DRY // LOADED</span>
-            </div>
-            <div class="tube-btns">
-              <button id="tube2-flood-btn" class="chunky-btn btn-small">FLOOD TUBE</button>
-              <button id="tube2-fire-btn" class="chunky-btn btn-fire-decoy">EJECT DECOY</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- TACTICAL TERMINAL LOG -->
-        <div class="log-container">
-          <div class="log-header">TACTICAL BRIDGE TELEMETRY LOG</div>
-          <div id="tactical-log" class="terminal-text"></div>
-        </div>
-      </section>
-
-    </main>
-
-    <!-- INSTRUCTIONS / MISSION BRIEFING MODAL -->
-    <div id="instructions-modal" class="modal-backdrop hidden">
-      <div class="modal-dialog">
-        <div class="modal-header">
-          <h3>OPERATIONAL DOSSIER: PROJECT RESONANCE PING</h3>
-          <button id="modal-close-btn" class="modal-close">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="dossier-section">
-            <h4>1. THE HUNT (SEMANTIC HOT-COLD TRIANGULATION)</h4>
-            <p>You are blind in the hadal deep. To find and kill the Apex Leviathan, you must fire targeted frequency probes across 4 parameters: <strong>Taxonomic Domain</strong>, <strong>Structural Matrix</strong>, <strong>Metabolic Output</strong>, and <strong>Carrier Frequency</strong>.</p>
-            <ul>
-              <li><strong>0 - 39% (Scatter):</strong> Total mismatch. Generates a deafening 25dB acoustic reverberation that draws stalkers.</li>
-              <li><strong>40 - 69% (Harmonic):</strong> Isolates target quadrant and coarse depth stratum.</li>
-              <li><strong>70 - 89% (Sub-Harmonic):</strong> Unmasks trench bathymetry contours and creature trajectory.</li>
-              <li><strong>90 - 99% (Resonant Coherence):</strong> Unlocks weapons targeting interlock and exposes vulnerable organs.</li>
-              <li><strong>100% (Harmonic Singularity):</strong> Paralyzes creature nervous system for immediate execution.</li>
-            </ul>
-          </div>
-          <div class="dossier-section">
-            <h4>2. THE ACOUSTIC BUDGET</h4>
-            <p>Every active ping, propeller cavitation burst, or ballast discharge radiates noise into the water column. Keep noise below <strong>75 dB</strong> to avoid alerting predatory swarms. If noise reaches <strong>95 dB</strong>, the Leviathan will initiate an emergency cavitation charge straight for your hull!</p>
-          </div>
-          <div class="dossier-section">
-            <h4>3. THERMOCLINES & SILENT RUNNING</h4>
-            <p>A density inversion layer (Thermocline) sits at <strong>9,400 meters</strong>. Pinging or moving beneath this layer traps sound beneath the shelf, concealing your submarine from predators cruising above.</p>
-          </div>
-        </div>
+      <p style="font-size: 13px; color: var(--text-muted);">
+        A secret anime character has been selected. Shout out or type character guesses to test relational proximity (series, team, power, traits). The closer you get, the higher your score. First to 100 wins!
+      </p>
+      <div class="track-bg">
+        <div id="meter-bar" class="track-fill"></div>
       </div>
     </div>
 
-    <!-- VICTORY MODAL -->
-    <div id="victory-modal" class="modal-backdrop hidden">
-      <div class="modal-dialog modal-victory">
-        <h2>>>> TARGET NEUTRALIZED <<<</h2>
-        <p>The Hadal-8 Torpedo matched the Leviathan's resonance profile, penetrating its silicated carapace and detonating the ventral siphon.</p>
-        <p>The carcass is settling into the abyssal sediment. Benthic specimens recovered. The Triton-IV survived the depths.</p>
-        <button onclick="location.reload()" class="chunky-btn btn-fire-ping">RE-ENTER HADAL TRENCH</button>
+    <!-- Input Panel -->
+    <div class="input-panel">
+      <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted);">
+        ENTER AN ANIME CHARACTER GUESS
       </div>
+      <div class="search-row">
+        <input type="text" id="guess-input" class="search-input" placeholder="Type character name (e.g. Minato, Kiba, Shoji, Gojo...)" autocomplete="off">
+        <button class="btn-ping" onclick="submitGuess()">SUBMIT PING</button>
+      </div>
+      <div id="suggestions" class="suggestions-box"></div>
     </div>
 
-    <!-- DEFEAT MODAL -->
-    <div id="defeat-modal" class="modal-backdrop hidden">
-      <div class="modal-dialog modal-defeat">
-        <h2>!!! HULL LOST - IMPLOSION DETECTED !!!</h2>
-        <p id="defeat-reason">Catastrophic structural failure under 1,100 atmospheres.</p>
-        <p>The abyss claims the Triton-IV.</p>
-        <button onclick="location.reload()" class="chunky-btn btn-danger">RETRY MISSION</button>
+    <!-- Feed History -->
+    <div class="history-card">
+      <div class="history-head">PROXIMITY FEED // ROUND LOG</div>
+      <div class="feed-list" id="feed-list">
+        <!-- Log items rendered dynamically -->
       </div>
     </div>
+  </main>
 
+  <!-- Victory Modal -->
+  <div id="win-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-box">
+      <div style="font-family: var(--font-mono); font-size: 18px; font-weight: 700; color: var(--accent-green);">
+        TARGET ACQUIRED: 100 // SCALE PEAK
+      </div>
+      <div id="win-desc" style="font-size: 13px; color: var(--text-muted); line-height: 1.5;"></div>
+      <button class="btn-ping" onclick="initGame()">PLAY NEW ROUND</button>
+    </div>
   </div>
 
-  <script type="module" src="js/game.js"></script>
+  <script>
+    // Web Audio Synthesizer
+    class SoundEngine {
+      constructor() { this.ctx = null; }
+      init() {
+        if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+      }
+      playPing(score) {
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        // Pitch scales from 200Hz to 800Hz with score
+        const freq = 200 + (score * 6);
+        osc.frequency.setValueAtTime(freq, now);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.26);
+      }
+      playWin() {
+        this.init();
+        [523, 659, 783, 1046].forEach((f, idx) => {
+          const now = this.ctx.currentTime + (idx * 0.1);
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(f, now);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.26);
+        });
+      }
+    }
+    const audio = new SoundEngine();
+
+    // Extensive Anime Characters Database with Semantic Traits
+    const DATABASE = [
+      // Naruto Cast
+      { id: 'shino', name: 'Shino Aburame', series: 'Naruto', team: 'Team 8', traits: ['Ninja', 'Insects', 'Quiet', 'Glasses', 'Konoha'] },
+      { id: 'kiba', name: 'Kiba Inuzuka', series: 'Naruto', team: 'Team 8', traits: ['Ninja', 'Dogs', 'Konoha', 'Genin'] },
+      { id: 'hinata', name: 'Hinata Hyuga', series: 'Naruto', team: 'Team 8', traits: ['Ninja', 'Byakugan', 'Gentle Fist', 'Konoha'] },
+      { id: 'kurenai', name: 'Kurenai Yuhi', series: 'Naruto', team: 'Team 8', traits: ['Ninja', 'Genjutsu', 'Sensei', 'Konoha'] },
+      { id: 'shoji', name: 'Choji Akimichi', series: 'Naruto', team: 'Team 10', traits: ['Ninja', 'Expansion', 'Food', 'Konoha'] },
+      { id: 'shikamaru', name: 'Shikamaru Nara', series: 'Naruto', team: 'Team 10', traits: ['Ninja', 'Shadow', 'Genius', 'Konoha'] },
+      { id: 'naruto', name: 'Naruto Uzumaki', series: 'Naruto', team: 'Team 7', traits: ['Ninja', 'Jinchuriki', 'Rasengan', 'Hokage'] },
+      { id: 'sasuke', name: 'Sasuke Uchiha', series: 'Naruto', team: 'Team 7', traits: ['Ninja', 'Sharingan', 'Chidori', 'Uchiha'] },
+      { id: 'kakashi', name: 'Kakashi Hatake', series: 'Naruto', team: 'Team 7', traits: ['Ninja', 'Sharingan', 'Sensei', 'Mask'] },
+      { id: 'minato', name: 'Minato Namikaze', series: 'Naruto', team: 'Hokage', traits: ['Ninja', 'Hiraishin', 'Hokage', 'Konoha'] },
+      { id: 'kurama', name: 'Nine-Tailed Fox (Kurama)', series: 'Naruto', team: 'Tailed Beast', traits: ['Beast', 'Chakra', 'Fox'] },
+      { id: 'itachi', name: 'Itachi Uchiha', series: 'Naruto', team: 'Akatsuki', traits: ['Ninja', 'Akatsuki', 'Sharingan', 'Genjutsu'] },
+
+      // Jujutsu Kaisen Cast
+      { id: 'gojo', name: 'Gojo Satoru', series: 'Jujutsu Kaisen', team: 'Jujutsu High', traits: ['Sorcerer', 'Limitless', 'Six Eyes', 'Teacher'] },
+      { id: 'sukuna', name: 'Ryomen Sukuna', series: 'Jujutsu Kaisen', team: 'Curses', traits: ['Curse', 'Cleave', 'Dismantle', 'King'] },
+      { id: 'yuji', name: 'Yuji Itadori', series: 'Jujutsu Kaisen', team: 'Jujutsu High', traits: ['Sorcerer', 'Divergent Fist', 'Student'] },
+      { id: 'megumi', name: 'Megumi Fushiguro', series: 'Jujutsu Kaisen', team: 'Jujutsu High', traits: ['Sorcerer', 'Ten Shadows', 'Student'] },
+      { id: 'toji', name: 'Toji Fushiguro', series: 'Jujutsu Kaisen', team: 'Zenin', traits: ['Assassin', 'Heavenly Restriction', 'Physical'] },
+
+      // One Piece Cast
+      { id: 'luffy', name: 'Monkey D. Luffy', series: 'One Piece', team: 'Straw Hats', traits: ['Pirate', 'Nika', 'Captain', 'Rubber'] },
+      { id: 'zoro', name: 'Roronoa Zoro', series: 'One Piece', team: 'Straw Hats', traits: ['Swordsman', 'Haki', 'Santoryu'] },
+      { id: 'sanji', name: 'Sanji', series: 'One Piece', team: 'Straw Hats', traits: ['Cook', 'Black Leg', 'Germa'] },
+
+      // Attack on Titan Cast
+      { id: 'eren', name: 'Eren Yeager', series: 'Attack on Titan', team: 'Scouts', traits: ['Titan', 'Freedom', 'Rumbling'] },
+      { id: 'levi', name: 'Levi Ackerman', series: 'Attack on Titan', team: 'Scouts', traits: ['Soldier', 'Captain', 'Ackerman'] },
+      { id: 'mikasa', name: 'Mikasa Ackerman', series: 'Attack on Titan', team: 'Scouts', traits: ['Soldier', 'Ackerman', 'Scarf'] }
+    ];
+
+    let targetEntity = null;
+    let highestScore = 0;
+    let turnCount = 0;
+
+    function initGame() {
+      document.getElementById('win-modal').style.display = 'none';
+      document.getElementById('feed-list').innerHTML = '';
+      highestScore = 0;
+      turnCount = 0;
+      updateMeterHUD(0);
+
+      // Default target or random
+      targetEntity = DATABASE.find(c => c.id === 'shino') || DATABASE[0];
+      logFeed('SYSTEM', `Host has set the secret character. Database online (${DATABASE.length} entities). Ping your first guess!`, 0);
+    }
+
+    function calculateProximity(guessEntity, target) {
+      if (guessEntity.id === target.id) return 100;
+
+      let score = 10; // Baseline for being an anime character
+
+      if (guessEntity.series === target.series) {
+        score += 40; // Same universe
+
+        if (guessEntity.team && target.team && guessEntity.team === target.team) {
+          score += 35; // Same squad / team (e.g. Kiba to Shino = 85 + traits = 99!)
+        }
+
+        // Shared trait points
+        const sharedTraits = guessEntity.traits.filter(t => target.traits.includes(t));
+        score += (sharedTraits.length * 4);
+      } else {
+        // Cross-series trait similarities
+        const sharedTraits = guessEntity.traits.filter(t => target.traits.includes(t));
+        score += (sharedTraits.length * 3);
+      }
+
+      return Math.min(99, Math.max(5, score));
+    }
+
+    function submitGuess(nameOverride) {
+      const input = document.getElementById('guess-input');
+      const query = (nameOverride || input.value).trim().toLowerCase();
+      if (!query) return;
+
+      const found = DATABASE.find(e => e.name.toLowerCase() === query || e.id === query);
+      if (!found) {
+        alert('Character signature not found in current database catalog. Try typing a name from the autocomplete list.');
+        return;
+      }
+
+      input.value = '';
+      document.getElementById('suggestions').style.display = 'none';
+
+      turnCount++;
+      const score = calculateProximity(found, targetEntity);
+      audio.playPing(score);
+
+      if (score > highestScore) {
+        highestScore = score;
+        updateMeterHUD(score);
+      }
+
+      logFeed('YOU', found.name, score);
+
+      if (score === 100) {
+        audio.playWin();
+        const modal = document.getElementById('win-modal');
+        document.getElementById('win-desc').innerText = `You pinpointed ${targetEntity.name} (${targetEntity.series}) in ${turnCount} queries!`;
+        modal.style.display = 'flex';
+        return;
+      }
+
+      // Rival bot turn
+      setTimeout(simulateRivalTurn, 600);
+    }
+
+    function simulateRivalTurn() {
+      // Rival picks a guess influenced by highest score
+      const pool = DATABASE.filter(c => c.id !== targetEntity.id);
+      const botPick = pool[Math.floor(Math.random() * pool.length)];
+      const botScore = calculateProximity(botPick, targetEntity);
+
+      if (botScore > highestScore) {
+        highestScore = botScore;
+        updateMeterHUD(botScore);
+      }
+
+      logFeed('RIVAL', botPick.name, botScore);
+    }
+
+    function updateMeterHUD(score) {
+      const bar = document.getElementById('meter-bar');
+      const val = document.getElementById('peak-temp');
+
+      val.innerText = `HOTTEST: ${score} / 100`;
+      bar.style.width = `${score}%`;
+
+      if (score >= 95) {
+        bar.style.background = 'var(--accent-green)';
+        val.style.color = 'var(--accent-green)';
+      } else if (score >= 75) {
+        bar.style.background = 'var(--accent-red)';
+        val.style.color = 'var(--accent-red)';
+      } else if (score >= 45) {
+        bar.style.background = 'var(--accent-amber)';
+        val.style.color = 'var(--accent-amber)';
+      } else {
+        bar.style.background = 'var(--accent-blue)';
+        val.style.color = 'var(--accent-blue)';
+      }
+    }
+
+    function logFeed(sender, name, score) {
+      const list = document.getElementById('feed-list');
+      const item = document.createElement('div');
+      item.className = 'feed-item';
+
+      let color = 'var(--accent-blue)';
+      if (score >= 95) color = 'var(--accent-green)';
+      else if (score >= 75) color = 'var(--accent-red)';
+      else if (score >= 45) color = 'var(--accent-amber)';
+
+      item.innerHTML = `
+        <div>
+          <span style="color: ${sender === 'YOU' ? 'var(--accent-green)' : '#a1a1aa'}; font-weight: 700;">[${sender}]</span>
+          <span style="margin-left: 8px; color: #ededed;">${name}</span>
+        </div>
+        <div class="feed-score" style="background: rgba(255,255,255,0.05); color: ${color};">
+          ${score} / 100
+        </div>
+      `;
+      list.prepend(item);
+    }
+
+    // Autocomplete search
+    const inputElem = document.getElementById('guess-input');
+    const suggestBox = document.getElementById('suggestions');
+
+    inputElem.addEventListener('input', () => {
+      const q = inputElem.value.trim().toLowerCase();
+      if (!q) {
+        suggestBox.style.display = 'none';
+        return;
+      }
+
+      const matches = DATABASE.filter(c => c.name.toLowerCase().includes(q) || c.series.toLowerCase().includes(q));
+      if (matches.length === 0) {
+        suggestBox.style.display = 'none';
+        return;
+      }
+
+      suggestBox.innerHTML = '';
+      matches.slice(0, 5).forEach(m => {
+        const item = document.createElement('div');
+        item.className = 'suggestion-item';
+        item.innerText = `${m.name} (${m.series})`;
+        item.onclick = () => {
+          submitGuess(m.name);
+        };
+        suggestBox.appendChild(item);
+      });
+      suggestBox.style.display = 'block';
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initGame();
+    });
+  </script>
 </body>
 </html>

@@ -3,133 +3,596 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Neural Sieve: 60s Protocol — Minimal Dark SaaS Triage</title>
+  <title>60s Anime Speedrun — Guess the Character</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #0a0a0a;
+      --bg-surface: #111111;
+      --bg-card: #141414;
+      --border-subtle: #262626;
+      --border-focus: #383838;
+      --text-primary: #ededed;
+      --text-muted: #a1a1aa;
+      --accent-green: #10b981;
+      --accent-blue: #3b82f6;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+
+    header {
+      height: 48px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px;
+    }
+
+    .brand-group { display: flex; align-items: center; gap: 12px; }
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      background: #14241e;
+      color: var(--accent-green);
+      border: 1px solid var(--border-subtle);
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+    .brand-title {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .nav-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 6px 12px;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { border-color: var(--border-focus); color: var(--text-primary); }
+
+    main {
+      flex: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* 60s Clock Bar */
+    .timer-strip {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .timer-val {
+      font-family: var(--font-mono);
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--accent-green);
+      letter-spacing: -0.5px;
+    }
+    .pool-counter {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .pool-counter strong { color: var(--text-primary); }
+
+    /* Arena Grid */
+    .arena-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .arena-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Question Buttons Panel */
+    .query-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .panel-head {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 8px;
+    }
+
+    .questions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .q-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 10px 14px;
+      border-radius: 2px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      color: var(--text-primary);
+      transition: all 0.15s;
+    }
+    .q-btn:hover:not(:disabled) {
+      border-color: var(--border-focus);
+      background: #181818;
+    }
+    .q-btn:disabled {
+      cursor: default;
+      opacity: 0.85;
+    }
+    .ans-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+    .ans-tag.yes { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+    .ans-tag.no { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+
+    /* Guessing Column */
+    .guess-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .guess-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+    .guess-input {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      padding: 10px 14px;
+      border-radius: 2px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      outline: none;
+    }
+    .guess-input:focus { border-color: var(--border-focus); }
+    .btn-guess {
+      background: var(--accent-green);
+      color: #000;
+      border: 1px solid var(--accent-green);
+      padding: 10px 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: filter 0.15s;
+    }
+    .btn-guess:hover { filter: brightness(1.15); }
+
+    /* Suggestions */
+    .sugg-box {
+      position: absolute;
+      top: 96px;
+      left: 16px;
+      right: 16px;
+      background: #171717;
+      border: 1px solid var(--border-focus);
+      border-radius: 2px;
+      max-height: 180px;
+      overflow-y: auto;
+      z-index: 20;
+      display: none;
+    }
+    .sugg-item {
+      padding: 8px 12px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      cursor: pointer;
+      border-bottom: 1px solid #222;
+    }
+    .sugg-item:hover { background: #222; }
+
+    /* Candidate Pool Log */
+    .log-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+    .log-feed {
+      background: var(--bg-base);
+      border: 1px solid var(--border-subtle);
+      padding: 10px;
+      border-radius: 2px;
+      height: 180px;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* Modal Result */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 10, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+    }
+    .modal-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 28px 32px;
+      border-radius: 4px;
+      max-width: 480px;
+      width: 90%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+  </style>
 </head>
 <body>
-  <!-- Header Navbar -->
-  <header class="top-header">
+  <header>
     <div class="brand-group">
-      <span class="brand-badge">PROTOCOL 05</span>
-      <span class="brand-title">NEURAL SIEVE // 60S FORENSIC TRIAGE</span>
+      <span class="badge">GAME 05</span>
+      <span class="brand-title">60S SPEEDRUN // GUESS THE CHARACTER</span>
     </div>
-    <div class="header-actions">
-      <a href="../index.html" class="btn-ctrl" style="text-decoration: none;">EXIT TO ARCADE</a>
-    </div>
+    <a href="../index.html" class="nav-btn">EXIT TO ARCADE</a>
   </header>
 
-  <main class="app-container">
-    <!-- Welcome Pre-Flight Card -->
-    <section id="welcome-card" class="welcome-card">
-      <h1 class="welcome-h1">NEURAL SIEVE: 60S PROTOCOL</h1>
-      <p class="welcome-desc">
-        An unknown entity has bypassed outer perimeter firewall filters and initiated facility penetration.
-        You have exactly 60.00 seconds to test forensic ontological & biometric trait bitmasks, prune the
-        candidate database down to a single singularity node, and execute the containment override before total
-        facility breach.
-      </p>
+  <main>
+    <!-- 60s Clock Bar -->
+    <div class="timer-strip">
+      <div>
+        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.5px;">GLOBAL HARD COUNTDOWN</div>
+        <div id="clock-display" class="timer-val">60.00s</div>
+      </div>
+      <div class="pool-counter">
+        CANDIDATES REMAINING: <strong id="pool-display">45</strong>
+      </div>
+    </div>
 
-      <div class="rules-grid">
-        <div class="rule-box">
-          <h3>60-SECOND HARD CLOCK</h3>
-          <p>Global countdown running continuously in real time. Inconsistent trait queries incur a -3.0s penalty stall.</p>
-        </div>
-        <div class="rule-box">
-          <h3>BITMASK FORENSICS</h3>
-          <p>Query binary attributes (YES / NO). Each verified trait triggers bitwise candidate elimination across 45+ target profiles.</p>
-        </div>
-        <div class="rule-box">
-          <h3>FACILITY DEFENSES</h3>
-          <p>Prune pool below 25 to lock bulkheads (+5s bonus). Prune below 10 to arm sentry grid. Isolate 1 entity to unlock containment override.</p>
+    <!-- Arena Grid -->
+    <div class="arena-grid">
+      <!-- Question Switches -->
+      <div class="query-card">
+        <div class="panel-head">RAPID 20-QUESTIONS // INSTANT YES/NO TRIAGE</div>
+        <div class="questions-list" id="questions-list">
+          <!-- 8 questions dynamically populated -->
         </div>
       </div>
 
-      <button id="btn-start-protocol" class="btn-primary-action" style="margin-top: 16px;">
-        INITIALIZE 60S TRIAGE PROTOCOL
-      </button>
-    </section>
+      <!-- Guess Column -->
+      <div class="guess-col">
+        <div class="guess-card">
+          <div class="panel-head">LOCK IN FINAL GUESS</div>
+          <input type="text" id="char-guess-input" class="guess-input" placeholder="Type character name..." autocomplete="off">
+          <button class="btn-guess" onclick="submitFinalGuess()">CONFIRM GUESS</button>
+          <div id="sugg-container" class="sugg-box"></div>
+        </div>
 
-    <!-- Protocol Arena Layout -->
-    <section id="protocol-arena" class="protocol-arena" style="display: none;">
-      <!-- Left Column: Query Switches -->
-      <div class="sieve-panel">
-        <div class="panel-head">
-          <span class="panel-title">QUERY DECK // TRAIT SIFTING</span>
-          <div class="timer-box">
-            <div class="timer-bar-track">
-              <div id="timer-bar" class="timer-bar-fill"></div>
-            </div>
-            <div id="timer-display" class="timer-val">60.00s</div>
+        <div class="log-card">
+          <div class="panel-head">QUERY FEED & CANDIDATE PRUNING</div>
+          <div class="log-feed" id="log-feed">
+            <div style="color: var(--text-muted);">// Clock active. Fire questions or submit a character guess!</div>
           </div>
         </div>
-        <div id="query-switches-container" class="query-list"></div>
       </div>
-
-      <!-- Right Column: Candidates & Telemetry -->
-      <div class="facility-panel">
-        <div class="candidates-container">
-          <div class="panel-head">
-            <span class="panel-title">CANDIDATE SIGNATURES</span>
-            <span id="candidates-count-badge" class="brand-badge" style="background:#182030; color:#3b82f6;">45 ACTIVE</span>
-          </div>
-          <div id="candidates-list" class="candidates-body"></div>
-        </div>
-
-        <div class="defense-status-bar">
-          <div id="status-bulkhead" class="status-tag">BULKHEADS: OPEN</div>
-          <div id="status-turret" class="status-tag">TURRETS: STANDBY</div>
-        </div>
-
-        <div class="terminal-card">
-          <div class="terminal-title">TERMINAL TELEMETRY</div>
-          <div id="terminal-log-box" class="terminal-box"></div>
-        </div>
-
-        <button id="btn-execute-override" class="btn-primary-action" disabled>
-          CONTAINMENT OVERRIDE: PRUNING REQUIRED
-        </button>
-      </div>
-    </section>
+    </div>
   </main>
 
-  <!-- Debrief Modal -->
-  <div id="debrief-modal" class="modal-debrief" style="display: none;">
-    <div class="debrief-box">
-      <div id="debrief-title" class="debrief-title">PROTOCOL RESULT</div>
-      <p id="debrief-reason" style="font-size: 12px; color: #a1a1aa; margin-bottom: 16px;"></p>
-
-      <div class="debrief-stats-grid">
-        <div class="stat-cell">
-          <span>TARGET ENTITY</span>
-          <strong id="stat-target">---</strong>
-        </div>
-        <div class="stat-cell">
-          <span>TIME EXPENDED</span>
-          <strong id="stat-time">---</strong>
-        </div>
-        <div class="stat-cell">
-          <span>QUERIES TESTED</span>
-          <strong id="stat-queries">---</strong>
-        </div>
-        <div class="stat-cell">
-          <span>FORENSIC ACCURACY</span>
-          <strong id="stat-accuracy">---</strong>
-        </div>
-      </div>
-
-      <button class="btn-primary-action" onclick="window.sieve.startNewProtocol()">
-        RE-INITIALIZE PROTOCOL
-      </button>
-      <a href="../index.html" class="btn-ctrl" style="display: inline-block; margin-top: 12px; text-decoration: none;">
-        RETURN TO ARCADE
-      </a>
+  <!-- Modal -->
+  <div id="end-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-box">
+      <div id="end-title" style="font-family: var(--font-mono); font-size: 18px; font-weight: 700;"></div>
+      <div id="end-desc" style="font-size: 13px; color: var(--text-muted); line-height: 1.5;"></div>
+      <button class="btn-guess" onclick="startNewGame()">PLAY ANOTHER SPEEDRUN</button>
     </div>
   </div>
 
-  <script src="src/audio.js"></script>
-  <script src="src/game.js"></script>
+  <script>
+    // Web Audio Synthesizer
+    class SoundEngine {
+      constructor() { this.ctx = null; }
+      init() {
+        if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+      }
+      playTick() {
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.frequency.setValueAtTime(600, now);
+        gain.gain.setValueAtTime(0.04, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.05);
+      }
+      playCorrect() {
+        this.init();
+        [523, 659, 783, 1046].forEach((f, idx) => {
+          const now = this.ctx.currentTime + (idx * 0.08);
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(f, now);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.21);
+        });
+      }
+      playBuzzer() {
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(110, now);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.36);
+      }
+    }
+    const audio = new SoundEngine();
+
+    // Characters Roster (including iconic Zero Tempo traps)
+    const CHARACTERS = [
+      { name: 'Junpei Yoshino', series: 'Jujutsu Kaisen', powers: true, male: true, deceased: true, oldGen: false, student: false, protagonist: false, big3: false, combat: true, note: 'Classic Zero Tempo Trap: Neither student nor teacher (ordinary civilian outsider transformed by Mahito).' },
+      { name: 'George Joestar I', series: 'JoJo\'s Bizarre Adventure (Part 1)', powers: false, male: true, deceased: true, oldGen: true, student: false, protagonist: false, big3: false, combat: false, note: 'Classic Zero Tempo Trap: Victorian nobleman, zero supernatural powers, deceased in part 1.' },
+      { name: 'Toji Fushiguro', series: 'Jujutsu Kaisen', powers: false, male: true, deceased: true, oldGen: false, student: false, protagonist: false, big3: false, combat: true, note: 'Sorcerer Killer with zero cursed energy (Heavenly Restriction).' },
+      { name: 'Shino Aburame', series: 'Naruto', powers: true, male: true, deceased: false, oldGen: true, student: true, protagonist: false, big3: true, combat: true, note: 'Student in original Naruto, Academy Teacher in Boruto.' },
+      { name: 'Dracule Mihawk', series: 'One Piece', powers: false, male: true, deceased: false, oldGen: true, student: false, protagonist: false, big3: true, combat: true, note: 'World\'s Strongest Swordsman with pure human skill and Haki, no devil fruit.' },
+      { name: 'Levi Ackerman', series: 'Attack on Titan', powers: false, male: true, deceased: false, oldGen: false, student: false, protagonist: false, big3: false, combat: true, note: 'Humanity\'s Strongest Soldier, pure physical prowess.' },
+      { name: 'Gojo Satoru', series: 'Jujutsu Kaisen', powers: true, male: true, deceased: true, oldGen: false, student: true, protagonist: false, big3: false, combat: true, note: 'Special Grade sorcerer and Jujutsu High teacher.' },
+      { name: 'Ryomen Sukuna', series: 'Jujutsu Kaisen', powers: true, male: true, deceased: true, oldGen: true, student: false, protagonist: false, big3: false, combat: true, note: 'King of Curses reincarnated from Heian era.' },
+      { name: 'Makima', series: 'Chainsaw Man', powers: true, male: false, deceased: true, oldGen: false, student: false, protagonist: false, big3: false, combat: true, note: 'The Control Devil.' },
+      { name: 'Loid Forger', series: 'Spy x Family', powers: false, male: true, deceased: false, oldGen: false, student: false, protagonist: true, big3: false, combat: true, note: 'Master spy Twilight; pure human combat intellect.' },
+      { name: 'Saitama', series: 'One Punch Man', powers: true, male: true, deceased: false, oldGen: false, student: false, protagonist: true, big3: false, combat: true, note: 'Caped Baldy; limitless human strength.' },
+      { name: 'Naruto Uzumaki', series: 'Naruto', powers: true, male: true, deceased: false, oldGen: true, student: true, protagonist: true, big3: true, combat: true, note: 'Seventh Hokage.' },
+      { name: 'Monkey D. Luffy', series: 'One Piece', powers: true, male: true, deceased: false, oldGen: true, student: false, protagonist: true, big3: true, combat: true, note: 'Captain of the Straw Hat Pirates.' },
+      { name: 'Light Yagami', series: 'Death Note', powers: true, male: true, deceased: true, oldGen: true, student: true, protagonist: true, big3: false, combat: false, note: 'Kira; High school genius turned god of new world.' }
+    ];
+
+    const QUESTIONS = [
+      { id: 'powers', label: 'Wields Supernatural / Cursed Powers?' },
+      { id: 'male', label: 'Gender: Identified as Male?' },
+      { id: 'deceased', label: 'Status: Canonically Deceased / Terminated?' },
+      { id: 'oldGen', label: 'Era: Old-Gen Debut (Pre-2005)?' },
+      { id: 'student', label: 'Affiliation: Student or Teacher at an Academy?' },
+      { id: 'protagonist', label: 'Role: Central Series Protagonist?' },
+      { id: 'big3', label: 'Franchise: From the Big 3 (Naruto / Bleach / One Piece)?' },
+      { id: 'combat', label: 'Combat: Front-Line Martial Fighter or Swordsman?' }
+    ];
+
+    let target = null;
+    let candidatesPool = [];
+    let timeLeft = 60.0;
+    let timerRunning = false;
+    let askedQuestions = {};
+    let lastTime = performance.now();
+
+    function startNewGame() {
+      document.getElementById('end-modal').style.display = 'none';
+      document.getElementById('log-feed').innerHTML = '';
+      document.getElementById('char-guess-input').value = '';
+
+      target = CHARACTERS[Math.floor(Math.random() * CHARACTERS.length)];
+      candidatesPool = [...CHARACTERS];
+      timeLeft = 60.0;
+      timerRunning = true;
+      askedQuestions = {};
+
+      document.getElementById('pool-display').innerText = candidatesPool.length;
+      document.getElementById('clock-display').innerText = '60.00s';
+      document.getElementById('clock-display').style.color = 'var(--accent-green)';
+
+      renderQuestions();
+      lastTime = performance.now();
+      requestAnimationFrame(gameLoop);
+    }
+
+    function gameLoop(now) {
+      if (!timerRunning) return;
+      const dt = (now - lastTime) / 1000;
+      lastTime = now;
+
+      timeLeft -= dt;
+      if (timeLeft <= 0) {
+        timeLeft = 0;
+        timerRunning = false;
+        endGame(false, `Time expired! The secret character was ${target.name} (${target.series}).`);
+        return;
+      }
+
+      const disp = document.getElementById('clock-display');
+      disp.innerText = `${timeLeft.toFixed(2)}s`;
+      if (timeLeft < 15) disp.style.color = 'var(--accent-red)';
+      else if (timeLeft < 30) disp.style.color = 'var(--accent-amber)';
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    function renderQuestions() {
+      const container = document.getElementById('questions-list');
+      container.innerHTML = '';
+
+      QUESTIONS.forEach(q => {
+        const isAsked = askedQuestions[q.id] !== undefined;
+        const ans = askedQuestions[q.id];
+
+        const btn = document.createElement('button');
+        btn.className = 'q-btn';
+        btn.disabled = isAsked;
+        btn.innerHTML = `
+          <span>${q.label}</span>
+          ${isAsked ? `<span class="ans-tag ${ans ? 'yes' : 'no'}">${ans ? 'YES' : 'NO'}</span>` : '<span style="color: #666; font-size: 11px;">[ASK]</span>'}
+        `;
+        btn.onclick = () => askQuestion(q.id, q.label);
+        container.appendChild(btn);
+      });
+    }
+
+    function askQuestion(qId, label) {
+      if (!timerRunning || askedQuestions[qId] !== undefined) return;
+      audio.playTick();
+
+      const answer = !!target[qId];
+      askedQuestions[qId] = answer;
+
+      // Filter candidates
+      const prevCount = candidatesPool.length;
+      candidatesPool = candidatesPool.filter(c => !!c[qId] === answer);
+      const pruned = prevCount - candidatesPool.length;
+
+      document.getElementById('pool-display').innerText = candidatesPool.length;
+
+      const log = document.getElementById('log-feed');
+      const item = document.createElement('div');
+      item.innerHTML = `
+        <span style="color: ${answer ? 'var(--accent-green)' : 'var(--accent-red)'}; font-weight: 700;">[${answer ? 'YES' : 'NO'}]</span>
+        <span style="color: #ddd;">${label}</span>
+        <span style="color: #666; font-size: 10px;">(-${pruned} candidates)</span>
+      `;
+      log.prepend(item);
+
+      renderQuestions();
+    }
+
+    function submitFinalGuess(overrideName) {
+      if (!timerRunning) return;
+      const input = document.getElementById('char-guess-input');
+      const val = (overrideName || input.value).trim().toLowerCase();
+      if (!val) return;
+
+      document.getElementById('sugg-container').style.display = 'none';
+
+      if (val === target.name.toLowerCase()) {
+        timerRunning = false;
+        audio.playCorrect();
+        endGame(true, `Speedrun Success! You identified ${target.name} (${target.series}) with ${timeLeft.toFixed(2)}s left!`);
+      } else {
+        audio.playBuzzer();
+        // 5s time penalty for wrong final guess
+        timeLeft = Math.max(0, timeLeft - 5.0);
+        const log = document.getElementById('log-feed');
+        const item = document.createElement('div');
+        item.style.color = 'var(--accent-red)';
+        item.innerText = `[ERROR: WRONG GUESS] "${val}" is incorrect! -5.0s penalty applied.`;
+        log.prepend(item);
+      }
+    }
+
+    function endGame(isWin, msg) {
+      audio.init();
+      const modal = document.getElementById('end-modal');
+      const title = document.getElementById('end-title');
+      const desc = document.getElementById('end-desc');
+
+      title.innerText = isWin ? 'SPEEDRUN VICTORY' : 'TIME EXPIRED';
+      title.style.color = isWin ? 'var(--accent-green)' : 'var(--accent-red)';
+      desc.innerHTML = `
+        <div>${msg}</div>
+        ${target.note ? `<div style="font-size: 11px; color: var(--accent-amber); margin-top: 8px;">// Trap Note: ${target.note}</div>` : ''}
+      `;
+      modal.style.display = 'flex';
+      if (!isWin) audio.playBuzzer();
+    }
+
+    // Autocomplete
+    const inp = document.getElementById('char-guess-input');
+    const suggBox = document.getElementById('sugg-container');
+
+    inp.addEventListener('input', () => {
+      const q = inp.value.trim().toLowerCase();
+      if (!q) { suggBox.style.display = 'none'; return; }
+
+      const matches = CHARACTERS.filter(c => c.name.toLowerCase().includes(q));
+      if (matches.length === 0) { suggBox.style.display = 'none'; return; }
+
+      suggBox.innerHTML = '';
+      matches.slice(0, 5).forEach(m => {
+        const d = document.createElement('div');
+        d.className = 'sugg-item';
+        d.innerText = `${m.name} (${m.series})`;
+        d.onclick = () => submitFinalGuess(m.name);
+        suggBox.appendChild(d);
+      });
+      suggBox.style.display = 'block';
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      startNewGame();
+    });
+  </script>
 </body>
 </html>

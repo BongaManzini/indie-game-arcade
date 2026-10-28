@@ -17,13 +17,13 @@ Every graphic is drawn to an HTML5 Canvas, every sound effect (gunshots, sonar p
 
 ## 2. Playable Game Roster
 
-| Game | Folder | Genre | Core Mechanics & Innovation |
+| Game | Folder | Genre | Core Mechanics |
 | :--- | :--- | :--- | :--- |
-| **Connect5: Cipher Breach** | [`connect5/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/connect5/) | Tactical EW & Mech Grid Combat | Frequency SIGINT demodulation, harmonic bypass patchbay routing, 8x8 deterministic tactical grid combat, and boss telegraph displacement. |
-| **Impostor: The Blightstead** | [`impostor/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/impostor/) | Gothic Agronomic Extraction | Closed-loop bio-industrial soil chemistry, living ammunition cultivation (Phosphor Flares, Kinetic Slugs, Suture Inhalers), raymarched 2D field-of-view flashlight beam, and extraction tether defense. |
-| **Scale: Resonance Ping** | [`scale/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/scale/) | Hadal Trench Acoustic Combat | 11,000m bathyscaphe operations, hydrophone frequency modulation (ELF to VLF), LSTR-100 reactor power distribution, thermal cavitation avoidance, and deep-sea benthic aggro. |
-| **Crucible: Zone 44 & Grand Cross** | [`crucible/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/crucible/) | Normalized Asymmetric Auto-Brawler | The Chunin Exams Zone 44 Forest of Death scroll extraction, 2.5x poise canopy ambush, and $15 Budget-Draft across 4 sockets (Technique, Hands, Speed, Teammate) with normalized physics. |
-| **Neural Sieve: 60s Protocol** | [`sieve/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/sieve/) | 60s Forensic Bitmask Triage | Rapid binary trait elimination across 45+ target profiles, real-time 60s hard countdown, facility bulkhead seals (+5s bonus), sentry grid defense, and containment override. |
+| **Connect 5!** | [`connect5/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/connect5/) | Contextual Numeric Decryption | Given an anime character and 5 raw stats/numbers (e.g. 1st, 5th, 705.2m), deduce the canonical fact behind each before accumulating 3 strikes. |
+| **Anime Imposter** | [`impostor/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/impostor/) | Social Deduction & Word Cues | Everyone knows the secret anime character except the Imposter. Drop single-word clues, cross-examine the table, vote, and attempt last-second character steal guesses. |
+| **Scale Versus** | [`scale/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/scale/) | 1–100 Hot & Cold Proximity | Triangulate a secret character by submitting character pings. The game provides a scalar 1 to 100 proximity score based on universe, squad, powers, and traits. |
+| **Crucible: $15 Draft** | [`crucible/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/crucible/) | $15 Budget Loadout & Battle Simulator | Draft a 4-socket loadout (Technique, Hands, Speed, Ally) staying under the $15 limit, then simulate match outcomes in Zone 44 Forest of Death or Culling Games. |
+| **60s Speedrun** | [`sieve/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/sieve/) | 60s Rapid 20-Questions | Rapid binary triage against a live 60-second countdown clock to isolate the secret character and dodge classic anime trap profiles. |
 
 ---
 
