@@ -358,6 +358,12 @@
       <button class="pill-btn" id="cat-music" onclick="switchCategory('music')">Music & Hip-Hop</button>
     </div>
 
+    <!-- Franchise / Show Selector Bar -->
+    <div class="selector-bar" id="show-bar">
+      <span class="selector-label">FRANCHISE / SHOW:</span>
+      <div id="show-buttons-container" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+    </div>
+
     <!-- 60s Clock Bar -->
     <div class="timer-strip">
       <div>
@@ -463,6 +469,7 @@
 
     // App State
     let currentCategory = 'anime';
+    let currentShow = 'all';
     let target = null;
     let candidatesPool = [];
     let timeLeft = 60.0;
@@ -470,29 +477,54 @@
     let askedQuestions = {};
     let lastTime = performance.now();
 
+    // Franchise / Show Selector
+    function renderShowButtons() {
+      const container = document.getElementById('show-buttons-container');
+      if (!container || !window.getShowsForCategory) return;
+      const shows = window.getShowsForCategory(currentCategory);
+      container.innerHTML = '';
+      shows.forEach(s => {
+        const btn = document.createElement('button');
+        btn.className = `pill-btn ${currentShow === s.id ? 'active' : ''}`;
+        btn.innerText = s.name;
+        btn.onclick = () => switchShow(s.id);
+        container.appendChild(btn);
+      });
+    }
+
+    function switchShow(showId) {
+      currentShow = showId;
+      renderShowButtons();
+      startNewGame();
+    }
+
     function getCategoryData() {
-      if (window.SIEVE_DATA && window.SIEVE_DATA[currentCategory]) {
-        return window.SIEVE_DATA[currentCategory];
+      const base = (window.SIEVE_DATA && window.SIEVE_DATA[currentCategory]) ? window.SIEVE_DATA[currentCategory] : null;
+      const questions = base ? base.questions : [];
+      let characters = [];
+      if (window.getCharacters) {
+        characters = window.getCharacters(currentCategory, currentShow).map(c => ({
+          id: c.id,
+          name: c.name,
+          series: c.series,
+          subGroup: c.subGroup,
+          ...c.sieve
+        }));
+      } else if (base) {
+        characters = base.characters;
       }
-      return {
-        characters: [
-          { name: 'Naruto Uzumaki', series: 'Naruto', powers: true, male: true },
-          { name: 'Monkey D. Luffy', series: 'One Piece', powers: true, male: true }
-        ],
-        questions: [
-          { id: 'powers', label: 'Wields Supernatural Powers?' },
-          { id: 'male', label: 'Identified as Male?' }
-        ]
-      };
+      return { characters, questions };
     }
 
     function switchCategory(cat) {
       currentCategory = cat;
+      currentShow = 'all';
       document.querySelectorAll('.selector-bar .pill-btn').forEach(btn => {
         if (btn.id.startsWith('cat-')) btn.classList.remove('active');
       });
       const activeBtn = document.getElementById(`cat-${cat}`);
       if (activeBtn) activeBtn.classList.add('active');
+      renderShowButtons();
       startNewGame();
     }
 
@@ -644,6 +676,7 @@
     });
 
     window.addEventListener('DOMContentLoaded', () => {
+      renderShowButtons();
       startNewGame();
     });
   </script>

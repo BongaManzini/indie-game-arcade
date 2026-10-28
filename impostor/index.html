@@ -405,6 +405,12 @@
       <button class="pill-btn" id="cat-music" onclick="switchCategory('music')">Music & Hip-Hop</button>
     </div>
 
+    <!-- Franchise / Show Selector Bar -->
+    <div class="selector-bar" id="show-bar">
+      <span class="selector-label">FRANCHISE / SHOW:</span>
+      <div id="show-buttons-container" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+    </div>
+
     <!-- Mode Switcher -->
     <div class="selector-bar">
       <span class="selector-label">MODE:</span>
@@ -581,6 +587,7 @@
 
     // App State
     let currentCategory = 'anime';
+    let currentShow = 'all';
     let currentMode = 'solo'; // 'solo' | 'pass' | 'online'
     let targetChar = null;
     let imposterIndex = 1; // 1 to 4
@@ -594,14 +601,37 @@
     let passClues = {};
     let passImposter = 1;
 
+    // Franchise / Show Selector
+    function renderShowButtons() {
+      const container = document.getElementById('show-buttons-container');
+      if (!container || !window.getShowsForCategory) return;
+      const shows = window.getShowsForCategory(currentCategory);
+      container.innerHTML = '';
+      shows.forEach(s => {
+        const btn = document.createElement('button');
+        btn.className = `pill-btn ${currentShow === s.id ? 'active' : ''}`;
+        btn.innerText = s.name;
+        btn.onclick = () => switchShow(s.id);
+        container.appendChild(btn);
+      });
+    }
+
+    function switchShow(showId) {
+      currentShow = showId;
+      renderShowButtons();
+      initNewRound();
+    }
+
     // Category Switching
     function switchCategory(cat) {
       currentCategory = cat;
+      currentShow = 'all';
       document.querySelectorAll('.selector-bar .pill-btn').forEach(btn => {
         if (btn.id.startsWith('cat-')) btn.classList.remove('active');
       });
       const activeBtn = document.getElementById(`cat-${cat}`);
       if (activeBtn) activeBtn.classList.add('active');
+      renderShowButtons();
       initNewRound();
     }
 
@@ -709,6 +739,9 @@
     }
 
     function getCategoryRoster() {
+      if (window.getCharacters) {
+        return window.getCharacters(currentCategory, currentShow);
+      }
       if (window.IMPOSTER_DATA && window.IMPOSTER_DATA[currentCategory]) {
         return window.IMPOSTER_DATA[currentCategory];
       }
@@ -976,6 +1009,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      renderShowButtons();
       initNewRound();
     });
   </script>

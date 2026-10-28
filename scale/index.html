@@ -324,6 +324,12 @@
       <button class="pill-btn" id="cat-music" onclick="switchCategory('music')">Music & Hip-Hop</button>
     </div>
 
+    <!-- Franchise / Show Selector Bar -->
+    <div class="selector-bar" id="show-bar">
+      <span class="selector-label">FRANCHISE / SHOW:</span>
+      <div id="show-buttons-container" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+    </div>
+
     <!-- Target Meter Card -->
     <div class="meter-card">
       <div class="meter-head">
@@ -410,11 +416,42 @@
 
     // App State
     let currentCategory = 'anime';
+    let currentShow = 'all';
     let targetEntity = null;
     let highestScore = 0;
     let turnCount = 0;
 
+    // Franchise / Show Selector
+    function renderShowButtons() {
+      const container = document.getElementById('show-buttons-container');
+      if (!container || !window.getShowsForCategory) return;
+      const shows = window.getShowsForCategory(currentCategory);
+      container.innerHTML = '';
+      shows.forEach(s => {
+        const btn = document.createElement('button');
+        btn.className = `pill-btn ${currentShow === s.id ? 'active' : ''}`;
+        btn.innerText = s.name;
+        btn.onclick = () => switchShow(s.id);
+        container.appendChild(btn);
+      });
+    }
+
+    function switchShow(showId) {
+      currentShow = showId;
+      renderShowButtons();
+      initGame();
+    }
+
     function getCategoryDatabase() {
+      if (window.getCharacters) {
+        return window.getCharacters(currentCategory, currentShow).map(c => ({
+          id: c.id,
+          name: c.name,
+          domain: c.series,
+          group: c.subGroup,
+          traits: c.traits
+        }));
+      }
       if (window.SCALE_DATA && window.SCALE_DATA[currentCategory]) {
         return window.SCALE_DATA[currentCategory];
       }
@@ -427,11 +464,13 @@
 
     function switchCategory(cat) {
       currentCategory = cat;
+      currentShow = 'all';
       document.querySelectorAll('.selector-bar .pill-btn').forEach(btn => {
         if (btn.id.startsWith('cat-')) btn.classList.remove('active');
       });
       const activeBtn = document.getElementById(`cat-${cat}`);
       if (activeBtn) activeBtn.classList.add('active');
+      renderShowButtons();
       initGame();
     }
 
@@ -444,7 +483,10 @@
 
       const db = getCategoryDatabase();
       targetEntity = db[Math.floor(Math.random() * db.length)];
-      logFeed('SYSTEM', `Secret target locked for ${currentCategory.toUpperCase()}. Catalog active (${db.length} icons). Ping your first probe!`, 0);
+      const filterLabel = (currentShow === 'all')
+        ? currentCategory.toUpperCase()
+        : (window.SHOWS && window.SHOWS[currentShow] ? window.SHOWS[currentShow].name : currentShow);
+      logFeed('SYSTEM', `Secret target locked for [${filterLabel}]. Catalog active (${db.length} icons). Ping your first probe!`, 0);
     }
 
     function calculateProximity(guessEntity, target) {
@@ -599,6 +641,7 @@
     });
 
     window.addEventListener('DOMContentLoaded', () => {
+      renderShowButtons();
       initGame();
     });
   </script>
