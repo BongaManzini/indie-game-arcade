@@ -405,22 +405,34 @@
     }
     const audio = new SoundEngine();
 
-    // Characters Roster (including iconic Zero Tempo traps)
+    // Universally Popular Anime Characters Roster
     const CHARACTERS = [
-      { name: 'Junpei Yoshino', series: 'Jujutsu Kaisen', powers: true, male: true, deceased: true, oldGen: false, student: false, protagonist: false, big3: false, combat: true, note: 'Classic Zero Tempo Trap: Neither student nor teacher (ordinary civilian outsider transformed by Mahito).' },
-      { name: 'George Joestar I', series: 'JoJo\'s Bizarre Adventure (Part 1)', powers: false, male: true, deceased: true, oldGen: true, student: false, protagonist: false, big3: false, combat: false, note: 'Classic Zero Tempo Trap: Victorian nobleman, zero supernatural powers, deceased in part 1.' },
-      { name: 'Toji Fushiguro', series: 'Jujutsu Kaisen', powers: false, male: true, deceased: true, oldGen: false, student: false, protagonist: false, big3: false, combat: true, note: 'Sorcerer Killer with zero cursed energy (Heavenly Restriction).' },
-      { name: 'Shino Aburame', series: 'Naruto', powers: true, male: true, deceased: false, oldGen: true, student: true, protagonist: false, big3: true, combat: true, note: 'Student in original Naruto, Academy Teacher in Boruto.' },
-      { name: 'Dracule Mihawk', series: 'One Piece', powers: false, male: true, deceased: false, oldGen: true, student: false, protagonist: false, big3: true, combat: true, note: 'World\'s Strongest Swordsman with pure human skill and Haki, no devil fruit.' },
-      { name: 'Levi Ackerman', series: 'Attack on Titan', powers: false, male: true, deceased: false, oldGen: false, student: false, protagonist: false, big3: false, combat: true, note: 'Humanity\'s Strongest Soldier, pure physical prowess.' },
-      { name: 'Gojo Satoru', series: 'Jujutsu Kaisen', powers: true, male: true, deceased: true, oldGen: false, student: true, protagonist: false, big3: false, combat: true, note: 'Special Grade sorcerer and Jujutsu High teacher.' },
-      { name: 'Ryomen Sukuna', series: 'Jujutsu Kaisen', powers: true, male: true, deceased: true, oldGen: true, student: false, protagonist: false, big3: false, combat: true, note: 'King of Curses reincarnated from Heian era.' },
-      { name: 'Makima', series: 'Chainsaw Man', powers: true, male: false, deceased: true, oldGen: false, student: false, protagonist: false, big3: false, combat: true, note: 'The Control Devil.' },
-      { name: 'Loid Forger', series: 'Spy x Family', powers: false, male: true, deceased: false, oldGen: false, student: false, protagonist: true, big3: false, combat: true, note: 'Master spy Twilight; pure human combat intellect.' },
-      { name: 'Saitama', series: 'One Punch Man', powers: true, male: true, deceased: false, oldGen: false, student: false, protagonist: true, big3: false, combat: true, note: 'Caped Baldy; limitless human strength.' },
-      { name: 'Naruto Uzumaki', series: 'Naruto', powers: true, male: true, deceased: false, oldGen: true, student: true, protagonist: true, big3: true, combat: true, note: 'Seventh Hokage.' },
-      { name: 'Monkey D. Luffy', series: 'One Piece', powers: true, male: true, deceased: false, oldGen: true, student: false, protagonist: true, big3: true, combat: true, note: 'Captain of the Straw Hat Pirates.' },
-      { name: 'Light Yagami', series: 'Death Note', powers: true, male: true, deceased: true, oldGen: true, student: true, protagonist: true, big3: false, combat: false, note: 'Kira; High school genius turned god of new world.' }
+      { name: 'Naruto Uzumaki', series: 'Naruto', powers: true, male: true, deceased: false, oldGen: true, student: true, protagonist: true, big3: true, combat: true },
+      { name: 'Sasuke Uchiha', series: 'Naruto', powers: true, male: true, deceased: false, oldGen: true, student: true, protagonist: false, big3: true, combat: true },
+      { name: 'Kakashi Hatake', series: 'Naruto', powers: true, male: true, deceased: false, oldGen: true, student: true, protagonist: false, big3: true, combat: true },
+      { name: 'Itachi Uchiha', series: 'Naruto', powers: true, male: true, deceased: true, oldGen: true, student: false, protagonist: false, big3: true, combat: true },
+      { name: 'Gojo Satoru', series: 'Jujutsu Kaisen', powers: true, male: true, deceased: true, oldGen: false, student: true, protagonist: false, big3: false, combat: true },
+      { name: 'Ryomen Sukuna', series: 'Jujutsu Kaisen', powers: true, male: true, deceased: true, oldGen: true, student: false, protagonist: false, big3: false, combat: true },
+      { name: 'Yuji Itadori', series: 'Jujutsu Kaisen', powers: true, male: true, deceased: false, oldGen: false, student: true, protagonist: true, big3: false, combat: true },
+      { name: 'Megumi Fushiguro', series: 'Jujutsu Kaisen', powers: true, male: true, deceased: false, oldGen: false, student: true, protagonist: false, big3: false, combat: true },
+      { name: 'Monkey D. Luffy', series: 'One Piece', powers: true, male: true, deceased: false, oldGen: true, student: false, protagonist: true, big3: true, combat: true },
+      { name: 'Roronoa Zoro', series: 'One Piece', powers: false, male: true, deceased: false, oldGen: true, student: false, protagonist: false, big3: true, combat: true },
+      { name: 'Sanji', series: 'One Piece', powers: false, male: true, deceased: false, oldGen: true, student: false, protagonist: false, big3: true, combat: true },
+      { name: 'Son Goku', series: 'Dragon Ball Z', powers: true, male: true, deceased: false, oldGen: true, student: false, protagonist: true, big3: false, combat: true },
+      { name: 'Vegeta', series: 'Dragon Ball Z', powers: true, male: true, deceased: false, oldGen: true, student: false, protagonist: false, big3: false, combat: true },
+      { name: 'Eren Yeager', series: 'Attack on Titan', powers: true, male: true, deceased: true, oldGen: false, student: true, protagonist: true, big3: false, combat: true },
+      { name: 'Levi Ackerman', series: 'Attack on Titan', powers: false, male: true, deceased: false, oldGen: false, student: false, protagonist: false, big3: false, combat: true },
+      { name: 'Tanjiro Kamado', series: 'Demon Slayer', powers: true, male: true, deceased: false, oldGen: false, student: false, protagonist: true, big3: false, combat: true },
+      { name: 'Nezuko Kamado', series: 'Demon Slayer', powers: true, male: false, deceased: false, oldGen: false, student: false, protagonist: false, big3: false, combat: true },
+      { name: 'Saitama', series: 'One Punch Man', powers: true, male: true, deceased: false, oldGen: false, student: false, protagonist: true, big3: false, combat: true },
+      { name: 'Light Yagami', series: 'Death Note', powers: true, male: true, deceased: true, oldGen: true, student: true, protagonist: true, big3: false, combat: false },
+      { name: 'L Lawliet', series: 'Death Note', powers: false, male: true, deceased: true, oldGen: true, student: false, protagonist: false, big3: false, combat: false },
+      { name: 'Killua Zoldyck', series: 'Hunter x Hunter', powers: true, male: true, deceased: false, oldGen: true, student: false, protagonist: false, big3: false, combat: true },
+      { name: 'All Might', series: 'My Hero Academia', powers: true, male: true, deceased: false, oldGen: false, student: true, protagonist: false, big3: false, combat: true },
+      { name: 'Izuku Midoriya', series: 'My Hero Academia', powers: true, male: true, deceased: false, oldGen: false, student: true, protagonist: true, big3: false, combat: true },
+      { name: 'Katsuki Bakugo', series: 'My Hero Academia', powers: true, male: true, deceased: false, oldGen: false, student: true, protagonist: false, big3: false, combat: true },
+      { name: 'Ichigo Kurosaki', series: 'Bleach', powers: true, male: true, deceased: false, oldGen: true, student: true, protagonist: true, big3: true, combat: true },
+      { name: 'Edward Elric', series: 'Fullmetal Alchemist', powers: true, male: true, deceased: false, oldGen: true, student: false, protagonist: true, big3: false, combat: true }
     ];
 
     const QUESTIONS = [

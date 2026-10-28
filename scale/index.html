@@ -355,38 +355,53 @@
     }
     const audio = new SoundEngine();
 
-    // Extensive Anime Characters Database with Semantic Traits
+    // Extensive Popular Anime Characters Database with Semantic Traits
     const DATABASE = [
-      // Naruto Cast
-      { id: 'shino', name: 'Shino Aburame', series: 'Naruto', team: 'Team 8', traits: ['Ninja', 'Insects', 'Quiet', 'Glasses', 'Konoha'] },
-      { id: 'kiba', name: 'Kiba Inuzuka', series: 'Naruto', team: 'Team 8', traits: ['Ninja', 'Dogs', 'Konoha', 'Genin'] },
-      { id: 'hinata', name: 'Hinata Hyuga', series: 'Naruto', team: 'Team 8', traits: ['Ninja', 'Byakugan', 'Gentle Fist', 'Konoha'] },
-      { id: 'kurenai', name: 'Kurenai Yuhi', series: 'Naruto', team: 'Team 8', traits: ['Ninja', 'Genjutsu', 'Sensei', 'Konoha'] },
-      { id: 'shoji', name: 'Choji Akimichi', series: 'Naruto', team: 'Team 10', traits: ['Ninja', 'Expansion', 'Food', 'Konoha'] },
-      { id: 'shikamaru', name: 'Shikamaru Nara', series: 'Naruto', team: 'Team 10', traits: ['Ninja', 'Shadow', 'Genius', 'Konoha'] },
-      { id: 'naruto', name: 'Naruto Uzumaki', series: 'Naruto', team: 'Team 7', traits: ['Ninja', 'Jinchuriki', 'Rasengan', 'Hokage'] },
-      { id: 'sasuke', name: 'Sasuke Uchiha', series: 'Naruto', team: 'Team 7', traits: ['Ninja', 'Sharingan', 'Chidori', 'Uchiha'] },
-      { id: 'kakashi', name: 'Kakashi Hatake', series: 'Naruto', team: 'Team 7', traits: ['Ninja', 'Sharingan', 'Sensei', 'Mask'] },
-      { id: 'minato', name: 'Minato Namikaze', series: 'Naruto', team: 'Hokage', traits: ['Ninja', 'Hiraishin', 'Hokage', 'Konoha'] },
-      { id: 'kurama', name: 'Nine-Tailed Fox (Kurama)', series: 'Naruto', team: 'Tailed Beast', traits: ['Beast', 'Chakra', 'Fox'] },
-      { id: 'itachi', name: 'Itachi Uchiha', series: 'Naruto', team: 'Akatsuki', traits: ['Ninja', 'Akatsuki', 'Sharingan', 'Genjutsu'] },
+      // Naruto Legends
+      { id: 'kakashi', name: 'Kakashi Hatake', series: 'Naruto', team: 'Team 7', traits: ['Ninja', 'Sharingan', 'Sensei', 'Mask', 'Lightning'] },
+      { id: 'naruto', name: 'Naruto Uzumaki', series: 'Naruto', team: 'Team 7', traits: ['Ninja', 'Jinchuriki', 'Rasengan', 'Hokage', 'Orange'] },
+      { id: 'sasuke', name: 'Sasuke Uchiha', series: 'Naruto', team: 'Team 7', traits: ['Ninja', 'Sharingan', 'Chidori', 'Uchiha', 'Rinnegan'] },
+      { id: 'itachi', name: 'Itachi Uchiha', series: 'Naruto', team: 'Akatsuki', traits: ['Ninja', 'Akatsuki', 'Sharingan', 'Genjutsu', 'Uchiha'] },
+      { id: 'minato', name: 'Minato Namikaze', series: 'Naruto', team: 'Hokage', traits: ['Ninja', 'Hiraishin', 'Hokage', 'Yellow Flash', 'Rasengan'] },
+      { id: 'madara', name: 'Madara Uchiha', series: 'Naruto', team: 'Uchiha', traits: ['Ninja', 'Sharingan', 'Susanoo', 'Uchiha', 'Legend'] },
+      { id: 'kurama', name: 'Nine-Tailed Fox (Kurama)', series: 'Naruto', team: 'Tailed Beast', traits: ['Beast', 'Chakra', 'Fox', 'Orange'] },
 
-      // Jujutsu Kaisen Cast
-      { id: 'gojo', name: 'Gojo Satoru', series: 'Jujutsu Kaisen', team: 'Jujutsu High', traits: ['Sorcerer', 'Limitless', 'Six Eyes', 'Teacher'] },
-      { id: 'sukuna', name: 'Ryomen Sukuna', series: 'Jujutsu Kaisen', team: 'Curses', traits: ['Curse', 'Cleave', 'Dismantle', 'King'] },
-      { id: 'yuji', name: 'Yuji Itadori', series: 'Jujutsu Kaisen', team: 'Jujutsu High', traits: ['Sorcerer', 'Divergent Fist', 'Student'] },
-      { id: 'megumi', name: 'Megumi Fushiguro', series: 'Jujutsu Kaisen', team: 'Jujutsu High', traits: ['Sorcerer', 'Ten Shadows', 'Student'] },
-      { id: 'toji', name: 'Toji Fushiguro', series: 'Jujutsu Kaisen', team: 'Zenin', traits: ['Assassin', 'Heavenly Restriction', 'Physical'] },
+      // Jujutsu Kaisen Legends
+      { id: 'gojo', name: 'Gojo Satoru', series: 'Jujutsu Kaisen', team: 'Jujutsu High', traits: ['Sorcerer', 'Limitless', 'Six Eyes', 'Teacher', 'Strongest'] },
+      { id: 'sukuna', name: 'Ryomen Sukuna', series: 'Jujutsu Kaisen', team: 'Curses', traits: ['Curse', 'Cleave', 'Dismantle', 'King', 'Four Arms'] },
+      { id: 'yuji', name: 'Yuji Itadori', series: 'Jujutsu Kaisen', team: 'Jujutsu High', traits: ['Sorcerer', 'Divergent Fist', 'Student', 'Vessel'] },
+      { id: 'megumi', name: 'Megumi Fushiguro', series: 'Jujutsu Kaisen', team: 'Jujutsu High', traits: ['Sorcerer', 'Ten Shadows', 'Student', 'Mahoraga'] },
+      { id: 'toji', name: 'Toji Fushiguro', series: 'Jujutsu Kaisen', team: 'Zenin', traits: ['Assassin', 'Heavenly Restriction', 'Physical', 'Spear'] },
+      { id: 'yuta', name: 'Yuta Okkotsu', series: 'Jujutsu Kaisen', team: 'Jujutsu High', traits: ['Sorcerer', 'Rika', 'Copy', 'Special Grade'] },
 
-      // One Piece Cast
-      { id: 'luffy', name: 'Monkey D. Luffy', series: 'One Piece', team: 'Straw Hats', traits: ['Pirate', 'Nika', 'Captain', 'Rubber'] },
-      { id: 'zoro', name: 'Roronoa Zoro', series: 'One Piece', team: 'Straw Hats', traits: ['Swordsman', 'Haki', 'Santoryu'] },
-      { id: 'sanji', name: 'Sanji', series: 'One Piece', team: 'Straw Hats', traits: ['Cook', 'Black Leg', 'Germa'] },
+      // One Piece Legends
+      { id: 'luffy', name: 'Monkey D. Luffy', series: 'One Piece', team: 'Straw Hats', traits: ['Pirate', 'Nika', 'Captain', 'Rubber', 'Yonko'] },
+      { id: 'zoro', name: 'Roronoa Zoro', series: 'One Piece', team: 'Straw Hats', traits: ['Swordsman', 'Haki', 'Santoryu', 'Green Hair'] },
+      { id: 'sanji', name: 'Sanji', series: 'One Piece', team: 'Straw Hats', traits: ['Cook', 'Black Leg', 'Germa', 'Blonde', 'Fire'] },
+      { id: 'shanks', name: 'Red-Haired Shanks', series: 'One Piece', team: 'Red Hair Pirates', traits: ['Pirate', 'Yonko', 'Conqueror Haki', 'Swordsman'] },
+      { id: 'ace', name: 'Portgas D. Ace', series: 'One Piece', team: 'Whitebeard Pirates', traits: ['Pirate', 'Fire Fist', 'Mera Mera', 'Commander'] },
 
-      // Attack on Titan Cast
-      { id: 'eren', name: 'Eren Yeager', series: 'Attack on Titan', team: 'Scouts', traits: ['Titan', 'Freedom', 'Rumbling'] },
-      { id: 'levi', name: 'Levi Ackerman', series: 'Attack on Titan', team: 'Scouts', traits: ['Soldier', 'Captain', 'Ackerman'] },
-      { id: 'mikasa', name: 'Mikasa Ackerman', series: 'Attack on Titan', team: 'Scouts', traits: ['Soldier', 'Ackerman', 'Scarf'] }
+      // Attack on Titan Legends
+      { id: 'levi', name: 'Levi Ackerman', series: 'Attack on Titan', team: 'Scouts', traits: ['Soldier', 'Captain', 'Ackerman', 'Humanity Strongest'] },
+      { id: 'eren', name: 'Eren Yeager', series: 'Attack on Titan', team: 'Scouts', traits: ['Titan', 'Freedom', 'Rumbling', 'Founding'] },
+      { id: 'mikasa', name: 'Mikasa Ackerman', series: 'Attack on Titan', team: 'Scouts', traits: ['Soldier', 'Ackerman', 'Scarf', 'Blades'] },
+
+      // Dragon Ball Z Legends
+      { id: 'goku', name: 'Son Goku', series: 'Dragon Ball Z', team: 'Z Fighters', traits: ['Saiyan', 'Kamehameha', 'Super Saiyan', 'Ultra Instinct'] },
+      { id: 'vegeta', name: 'Vegeta', series: 'Dragon Ball Z', team: 'Z Fighters', traits: ['Saiyan', 'Prince', 'Final Flash', 'Ultra Ego'] },
+
+      // Demon Slayer Legends
+      { id: 'tanjiro', name: 'Tanjiro Kamado', series: 'Demon Slayer', team: 'Demon Slayers', traits: ['Swordsman', 'Sun Breathing', 'Water Breathing', 'Earrings'] },
+      { id: 'nezuko', name: 'Nezuko Kamado', series: 'Demon Slayer', team: 'Kamado', traits: ['Demon', 'Blood Demon Art', 'Box', 'Pink Eyes'] },
+      { id: 'rengoku', name: 'Kyojuro Rengoku', series: 'Demon Slayer', team: 'Hashira', traits: ['Hashira', 'Flame Breathing', 'Set Your Heart Ablaze'] },
+
+      // One Punch Man Legends
+      { id: 'saitama', name: 'Saitama', series: 'One Punch Man', team: 'Heroes', traits: ['Hero', 'One Punch', 'Bald', 'Caped Baldy'] },
+      { id: 'genos', name: 'Genos', series: 'One Punch Man', team: 'Heroes', traits: ['Cyborg', 'Incinerate', 'Disciple', 'Demon Cyborg'] },
+
+      // Death Note Legends
+      { id: 'light', name: 'Light Yagami', series: 'Death Note', team: 'Kira', traits: ['Genius', 'Death Note', 'God of New World', 'Student'] },
+      { id: 'l', name: 'L Lawliet', series: 'Death Note', team: 'Investigators', traits: ['Genius', 'Detective', 'Sweets', 'Barefoot'] }
     ];
 
     let targetEntity = null;
@@ -400,9 +415,10 @@
       turnCount = 0;
       updateMeterHUD(0);
 
-      // Default target or random
-      targetEntity = DATABASE.find(c => c.id === 'shino') || DATABASE[0];
-      logFeed('SYSTEM', `Host has set the secret character. Database online (${DATABASE.length} entities). Ping your first guess!`, 0);
+      // Choose a popular target at random
+      const popularTargets = DATABASE.filter(c => ['kakashi', 'levi', 'zoro', 'gojo', 'itachi', 'goku', 'saitama', 'tanjiro', 'luffy'].includes(c.id));
+      targetEntity = popularTargets[Math.floor(Math.random() * popularTargets.length)] || DATABASE[0];
+      logFeed('SYSTEM', `Host has locked in a secret popular anime legend. Database active (${DATABASE.length} icons). Ping your first guess!`, 0);
     }
 
     function calculateProximity(guessEntity, target) {
