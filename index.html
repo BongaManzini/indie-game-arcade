@@ -10,19 +10,19 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-base: #080a0f;
-      --bg-surface: #0e121a;
-      --bg-card: #131824;
-      --border-subtle: #1c2438;
-      --border-focus: #2d3b5c;
-      --accent-green: #39ff74;
-      --accent-blue: #40c8ff;
-      --accent-amber: #ffea00;
-      --accent-red: #ff3344;
-      --text-primary: #f1f5f9;
-      --text-muted: #94a3b8;
+      --bg-base: #0a0a0a;
+      --bg-surface: #111111;
+      --bg-card: #141414;
+      --border-subtle: #262626;
+      --border-focus: #383838;
+      --accent-green: #10b981;
+      --accent-blue: #3b82f6;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --text-primary: #ededed;
+      --text-muted: #a1a1aa;
       --font-mono: 'JetBrains Mono', monospace;
-      --font-sans: 'Inter', sans-serif;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
     * {
@@ -42,16 +42,7 @@
       line-height: 1.5;
     }
 
-    /* Ambient Scanline overlay */
-    .crt-scanlines {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 50;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-      background-size: 100% 3px;
-      opacity: 0.35;
-    }
+    
 
     /* Header */
     .top-navbar {
@@ -64,7 +55,7 @@
       position: sticky;
       top: 0;
       z-index: 40;
-      backdrop-filter: blur(8px);
+      
     }
 
     .brand-group {
@@ -225,7 +216,7 @@
     .game-card {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      border-radius: 8px;
+      border-radius: 6px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -236,7 +227,7 @@
     .game-card:hover {
       border-color: var(--border-focus);
       transform: translateY(-2px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+      
     }
 
     .card-banner {
@@ -370,7 +361,7 @@
 
     .btn-play-primary:hover {
       filter: brightness(1.15);
-      box-shadow: 0 0 16px rgba(57, 255, 116, 0.35);
+      
     }
 
     .btn-open-direct {
@@ -445,7 +436,7 @@
       z-index: 100;
       display: none;
       flex-direction: column;
-      backdrop-filter: blur(8px);
+      
     }
 
     .arcade-modal-header {
@@ -524,7 +515,7 @@
   </style>
 </head>
 <body>
-  <div class="crt-scanlines"></div>
+  
 
   <!-- Navbar -->
   <header class="top-navbar">
@@ -580,7 +571,7 @@
     <div class="games-grid">
       <!-- Game 1: Cipher Breach -->
       <article class="game-card">
-        <div class="card-banner" style="background: linear-gradient(135deg, #091310 0%, #102418 100%);">
+        <div class="card-banner" style="background: #111111;">
           <div class="card-banner-grid"></div>
           <div class="banner-top">
             <span class="genre-badge" style="color: var(--accent-green); border-color: rgba(57,255,116,0.4); background: rgba(57,255,116,0.1);">
@@ -627,7 +618,7 @@
 
       <!-- Game 2: The Blightstead -->
       <article class="game-card">
-        <div class="card-banner" style="background: linear-gradient(135deg, #130a0d 0%, #241018 100%);">
+        <div class="card-banner" style="background: #111111;">
           <div class="card-banner-grid"></div>
           <div class="banner-top">
             <span class="genre-badge" style="color: var(--accent-red); border-color: rgba(255,51,68,0.4); background: rgba(255,51,68,0.1);">
@@ -674,7 +665,7 @@
 
       <!-- Game 3: Resonance Ping -->
       <article class="game-card">
-        <div class="card-banner" style="background: linear-gradient(135deg, #071520 0%, #0d283c 100%);">
+        <div class="card-banner" style="background: #111111;">
           <div class="card-banner-grid"></div>
           <div class="banner-top">
             <span class="genre-badge" style="color: var(--accent-blue); border-color: rgba(64,200,255,0.4); background: rgba(64,200,255,0.1);">
@@ -721,7 +712,7 @@
 
       <!-- Game 4: Grand Cross: Crucible -->
       <article class="game-card">
-        <div class="card-banner" style="background: linear-gradient(135deg, #161007 0%, #2d200e 100%);">
+        <div class="card-banner" style="background: #111111;">
           <div class="card-banner-grid"></div>
           <div class="banner-top">
             <span class="genre-badge" style="color: var(--accent-amber); border-color: rgba(255,234,0,0.4); background: rgba(255,234,0,0.1);">
