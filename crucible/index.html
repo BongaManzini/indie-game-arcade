@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crucible: $15 Anime Draft & Scenario Battle Simulator</title>
+  <title>Crucible: $15 Multi-Category Draft & Scenario Simulator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="../shared/categories.js"></script>
   <style>
     :root {
       --bg-base: #0a0a0a;
@@ -80,10 +81,51 @@
       max-width: 1000px;
       margin: 0 auto;
       width: 100%;
-      padding: 24px 16px;
+      padding: 20px 16px;
       display: flex;
       flex-direction: column;
       gap: 16px;
+    }
+
+    /* Category Switcher Bar */
+    .selector-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 8px 12px;
+      border-radius: 4px;
+      align-items: center;
+    }
+    .selector-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-right: 4px;
+    }
+    .pill-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .pill-btn:hover {
+      border-color: var(--border-focus);
+      color: var(--text-primary);
+    }
+    .pill-btn.active {
+      background: #1f1f1f;
+      border-color: var(--accent-amber);
+      color: var(--text-primary);
+      font-weight: 600;
     }
 
     /* Budget Header Bar */
@@ -95,6 +137,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
     }
     .budget-info { display: flex; flex-direction: column; gap: 4px; }
     .budget-title {
@@ -104,26 +148,34 @@
       color: var(--text-muted);
       letter-spacing: 0.5px;
     }
-    .budget-val {
+    .budget-counter {
       font-family: var(--font-mono);
       font-size: 24px;
       font-weight: 700;
       color: var(--accent-green);
     }
-    .scenario-selector {
+
+    /* Scenario Card */
+    .scenario-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 16px 20px;
+      border-radius: 4px;
       display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 8px;
     }
-    .scenario-select {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-primary);
-      padding: 8px 12px;
+    .scenario-head {
       font-family: var(--font-mono);
-      font-size: 12px;
-      border-radius: 2px;
-      outline: none;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-amber);
+      letter-spacing: 0.5px;
+    }
+    .scenario-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
     }
 
     /* Sockets Grid */
@@ -135,12 +187,11 @@
     @media (max-width: 768px) {
       .sockets-grid { grid-template-columns: 1fr; }
     }
-
     .socket-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      border-radius: 4px;
       padding: 16px;
+      border-radius: 4px;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -156,13 +207,14 @@
       font-family: var(--font-mono);
       font-size: 11px;
       font-weight: 700;
-      color: var(--accent-amber);
+      color: var(--text-primary);
       letter-spacing: 0.5px;
     }
     .socket-cost {
       font-family: var(--font-mono);
       font-size: 11px;
-      color: var(--text-muted);
+      color: var(--accent-blue);
+      font-weight: 600;
     }
 
     .skill-options-list {
@@ -179,24 +231,24 @@
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
-      font-family: var(--font-sans);
-      transition: all 0.15s ease;
-      color: var(--text-primary);
+      transition: all 0.15s;
+      text-align: left;
     }
     .skill-option-btn:hover {
       border-color: var(--border-focus);
       background: #181818;
     }
     .skill-option-btn.selected {
-      border-color: var(--accent-amber);
-      background: rgba(245, 158, 11, 0.08);
+      border-color: var(--accent-green);
+      background: rgba(16, 185, 129, 0.08);
     }
     .skill-name {
       font-size: 12px;
       font-weight: 600;
+      color: var(--text-primary);
     }
     .skill-desc {
-      font-size: 10px;
+      font-size: 11px;
       color: var(--text-muted);
       margin-top: 2px;
     }
@@ -206,48 +258,54 @@
       font-weight: 700;
       color: var(--accent-amber);
       margin-left: 12px;
+      white-space: nowrap;
     }
 
-    /* Simulation Execution Bar */
-    .sim-bar {
+    /* Simulation Control & Log */
+    .sim-panel {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
+      padding: 20px;
       border-radius: 4px;
-      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
-    .btn-sim {
-      background: var(--accent-green);
+    .btn-deploy {
+      background: var(--accent-amber);
       color: #000;
-      border: 1px solid var(--accent-green);
-      padding: 14px;
+      border: 1px solid var(--accent-amber);
       font-family: var(--font-mono);
       font-size: 13px;
       font-weight: 700;
+      padding: 14px 20px;
       border-radius: 2px;
       cursor: pointer;
-      transition: filter 0.15s;
+      transition: all 0.15s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    .btn-sim:hover:not(:disabled) { filter: brightness(1.15); }
-    .btn-sim:disabled {
+    .btn-deploy:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
       background: var(--bg-card);
       border-color: var(--border-subtle);
-      color: #555;
-      cursor: not-allowed;
+      color: var(--text-muted);
+    }
+    .btn-deploy:hover:not(:disabled) {
+      opacity: 0.9;
     }
 
-    /* Simulation Log Feed */
-    .battle-feed {
-      background: var(--bg-base);
+    .battle-log {
+      background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      padding: 12px 16px;
+      padding: 14px;
       border-radius: 2px;
-      max-height: 240px;
-      overflow-y: auto;
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 12px;
+      min-height: 120px;
+      max-height: 260px;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -261,40 +319,53 @@
   <header>
     <div class="brand-group">
       <span class="badge">GAME 04</span>
-      <span class="brand-title">CRUCIBLE // $15 DRAFT & SCENARIO BRAWLER</span>
+      <span class="brand-title">THE CRUCIBLE // $15 DRAFT & BATTLE SIMULATOR</span>
     </div>
     <a href="../index.html" class="nav-btn">EXIT TO ARCADE</a>
   </header>
 
   <main>
-    <!-- Budget Header Bar -->
+    <!-- Category Switcher -->
+    <div class="selector-bar">
+      <span class="selector-label">CATEGORY:</span>
+      <button class="pill-btn active" id="cat-anime" onclick="switchCategory('anime')">Anime & Manga</button>
+      <button class="pill-btn" id="cat-movies" onclick="switchCategory('movies')">Movies & Cinema</button>
+      <button class="pill-btn" id="cat-gaming" onclick="switchCategory('gaming')">Video Games</button>
+      <button class="pill-btn" id="cat-sports" onclick="switchCategory('sports')">Sports & Football</button>
+      <button class="pill-btn" id="cat-music" onclick="switchCategory('music')">Music & Hip-Hop</button>
+    </div>
+
+    <!-- Budget HUD -->
     <div class="budget-bar">
       <div class="budget-info">
-        <div class="budget-title">REMAINING DRAFT BUDGET (HARD $15 CAP)</div>
-        <div class="budget-val" id="budget-display">$15 / $15</div>
+        <span class="budget-title">TOTAL WAR CHEST REMAINING</span>
+        <span class="budget-counter" id="budget-display">$15 / $15</span>
       </div>
-      <div class="scenario-selector">
-        <span style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted);">BATTLEGROUND:</span>
-        <select id="scenario-choice" class="scenario-select" onchange="updateScenario()">
-          <option value="forest">Chunin Exams: Zone 44 (Forest of Death)</option>
-          <option value="culling">The Culling Games: Tokyo Colony 1</option>
-          <option value="tournament">Tournament of Power: Null Realm</option>
-        </select>
+      <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted);">
+        RULES: Exactly 4 sockets must be filled. Total cost cannot exceed $15.
       </div>
     </div>
 
-    <!-- 4 Sockets Grid -->
+    <!-- Scenario Card -->
+    <div class="scenario-card">
+      <div class="scenario-head">ACTIVE MISSION SCENARIO</div>
+      <div class="scenario-desc" id="scenario-desc">
+        Zone 44: Forest of Death — Survival against Orochimaru's Curse Mark Apostles.
+      </div>
+    </div>
+
+    <!-- Sockets Grid -->
     <div class="sockets-grid" id="sockets-container">
       <!-- 4 sockets dynamically rendered -->
     </div>
 
-    <!-- Battle Simulation Console -->
-    <div class="sim-bar">
-      <button id="btn-run-sim" class="btn-sim" onclick="runBattleSimulation()">
-        DEPLOY $15 SQUAD & SIMULATE BATTLE
+    <!-- Simulation Panel -->
+    <div class="sim-panel">
+      <button id="btn-run-sim" class="btn-deploy" onclick="runBattleSimulation()" disabled>
+        SELECT ALL 4 SOCKETS ($15 REMAINING)
       </button>
-      <div class="battle-feed" id="battle-feed">
-        <div class="log-line">// Draft 1 option from each socket ($1 to $5) staying within your $15 budget, then run the simulation.</div>
+      <div class="battle-log" id="battle-feed">
+        <div class="log-line">// Battle simulator initialized. Draft your loadout across all 4 sockets above to begin encounter simulation.</div>
       </div>
     </div>
   </main>
@@ -312,14 +383,13 @@
         const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
-        osc.frequency.setValueAtTime(400, now);
-        osc.frequency.exponentialRampToValueAtTime(600, now + 0.08);
+        osc.frequency.setValueAtTime(480, now);
         gain.gain.setValueAtTime(0.08, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start(now);
-        osc.stop(now + 0.1);
+        osc.stop(now + 0.09);
       }
       playClang() {
         this.init();
@@ -327,8 +397,8 @@
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'square';
-        osc.frequency.setValueAtTime(800, now);
-        osc.frequency.exponentialRampToValueAtTime(200, now + 0.15);
+        osc.frequency.setValueAtTime(240, now);
+        osc.frequency.exponentialRampToValueAtTime(80, now + 0.15);
         gain.gain.setValueAtTime(0.12, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
         osc.connect(gain);
@@ -339,12 +409,12 @@
       playWin() {
         this.init();
         [440, 554, 659, 880].forEach((f, idx) => {
-          const now = this.ctx.currentTime + (idx * 0.1);
+          const now = this.ctx.currentTime + (idx * 0.08);
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'triangle';
           osc.frequency.setValueAtTime(f, now);
-          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.setValueAtTime(0.12, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
@@ -355,54 +425,8 @@
     }
     const audio = new SoundEngine();
 
-    // Sockets Catalog with $1 to $5 Options
-    const SOCKETS = [
-      {
-        id: 'technique',
-        title: 'SOCKET 1: CORE TECHNIQUE',
-        options: [
-          { cost: 1, name: 'Paper Bomb Wire Detonation', desc: 'Cheap zoning; setup explosive tripwires across branches.' },
-          { cost: 2, name: 'Boogie Woogie (Clap Warp)', desc: 'Instant spatial swap with any cursed object or ally.' },
-          { cost: 3, name: 'Shadow Possession (Kagemane)', desc: 'Elastic shadow tether; paralyzes and mirrors damage.' },
-          { cost: 4, name: 'Kamui / Dimensional Intangibility', desc: 'Phase body through attacks with 0.8s invulnerability.' },
-          { cost: 5, name: 'Edo Tensei / Domain Expansion', desc: 'Summon undead titan vanguard or activate guaranteed-hit barrier.' }
-        ]
-      },
-      {
-        id: 'hands',
-        title: 'SOCKET 2: MARTIAL ARTS / HANDS',
-        options: [
-          { cost: 1, name: 'Street Boxing & Brawling', desc: 'Basic kinetic punches; reliable short-range knockback.' },
-          { cost: 2, name: 'Gentle Fist (Juken)', desc: 'Injects chakra into tenketsu; drains enemy poise and stamina.' },
-          { cost: 3, name: 'Dynamic Entry', desc: 'High-speed flying dropkick with +100% poise breakthrough.' },
-          { cost: 4, name: 'Flowing Water Rock Smashing Fist', desc: 'Deflects incoming melee strikes with mirrored counter-force.' },
-          { cost: 5, name: 'Eight Gates (Night Guy)', desc: 'Sacrificial blood aura; distorts space with supersonic kicks.' }
-        ]
-      },
-      {
-        id: 'speed',
-        title: 'SOCKET 3: SPEED & MOBILITY',
-        options: [
-          { cost: 1, name: 'Base Ninja Branch Sprint', desc: 'Standard horizontal ground sprint and branch hopping.' },
-          { cost: 2, name: 'Body Flicker (Shunshin)', desc: 'Rapid linear burst dash leaving residual afterimages.' },
-          { cost: 3, name: 'Flash Step (Shunpo)', desc: 'Instant elevated air jump across canopy tiers.' },
-          { cost: 4, name: 'Gear Second (Blood Pump)', desc: 'Accelerated reflex state; +50% evasion and attack speed.' },
-          { cost: 5, name: 'Flying Thunder God (Hiraishin)', desc: 'Instantaneous teleportation between marked formula seals.' }
-        ]
-      },
-      {
-        id: 'teammate',
-        title: 'SOCKET 4: TEAMMATE / ALLY',
-        options: [
-          { cost: 1, name: 'Zenitsu Agatsuma', desc: 'God-speed Thunderclap & Flash blitz support.' },
-          { cost: 2, name: 'Megumi Fushiguro', desc: 'Summons Divine Dog Totality and Nue electricity.' },
-          { cost: 3, name: 'Todoroki Shoto', desc: 'Massive Glacier freeze walls and fire zoning.' },
-          { cost: 4, name: 'Kakashi Hatake', desc: 'Sharingan tactical reads, Lightning Blade, and dog summons.' },
-          { cost: 5, name: 'Gojo Satoru', desc: 'Untouchable Infinity shield and Hollow Purple nuke.' }
-        ]
-      }
-    ];
-
+    // App State
+    let currentCategory = 'anime';
     let currentLoadout = {
       technique: null,
       hands: null,
@@ -410,11 +434,43 @@
       teammate: null
     };
 
+    function getCategoryData() {
+      if (window.CRUCIBLE_DATA && window.CRUCIBLE_DATA[currentCategory]) {
+        return window.CRUCIBLE_DATA[currentCategory];
+      }
+      return {
+        scenario: 'Zone 44 Forest of Death Survival',
+        sockets: []
+      };
+    }
+
+    function switchCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.selector-bar .pill-btn').forEach(btn => {
+        if (btn.id.startsWith('cat-')) btn.classList.remove('active');
+      });
+      const activeBtn = document.getElementById(`cat-${cat}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      currentLoadout = {
+        technique: null,
+        hands: null,
+        speed: null,
+        teammate: null
+      };
+
+      const data = getCategoryData();
+      document.getElementById('scenario-desc').innerText = data.scenario;
+      document.getElementById('battle-feed').innerHTML = `<div class="log-line">// Ready for ${currentCategory.toUpperCase()} draft. Select 1 skill per socket within the $15 budget.</div>`;
+      renderSockets();
+    }
+
     function renderSockets() {
       const container = document.getElementById('sockets-container');
       container.innerHTML = '';
+      const data = getCategoryData();
 
-      SOCKETS.forEach(sock => {
+      data.sockets.forEach(sock => {
         const selected = currentLoadout[sock.id];
         const card = document.createElement('div');
         card.className = 'socket-card';
@@ -447,21 +503,20 @@
       const current = currentLoadout[sockId];
 
       if (current && current.name === name) {
-        // Deselect
         currentLoadout[sockId] = null;
       } else {
-        // Calculate new budget
         let total = cost;
         Object.keys(currentLoadout).forEach(k => {
           if (k !== sockId && currentLoadout[k]) total += currentLoadout[k].cost;
         });
 
         if (total > 15) {
-          alert(`Budget exceeded! This choice would bring total cost to $${total} (Limit is $15). Deselect or choose lower tier skills first.`);
+          alert(`Budget exceeded! Total would be $${total} (Budget limit: $15). Choose lower tier options first.`);
           return;
         }
 
-        const sockDef = SOCKETS.find(s => s.id === sockId);
+        const data = getCategoryData();
+        const sockDef = data.sockets.find(s => s.id === sockId);
         const optDef = sockDef.options.find(o => o.name === name);
         currentLoadout[sockId] = optDef;
       }
@@ -486,18 +541,6 @@
       btn.innerText = allSocketsChosen ? 'DEPLOY $15 SQUAD & SIMULATE BATTLE' : `SELECT ALL 4 SOCKETS ($${rem} REMAINING)`;
     }
 
-    function updateScenario() {
-      const feed = document.getElementById('battle-feed');
-      const sc = document.getElementById('scenario-choice').value;
-      if (sc === 'forest') {
-        feed.innerHTML = `<div class="log-line">// SCENARIO: Zone 44 Forest of Death selected. Ambush from canopy foliage deals +150% poise damage. Objective: Capture Heaven & Earth scrolls.</div>`;
-      } else if (sc === 'culling') {
-        feed.innerHTML = `<div class="log-line">// SCENARIO: The Culling Games (Tokyo Colony 1). Score 100 points against modern sorcerers without being ring-out eliminated.</div>`;
-      } else {
-        feed.innerHTML = `<div class="log-line">// SCENARIO: Tournament of Power. Ring-out battle royale on Null Realm stage. Flight prohibited.</div>`;
-      }
-    }
-
     function runBattleSimulation() {
       audio.playClang();
       const feed = document.getElementById('battle-feed');
@@ -507,31 +550,30 @@
       const h = currentLoadout.hands;
       const s = currentLoadout.speed;
       const a = currentLoadout.teammate;
-      const sc = document.getElementById('scenario-choice').value;
+      const data = getCategoryData();
 
-      feed.innerHTML += `<div class="log-line">=== DEPLOYING LOADOUT ===</div>`;
-      feed.innerHTML += `<div class="log-line">&gt; Technique: ${t.name} ($${t.cost})</div>`;
-      feed.innerHTML += `<div class="log-line">&gt; Hands: ${h.name} ($${h.cost})</div>`;
-      feed.innerHTML += `<div class="log-line">&gt; Speed: ${s.name} ($${s.cost})</div>`;
-      feed.innerHTML += `<div class="log-line">&gt; Ally: ${a.name} ($${a.cost})</div>`;
+      feed.innerHTML += `<div class="log-line">=== DEPLOYING ${currentCategory.toUpperCase()} SQUAD ===</div>`;
+      feed.innerHTML += `<div class="log-line">&gt; Socket 1: ${t.name} ($${t.cost})</div>`;
+      feed.innerHTML += `<div class="log-line">&gt; Socket 2: ${h.name} ($${h.cost})</div>`;
+      feed.innerHTML += `<div class="log-line">&gt; Socket 3: ${s.name} ($${s.cost})</div>`;
+      feed.innerHTML += `<div class="log-line">&gt; Socket 4: ${a.name} ($${a.cost})</div>`;
       feed.innerHTML += `<div class="log-line">------------------------------------</div>`;
 
-      // Simulation combat score computation
       let totalRating = t.cost * 1.2 + h.cost * 1.1 + s.cost * 1.15 + a.cost * 1.3;
 
-      // Synergy bonuses
+      // Synergy calculations
       let synergies = [];
-      if (s.name.includes('Flying Thunder God') && t.name.includes('Kamui')) {
-        synergies.push('Space-Time Singularity (Invulnerable Flash Step)');
+      if (t.cost >= 4 && s.cost >= 4) {
+        synergies.push('High-Velocity Apex Mobility');
+        totalRating += 3;
+      }
+      if (h.cost >= 4 && a.cost >= 4) {
+        synergies.push('Legendary Duo Vanguard Pressure');
         totalRating += 4;
       }
-      if (h.name.includes('Eight Gates') && a.name.includes('Gojo')) {
-        synergies.push('Supreme Frontline Apex (Limitless Cover + Gate Overdrive)');
-        totalRating += 5;
-      }
-      if (t.name.includes('Boogie Woogie') && a.name.includes('Kakashi')) {
-        synergies.push('Tactical Substitution (Forced Chidori Swaps)');
-        totalRating += 3;
+      if (t.cost + h.cost + s.cost + a.cost === 15) {
+        synergies.push('Full $15 Resource Optimization');
+        totalRating += 2;
       }
 
       if (synergies.length > 0) {
@@ -542,29 +584,23 @@
 
       setTimeout(() => {
         audio.playClang();
-        if (sc === 'forest') {
-          feed.innerHTML += `<div class="log-line">&gt; Entering Zone 44 Canopy: You secure elevated [Hidden] status (+150% poise damage).</div>`;
-          feed.innerHTML += `<div class="log-line">&gt; Enemy Patrol Encountered: Holding the missing Heaven Scroll!</div>`;
-          feed.innerHTML += `<div class="log-line">&gt; Executing ${h.name} ambush from branch foliage... Guard Break inflicted!</div>`;
-        } else {
-          feed.innerHTML += `<div class="log-line">&gt; Entering Colony: High-grade cursed spirits converging on perimeter.</div>`;
-          feed.innerHTML += `<div class="log-line">&gt; Teammate ${a.name} engages vanguard forces with suppression fire!</div>`;
-        }
+        feed.innerHTML += `<div class="log-line">&gt; Engaging Scenario: ${data.scenario}</div>`;
+        feed.innerHTML += `<div class="log-line">&gt; Executing combo opening via ${h.name} with ${s.name}...</div>`;
+        feed.innerHTML += `<div class="log-line">&gt; Companion ${a.name} establishes tactical superiority!</div>`;
 
         setTimeout(() => {
-          if (totalRating >= 16) {
+          if (totalRating >= 17) {
             audio.playWin();
-            feed.innerHTML += `<div class="log-line log-win">&gt;&gt; [MATCH VERDICT: VICTORY] Target shattered! Both Heaven & Earth scrolls secured. Extraction Tower unlocked!</div>`;
+            feed.innerHTML += `<div class="log-line log-win">&gt;&gt; [MATCH VERDICT: DECISIVE VICTORY] Objectives cleared! Enemy vanguard neutralized with zero squad casualties.</div>`;
           } else {
-            feed.innerHTML += `<div class="log-line log-loss">&gt;&gt; [MATCH VERDICT: DEFEAT] Enemy broke through poise threshold. Try adjusting skill synergy or allocating higher tier teammate!</div>`;
+            feed.innerHTML += `<div class="log-line log-loss">&gt;&gt; [MATCH VERDICT: DEFEAT] Combat strain exceeded squad limits. Reallocate socket budget for stronger synergies!</div>`;
           }
         }, 600);
       }, 500);
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      renderSockets();
-      updateScenario();
+      switchCategory('anime');
     });
   </script>
 </body>

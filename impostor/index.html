@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Anime Imposter — Zero Tempo Social Deduction</title>
+  <title>Zero Tempo Imposter — Multi-Category Social Deduction</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="../shared/categories.js"></script>
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script src="../shared/multiplayer.js"></script>
   <style>
     :root {
       --bg-base: #0a0a0a;
@@ -77,13 +80,54 @@
 
     main {
       flex: 1;
-      max-width: 900px;
+      max-width: 920px;
       margin: 0 auto;
       width: 100%;
-      padding: 24px 16px;
+      padding: 20px 16px;
       display: flex;
       flex-direction: column;
       gap: 16px;
+    }
+
+    /* Category & Mode Selector Bars */
+    .selector-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 8px 12px;
+      border-radius: 4px;
+      align-items: center;
+    }
+    .selector-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-right: 4px;
+    }
+    .pill-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .pill-btn:hover {
+      border-color: var(--border-focus);
+      color: var(--text-primary);
+    }
+    .pill-btn.active {
+      background: #1f1f1f;
+      border-color: var(--accent-blue);
+      color: var(--text-primary);
+      font-weight: 600;
     }
 
     /* Briefing Card */
@@ -97,14 +141,14 @@
       gap: 12px;
     }
     .briefing-h1 {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
       letter-spacing: -0.3px;
     }
     .role-reveal-box {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      padding: 16px;
+      padding: 14px 16px;
       border-radius: 2px;
       display: flex;
       justify-content: space-between;
@@ -112,26 +156,57 @@
     }
     .role-title {
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-muted);
-    }
-    .role-val {
-      font-size: 16px;
-      font-weight: 700;
       letter-spacing: 0.5px;
     }
-    .role-target {
+    .role-val {
+      font-size: 15px;
+      font-weight: 700;
       font-family: var(--font-mono);
-      font-size: 13px;
-      color: var(--accent-green);
+    }
+    .role-target {
+      font-size: 15px;
+      font-weight: 700;
+      font-family: var(--font-mono);
     }
 
-    /* Table Clues Section */
+    /* Online Lobby Card */
+    .lobby-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 16px;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .lobby-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .lobby-input {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      padding: 8px 12px;
+      border-radius: 2px;
+      outline: none;
+      width: 140px;
+      text-transform: uppercase;
+    }
+    .lobby-input:focus { border-color: var(--accent-blue); }
+
+    /* The Clue Table */
     .table-section {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
+      padding: 20px;
       border-radius: 4px;
-      padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -140,28 +215,23 @@
       font-family: var(--font-mono);
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.5px;
       color: var(--text-muted);
-      border-bottom: 1px solid var(--border-subtle);
-      padding-bottom: 8px;
+      letter-spacing: 0.5px;
     }
-
     .players-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 12px;
-    }
-    @media (max-width: 700px) {
-      .players-grid { grid-template-columns: repeat(2, 1fr); }
     }
     .player-card {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       padding: 14px;
-      border-radius: 4px;
+      border-radius: 2px;
       display: flex;
       flex-direction: column;
       gap: 8px;
+      position: relative;
     }
     .player-card.active-turn {
       border-color: var(--accent-blue);
@@ -170,12 +240,11 @@
     .player-name {
       font-family: var(--font-mono);
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 600;
       color: var(--text-muted);
     }
     .player-clue-box {
-      font-family: var(--font-mono);
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       color: var(--text-primary);
       min-height: 28px;
@@ -188,7 +257,7 @@
       color: var(--text-muted);
     }
 
-    /* Input Controls */
+    /* Clue Input Form */
     .control-box {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
@@ -196,131 +265,176 @@
       border-radius: 4px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
     .clue-input-row {
       display: flex;
-      gap: 12px;
+      gap: 10px;
     }
     .input-field {
       flex: 1;
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 14px;
       padding: 10px 14px;
       border-radius: 2px;
-      font-family: var(--font-mono);
-      font-size: 13px;
       outline: none;
     }
-    .input-field:focus { border-color: var(--border-focus); }
+    .input-field:focus { border-color: var(--accent-blue); }
+
     .btn-submit {
       background: var(--accent-blue);
       color: #fff;
       border: 1px solid var(--accent-blue);
-      padding: 10px 20px;
       font-family: var(--font-mono);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 600;
+      padding: 10px 18px;
       border-radius: 2px;
       cursor: pointer;
-      transition: filter 0.15s;
+      transition: all 0.15s;
     }
-    .btn-submit:hover:not(:disabled) { filter: brightness(1.15); }
-    .btn-submit:disabled { opacity: 0.5; cursor: default; }
+    .btn-submit:hover { opacity: 0.9; }
 
-    /* Voting Area */
+    /* Voting Grid */
     .voting-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 12px;
-    }
-    @media (max-width: 700px) {
-      .voting-grid { grid-template-columns: repeat(2, 1fr); }
     }
     .vote-btn {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       color: var(--text-primary);
-      padding: 12px;
-      border-radius: 2px;
       font-family: var(--font-mono);
       font-size: 12px;
+      padding: 12px 14px;
+      border-radius: 2px;
       cursor: pointer;
-      text-align: center;
       transition: all 0.15s;
+      text-align: left;
     }
     .vote-btn:hover {
       border-color: var(--accent-red);
-      background: rgba(239, 68, 68, 0.1);
-      color: var(--accent-red);
+      background: #1c1416;
     }
 
-    /* Modal */
+    /* Modal Backdrop */
     .modal-backdrop {
       position: fixed;
-      inset: 0;
-      background: rgba(10, 10, 10, 0.9);
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
       display: flex;
-      justify-content: center;
       align-items: center;
-      z-index: 50;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
     }
     .modal-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      padding: 28px 32px;
+      padding: 24px;
+      max-width: 520px;
+      width: 100%;
       border-radius: 4px;
-      max-width: 480px;
-      width: 90%;
-      text-align: center;
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
     .modal-h2 {
       font-family: var(--font-mono);
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 700;
     }
     .imposter-guess-box {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      text-align: left;
-    }
-    .guess-btn {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      color: var(--text-primary);
-      padding: 10px 14px;
+      padding: 14px;
       border-radius: 2px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .guess-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
       font-size: 12px;
+      padding: 8px 12px;
+      border-radius: 2px;
       cursor: pointer;
       text-align: left;
       transition: all 0.15s;
     }
     .guess-btn:hover { border-color: var(--border-focus); background: #181818; }
+
+    /* Pass and Play Curtain */
+    .pass-curtain {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 30px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="brand-group">
       <span class="badge">GAME 02</span>
-      <span class="brand-title">ANIME IMPOSTER // SOCIAL DEDUCTION</span>
+      <span class="brand-title">IMPOSTER // SOCIAL DEDUCTION</span>
     </div>
     <a href="../index.html" class="nav-btn">EXIT TO ARCADE</a>
   </header>
 
   <main>
+    <!-- Category Switcher -->
+    <div class="selector-bar">
+      <span class="selector-label">CATEGORY:</span>
+      <button class="pill-btn active" id="cat-anime" onclick="switchCategory('anime')">Anime & Manga</button>
+      <button class="pill-btn" id="cat-movies" onclick="switchCategory('movies')">Movies & Cinema</button>
+      <button class="pill-btn" id="cat-gaming" onclick="switchCategory('gaming')">Video Games</button>
+      <button class="pill-btn" id="cat-sports" onclick="switchCategory('sports')">Sports & Football</button>
+      <button class="pill-btn" id="cat-music" onclick="switchCategory('music')">Music & Hip-Hop</button>
+    </div>
+
+    <!-- Mode Switcher -->
+    <div class="selector-bar">
+      <span class="selector-label">MODE:</span>
+      <button class="pill-btn active" id="mode-solo" onclick="switchMode('solo')">Solo vs Bots</button>
+      <button class="pill-btn" id="mode-pass" onclick="switchMode('pass')">Pass & Play (Couch)</button>
+      <button class="pill-btn" id="mode-online" onclick="switchMode('online')">LAN / Online Room Code</button>
+    </div>
+
+    <!-- Online Room Management Bar -->
+    <div class="lobby-box" id="online-lobby" style="display: none;">
+      <div class="lobby-row">
+        <span class="selector-label">HOST ROOM:</span>
+        <button class="pill-btn" onclick="hostOnlineRoom()">CREATE ROOM</button>
+        <span style="color: var(--text-muted); font-size: 12px;">or</span>
+        <span class="selector-label">JOIN ROOM:</span>
+        <input type="text" id="join-room-input" class="lobby-input" placeholder="CODE" maxlength="4">
+        <button class="pill-btn" onclick="joinOnlineRoom()">JOIN</button>
+      </div>
+      <div id="lobby-status" style="font-family: var(--font-mono); font-size: 11px; color: var(--accent-green); display: none;"></div>
+      <div id="lobby-players-list" style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted);"></div>
+    </div>
+
     <!-- Briefing Card -->
-    <div class="briefing-card">
-      <h1 class="briefing-h1">ROUND SETUP & SECRET ROLES</h1>
+    <div class="briefing-card" id="briefing-card">
+      <h1 class="briefing-h1" id="briefing-title">ROUND SETUP & SECRET ROLES</h1>
       <p style="font-size: 13px; color: var(--text-muted);">
-        Everyone at the table knows the target character except the Imposter. Each player gives a single 1-word association. If you are crew, do not make it too obvious or the Imposter will guess it!
+        Everyone at the table knows the secret target except the Imposter. Each player gives a single 1-word association. If you are crew, do not make it too obvious or the Imposter will guess it!
       </p>
 
-      <div class="role-reveal-box">
+      <div class="role-reveal-box" id="role-box">
         <div>
           <div class="role-title">YOUR ASSIGNED ROLE</div>
           <div class="role-val" id="my-role-text">CREWMATE</div>
@@ -332,10 +446,19 @@
       </div>
     </div>
 
+    <!-- Pass & Play Curtain Screen -->
+    <div class="pass-curtain" id="pass-curtain" style="display: none;">
+      <div style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);" id="pass-instruction">
+        PASS DEVICE TO PLAYER 1
+      </div>
+      <div style="font-size: 16px; font-weight: 700;" id="pass-player-name">Player 1</div>
+      <button class="btn-submit" onclick="revealPassAndPlayTurn()">TAP TO REVEAL ROLE & SUBMIT CLUE</button>
+    </div>
+
     <!-- The Clue Table -->
-    <div class="table-section">
-      <div class="section-head">ROUND 1: TABLE CLUES</div>
-      <div class="players-grid">
+    <div class="table-section" id="table-section">
+      <div class="section-head" id="table-head">ROUND 1: TABLE CLUES</div>
+      <div class="players-grid" id="players-grid">
         <div class="player-card" id="card-p1">
           <div class="player-name">PLAYER 1 (BOT)</div>
           <div class="player-clue-box" id="clue-p1">"..."</div>
@@ -373,7 +496,7 @@
     <!-- Voting Section -->
     <div class="table-section" id="voting-section" style="display: none;">
       <div class="section-head">CROSS-EXAMINATION: VOTE WHO YOU THINK IS THE IMPOSTER</div>
-      <div class="voting-grid">
+      <div class="voting-grid" id="voting-grid">
         <button class="vote-btn" onclick="castVote(1)">VOTE PLAYER 1</button>
         <button class="vote-btn" onclick="castVote(2)">VOTE PLAYER 2</button>
         <button class="vote-btn" onclick="castVote(3)">VOTE PLAYER 3</button>
@@ -391,7 +514,7 @@
       <!-- Imposter Guess Sub-Phase -->
       <div id="imposter-guess-container" style="display: none;" class="imposter-guess-box">
         <div style="font-family: var(--font-mono); font-size: 11px; color: var(--accent-amber);">
-          THE IMPOSTER WAS CAUGHT! They have one chance to guess the secret anime character to steal the victory:
+          THE IMPOSTER WAS CAUGHT! They have one chance to guess the secret target to steal the victory:
         </div>
         <div id="guess-options-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;"></div>
       </div>
@@ -456,101 +579,166 @@
     }
     const audio = new SoundFX();
 
-    // Catalog of Characters & Realistic Clues (from Zero Tempo & Anime Lore)
-    const CHARACTERS = [
-      {
-        name: 'Makima',
-        series: 'Chainsaw Man',
-        clues: ['Contract', 'Red', 'Control', 'Dog', 'Bang', 'Eyes', 'Chains', 'Pochita']
-      },
-      {
-        name: 'Gojo Satoru',
-        series: 'Jujutsu Kaisen',
-        clues: ['Blindfold', 'Infinity', 'Blue', 'Teacher', 'Limitless', 'Six', 'Hollow', 'Strongest']
-      },
-      {
-        name: 'Eren Yeager',
-        series: 'Attack on Titan',
-        clues: ['Freedom', 'Basement', 'Colossal', 'Bird', 'Rumbling', 'Fight', 'Attack', 'Walls']
-      },
-      {
-        name: 'Ryomen Sukuna',
-        series: 'Jujutsu Kaisen',
-        clues: ['Fingers', 'Shrine', 'Tattoos', 'Cleave', 'King', 'Heian', 'Curse', 'Slash']
-      },
-      {
-        name: 'Light Yagami',
-        series: 'Death Note',
-        clues: ['Notebook', 'Apple', 'Justice', 'Heart', 'Kira', 'God', 'Shinigami', 'Pen']
-      },
-      {
-        name: 'Killua Zoldyck',
-        series: 'Hunter x Hunter',
-        clues: ['Electricity', 'Yoyo', 'Assassin', 'Needle', 'Skateboard', 'Silver', 'Godspeed', 'Claws']
-      },
-      {
-        name: 'Itachi Uchiha',
-        series: 'Naruto',
-        clues: ['Crow', 'Genjutsu', 'Moon', 'Finger', 'Forehead', 'Clan', 'Illusion', 'Brother']
-      },
-      {
-        name: 'Naruto Uzumaki',
-        series: 'Naruto',
-        clues: ['Nine-Tails', 'Hokage', 'Ramen', 'Orange', 'Rasengan', 'Toad', 'Shadow', 'Fox']
-      },
-      {
-        name: 'Monkey D. Luffy',
-        series: 'One Piece',
-        clues: ['Straw Hat', 'Rubber', 'Meat', 'Pirate', 'King', 'Gear', 'Nika', 'Anchor']
-      },
-      {
-        name: 'Son Goku',
-        series: 'Dragon Ball Z',
-        clues: ['Saiyan', 'Tail', 'Kamehameha', 'Orange', 'Nimbus', 'Dragon', 'Hair', 'Monkey']
-      },
-      {
-        name: 'Levi Ackerman',
-        series: 'Attack on Titan',
-        clues: ['Blades', 'Clean', 'Captain', 'Short', 'Spin', 'Tea', 'Survey', 'Ackerman']
-      },
-      {
-        name: 'Saitama',
-        series: 'One Punch Man',
-        clues: ['Bald', 'Punch', 'Cape', 'Grocery', 'Bored', 'Hero', 'Yellow', 'Gloves']
-      },
-      {
-        name: 'Tanjiro Kamado',
-        series: 'Demon Slayer',
-        clues: ['Water', 'Sun', 'Earrings', 'Box', 'Sister', 'Smell', 'Scar', 'Breathing']
-      },
-      {
-        name: 'Sasuke Uchiha',
-        series: 'Naruto',
-        clues: ['Lightning', 'Avenger', 'Eyes', 'Snake', 'Sword', 'Curse', 'Rival', 'Rinnegan']
-      },
-      {
-        name: 'Roronoa Zoro',
-        series: 'One Piece',
-        clues: ['Swords', 'Green', 'Lost', 'Bandana', 'Eye', 'Slash', 'Sake', 'Demon']
-      }
-    ];
-
+    // App State
+    let currentCategory = 'anime';
+    let currentMode = 'solo'; // 'solo' | 'pass' | 'online'
     let targetChar = null;
-    let imposterIndex = 1; // 1, 2, 3, or 4
+    let imposterIndex = 1; // 1 to 4
     let playerIsImposter = false;
     let cluesTable = {};
+    let network = null;
+
+    // Pass and Play State
+    let passCurrentPlayer = 1;
+    let passPlayersCount = 4;
+    let passClues = {};
+    let passImposter = 1;
+
+    // Category Switching
+    function switchCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.selector-bar .pill-btn').forEach(btn => {
+        if (btn.id.startsWith('cat-')) btn.classList.remove('active');
+      });
+      const activeBtn = document.getElementById(`cat-${cat}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      initNewRound();
+    }
+
+    // Mode Switching
+    function switchMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.selector-bar .pill-btn').forEach(btn => {
+        if (btn.id.startsWith('mode-')) btn.classList.remove('active');
+      });
+      const activeBtn = document.getElementById(`mode-${mode}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const lobbyElem = document.getElementById('online-lobby');
+      if (mode === 'online') {
+        lobbyElem.style.display = 'flex';
+        initNetworkEngine();
+      } else {
+        lobbyElem.style.display = 'none';
+        if (network) {
+          network.disconnect();
+          network = null;
+        }
+      }
+      initNewRound();
+    }
+
+    function initNetworkEngine() {
+      if (!network) {
+        network = new TempoMultiplayer({
+          playerName: 'Player ' + Math.floor(Math.random() * 900 + 100),
+          onPlayerListChange: (players) => {
+            renderOnlinePlayersList(players);
+          },
+          onStateChange: (change) => {
+            handleNetworkStateChange(change);
+          },
+          onPrivateData: (data) => {
+            handlePrivateRole(data);
+          }
+        });
+      }
+    }
+
+    function hostOnlineRoom() {
+      initNetworkEngine();
+      const code = network.hostRoom(network.localPlayer.name, (roomCode, fallbackMsg) => {
+        const status = document.getElementById('lobby-status');
+        status.style.display = 'block';
+        status.innerText = `ROOM CODE: ${roomCode} // SHARE WITH PEERS (LAN / WEB)`;
+        if (fallbackMsg) console.log(fallbackMsg);
+      });
+    }
+
+    function joinOnlineRoom() {
+      initNetworkEngine();
+      const input = document.getElementById('join-room-input');
+      const code = input.value.trim().toUpperCase();
+      if (!code) return;
+      network.joinRoom(code, network.localPlayer.name, (success, err) => {
+        const status = document.getElementById('lobby-status');
+        status.style.display = 'block';
+        if (success) {
+          status.innerText = `CONNECTED TO ROOM: ${code}`;
+          status.style.color = 'var(--accent-green)';
+        } else {
+          status.innerText = `CONNECTION FAILED: ${err}`;
+          status.style.color = 'var(--accent-red)';
+        }
+      });
+    }
+
+    function renderOnlinePlayersList(players) {
+      const container = document.getElementById('lobby-players-list');
+      container.innerHTML = `CONNECTED OPERATORS (${players.length}): ` + 
+        players.map(p => `${p.name} ${p.isHost ? '[HOST]' : ''}`).join(' // ');
+    }
+
+    function handlePrivateRole(data) {
+      const roleElem = document.getElementById('my-role-text');
+      const targetElem = document.getElementById('my-target-text');
+      playerIsImposter = data.isImposter;
+      targetChar = data.targetChar;
+
+      if (playerIsImposter) {
+        roleElem.innerText = 'IMPOSTER';
+        roleElem.style.color = 'var(--accent-red)';
+        targetElem.innerText = '??? [HIDDEN — YOU ARE BLIND]';
+        targetElem.style.color = 'var(--accent-red)';
+      } else {
+        roleElem.innerText = 'CREWMATE';
+        roleElem.style.color = 'var(--accent-green)';
+        targetElem.innerText = `${targetChar.name} (${targetChar.series})`;
+        targetElem.style.color = 'var(--accent-green)';
+      }
+    }
+
+    function handleNetworkStateChange(change) {
+      if (change.event === 'CLUE_RECEIVED') {
+        const idx = network.players.findIndex(p => p.id === change.playerId) + 1;
+        const el = document.getElementById(`clue-p${idx}`);
+        if (el) el.innerText = `"${change.clue}"`;
+      } else if (change.event === 'ROUND_RESOLVED') {
+        renderDeliberationModal(change.data.mostVotedId, targetChar);
+      }
+    }
+
+    function getCategoryRoster() {
+      if (window.IMPOSTER_DATA && window.IMPOSTER_DATA[currentCategory]) {
+        return window.IMPOSTER_DATA[currentCategory];
+      }
+      return [
+        { name: 'Naruto Uzumaki', series: 'Naruto', clues: ['Nine-Tails', 'Hokage', 'Ramen', 'Orange', 'Rasengan'] },
+        { name: 'Monkey D. Luffy', series: 'One Piece', clues: ['Straw Hat', 'Rubber', 'Meat', 'Pirate', 'King'] },
+        { name: 'Son Goku', series: 'Dragon Ball Z', clues: ['Saiyan', 'Tail', 'Kamehameha', 'Orange', 'Nimbus'] },
+        { name: 'Satoru Gojo', series: 'Jujutsu Kaisen', clues: ['Blindfold', 'Infinity', 'Blue', 'Teacher', 'Six'] }
+      ];
+    }
 
     function initNewRound() {
       document.getElementById('result-modal').style.display = 'none';
-      document.getElementById('clue-input-box').style.display = 'flex';
       document.getElementById('voting-section').style.display = 'none';
       document.getElementById('clue-field').value = '';
 
-      // Pick random target
-      targetChar = CHARACTERS[Math.floor(Math.random() * CHARACTERS.length)];
-      // 1 in 4 chance user is the imposter
+      const roster = getCategoryRoster();
+      targetChar = roster[Math.floor(Math.random() * roster.length)];
       imposterIndex = Math.floor(Math.random() * 4) + 1;
       playerIsImposter = (imposterIndex === 4);
+
+      if (currentMode === 'pass') {
+        setupPassAndPlay();
+        return;
+      }
+
+      document.getElementById('pass-curtain').style.display = 'none';
+      document.getElementById('briefing-card').style.display = 'flex';
+      document.getElementById('table-section').style.display = 'flex';
+      document.getElementById('clue-input-box').style.display = 'flex';
 
       const roleElem = document.getElementById('my-role-text');
       const targetElem = document.getElementById('my-target-text');
@@ -567,33 +755,83 @@
         targetElem.style.color = 'var(--accent-green)';
       }
 
-      // Reset cards
+      // Reset UI cards
       for (let i = 1; i <= 4; i++) {
         document.getElementById(`clue-p${i}`).innerText = '"..."';
         document.getElementById(`status-p${i}`).innerText = i === 4 ? 'Your Turn' : 'Waiting...';
       }
 
-      // Simulate Bot Clues (P1, P2, P3)
-      simulateBotClues();
+      if (currentMode === 'solo') {
+        simulateBotClues();
+      } else if (currentMode === 'online' && network && network.isHost()) {
+        // Host distributes secret roles to connected peers
+        network.players.forEach((p, idx) => {
+          const isImp = (idx + 1 === imposterIndex);
+          network.sendPrivateMessage(p.id, { isImposter: isImp, targetChar });
+        });
+      }
     }
 
     function simulateBotClues() {
-      const genericBluffs = ['Power', 'Dark', 'Leader', 'Sword', 'Blood', 'Hero', 'Battle', 'Secret'];
+      const genericBluffs = ['Power', 'Dark', 'Leader', 'Sword', 'Legend', 'Hero', 'Battle', 'Secret'];
       const charClues = [...targetChar.clues];
 
       for (let p = 1; p <= 3; p++) {
         let chosenWord = '';
         if (p === imposterIndex) {
-          // Imposter Bot bluffs
           chosenWord = genericBluffs[Math.floor(Math.random() * genericBluffs.length)];
         } else {
-          // Crewmate Bot draws valid clue
           const randIdx = Math.floor(Math.random() * charClues.length);
-          chosenWord = charClues.splice(randIdx, 1)[0] || 'Shonen';
+          chosenWord = charClues.splice(randIdx, 1)[0] || 'Icon';
         }
         cluesTable[p] = chosenWord;
         document.getElementById(`clue-p${p}`).innerText = `"${chosenWord}"`;
         document.getElementById(`status-p${p}`).innerText = 'Clue Locked';
+      }
+    }
+
+    // Pass and Play Logic
+    function setupPassAndPlay() {
+      passCurrentPlayer = 1;
+      passClues = {};
+      passImposter = Math.floor(Math.random() * passPlayersCount) + 1;
+
+      document.getElementById('briefing-card').style.display = 'none';
+      document.getElementById('table-section').style.display = 'none';
+      document.getElementById('clue-input-box').style.display = 'none';
+      document.getElementById('pass-curtain').style.display = 'flex';
+
+      showPassScreen(passCurrentPlayer);
+    }
+
+    function showPassScreen(pNum) {
+      document.getElementById('pass-instruction').innerText = `PASS DEVICE TO PLAYER ${pNum}`;
+      document.getElementById('pass-player-name').innerText = `Player ${pNum}`;
+      document.getElementById('role-box').style.display = 'none';
+      document.getElementById('pass-curtain').style.display = 'flex';
+      document.getElementById('clue-input-box').style.display = 'none';
+    }
+
+    function revealPassAndPlayTurn() {
+      document.getElementById('pass-curtain').style.display = 'none';
+      document.getElementById('briefing-card').style.display = 'flex';
+      document.getElementById('role-box').style.display = 'flex';
+      document.getElementById('clue-input-box').style.display = 'flex';
+
+      const isImp = (passCurrentPlayer === passImposter);
+      const roleElem = document.getElementById('my-role-text');
+      const targetElem = document.getElementById('my-target-text');
+
+      if (isImp) {
+        roleElem.innerText = `PLAYER ${passCurrentPlayer}: IMPOSTER`;
+        roleElem.style.color = 'var(--accent-red)';
+        targetElem.innerText = '??? [HIDDEN — YOU ARE BLIND]';
+        targetElem.style.color = 'var(--accent-red)';
+      } else {
+        roleElem.innerText = `PLAYER ${passCurrentPlayer}: CREWMATE`;
+        roleElem.style.color = 'var(--accent-green)';
+        targetElem.innerText = `${targetChar.name} (${targetChar.series})`;
+        targetElem.style.color = 'var(--accent-green)';
       }
     }
 
@@ -606,46 +844,76 @@
       }
 
       audio.playPing();
+
+      if (currentMode === 'pass') {
+        passClues[passCurrentPlayer] = val;
+        field.value = '';
+        passCurrentPlayer++;
+
+        if (passCurrentPlayer <= passPlayersCount) {
+          showPassScreen(passCurrentPlayer);
+        } else {
+          // All pass and play clues collected! Show full table and start deliberation
+          document.getElementById('pass-curtain').style.display = 'none';
+          document.getElementById('briefing-card').style.display = 'flex';
+          document.getElementById('table-section').style.display = 'flex';
+          document.getElementById('clue-input-box').style.display = 'none';
+          document.getElementById('role-box').style.display = 'none';
+
+          for (let i = 1; i <= 4; i++) {
+            document.getElementById(`clue-p${i}`).innerText = `"${passClues[i]}"`;
+            document.getElementById(`status-p${i}`).innerText = 'Clue Locked';
+          }
+          document.getElementById('voting-section').style.display = 'block';
+        }
+        return;
+      }
+
       cluesTable[4] = val;
       document.getElementById('clue-p4').innerText = `"${val}"`;
       document.getElementById('status-p4').innerText = 'Clue Locked';
 
-      // Move to deliberation & voting phase
+      if (currentMode === 'online' && network) {
+        network.sendToHost({
+          type: 'SUBMIT_CLUE',
+          playerId: network.localPlayer.id,
+          clue: val
+        });
+      }
+
       document.getElementById('clue-input-box').style.display = 'none';
       document.getElementById('voting-section').style.display = 'block';
     }
 
     function castVote(votedPlayer) {
       audio.playPing();
+      if (currentMode === 'pass') {
+        renderDeliberationModal(votedPlayer, targetChar);
+        return;
+      }
+
       const modal = document.getElementById('result-modal');
       const heading = document.getElementById('modal-heading');
       const desc = document.getElementById('modal-desc');
       const guessBox = document.getElementById('imposter-guess-container');
 
-      // Bot voting logic: bots suspect anyone with vague clues or the true imposter
       let voteCounts = { 1: 0, 2: 0, 3: 0, 4: 0 };
       voteCounts[votedPlayer]++;
 
-      // 3 Bots cast votes
       for (let b = 1; b <= 3; b++) {
         if (b === imposterIndex) {
-          // Imposter votes randomly for a crewmate
           const targets = [1, 2, 3, 4].filter(x => x !== b);
-          const chosen = targets[Math.floor(Math.random() * targets.length)];
-          voteCounts[chosen]++;
+          voteCounts[targets[Math.floor(Math.random() * targets.length)]]++;
         } else {
-          // Crewmate bot has 70% chance to vote imposter
           if (Math.random() < 0.7) {
             voteCounts[imposterIndex]++;
           } else {
             const targets = [1, 2, 3, 4].filter(x => x !== b);
-            const chosen = targets[Math.floor(Math.random() * targets.length)];
-            voteCounts[chosen]++;
+            voteCounts[targets[Math.floor(Math.random() * targets.length)]]++;
           }
         }
       }
 
-      // Determine player with max votes
       let maxVoted = 1;
       let maxVotes = voteCounts[1];
       for (let i = 2; i <= 4; i++) {
@@ -655,39 +923,40 @@
         }
       }
 
+      renderDeliberationModal(maxVoted, targetChar);
+    }
+
+    function renderDeliberationModal(votedPlayerId, target) {
+      const modal = document.getElementById('result-modal');
+      const heading = document.getElementById('modal-heading');
+      const desc = document.getElementById('modal-desc');
+      const guessBox = document.getElementById('imposter-guess-container');
+
       modal.style.display = 'flex';
       guessBox.style.display = 'none';
 
-      if (maxVoted === imposterIndex) {
-        // Imposter Caught!
-        if (playerIsImposter) {
-          audio.playBuzzer();
-          heading.innerText = 'YOU WERE VOTED OUT!';
-          heading.style.color = 'var(--accent-red)';
-          desc.innerText = `The table deduced your bluff! Secret character was: ${targetChar.name} (${targetChar.series}).`;
-        } else {
-          audio.playChime();
-          heading.innerText = `IMPOSTER CAUGHT! (PLAYER ${imposterIndex})`;
-          heading.style.color = 'var(--accent-green)';
-          desc.innerText = `Player ${imposterIndex} was the Imposter! Target was ${targetChar.name} (${targetChar.series}).`;
+      const actualImposter = (currentMode === 'pass') ? passImposter : imposterIndex;
 
-          // Give imposter a guess attempt
-          guessBox.style.display = 'flex';
-          renderImposterGuessOptions();
-        }
+      if (votedPlayerId === actualImposter) {
+        audio.playChime();
+        heading.innerText = `IMPOSTER CAUGHT! (PLAYER ${actualImposter})`;
+        heading.style.color = 'var(--accent-green)';
+        desc.innerText = `Player ${actualImposter} was the Imposter! Target was ${target.name} (${target.series}).`;
+
+        guessBox.style.display = 'flex';
+        renderImposterGuessOptions();
       } else {
-        // Wrong person voted out!
         audio.playBuzzer();
         heading.innerText = 'CREWMATE EXILED // IMPOSTER WINS!';
         heading.style.color = 'var(--accent-red)';
-        desc.innerText = `Player ${maxVoted} was wrongfully voted out! The real imposter was Player ${imposterIndex}. Secret character was: ${targetChar.name}.`;
+        desc.innerText = `Player ${votedPlayerId} was wrongfully voted out! The real imposter was Player ${actualImposter}. Secret target was: ${target.name}.`;
       }
     }
 
     function renderImposterGuessOptions() {
       const list = document.getElementById('guess-options-list');
       list.innerHTML = '';
-      const pool = [...CHARACTERS];
+      const pool = [...getCategoryRoster()];
       pool.sort(() => 0.5 - Math.random());
 
       pool.slice(0, 4).forEach((ch) => {

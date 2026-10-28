@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>60s Anime Speedrun — Guess the Character</title>
+  <title>60s Speedrun — Multi-Category 20-Questions Character Guesser</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="../shared/categories.js"></script>
   <style>
     :root {
       --bg-base: #0a0a0a;
@@ -77,13 +78,54 @@
 
     main {
       flex: 1;
-      max-width: 900px;
+      max-width: 920px;
       margin: 0 auto;
       width: 100%;
-      padding: 24px 16px;
+      padding: 20px 16px;
       display: flex;
       flex-direction: column;
       gap: 16px;
+    }
+
+    /* Category Switcher Bar */
+    .selector-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 8px 12px;
+      border-radius: 4px;
+      align-items: center;
+    }
+    .selector-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-right: 4px;
+    }
+    .pill-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .pill-btn:hover {
+      border-color: var(--border-focus);
+      color: var(--text-primary);
+    }
+    .pill-btn.active {
+      background: #1f1f1f;
+      border-color: var(--accent-green);
+      color: var(--text-primary);
+      font-weight: 600;
     }
 
     /* 60s Clock Bar */
@@ -98,8 +140,8 @@
     }
     .timer-val {
       font-family: var(--font-mono);
-      font-size: 32px;
-      font-weight: 800;
+      font-size: 26px;
+      font-weight: 700;
       color: var(--accent-green);
       letter-spacing: -0.5px;
     }
@@ -108,24 +150,27 @@
       font-size: 12px;
       color: var(--text-muted);
     }
-    .pool-counter strong { color: var(--text-primary); }
+    .pool-counter strong {
+      color: var(--text-primary);
+      font-size: 14px;
+      margin-left: 4px;
+    }
 
     /* Arena Grid */
     .arena-grid {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
+      grid-template-columns: 1fr 1fr;
       gap: 16px;
     }
     @media (max-width: 768px) {
       .arena-grid { grid-template-columns: 1fr; }
     }
 
-    /* Question Buttons Panel */
     .query-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      border-radius: 4px;
       padding: 16px;
+      border-radius: 4px;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -139,7 +184,6 @@
       border-bottom: 1px solid var(--border-subtle);
       padding-bottom: 8px;
     }
-
     .questions-list {
       display: flex;
       flex-direction: column;
@@ -148,144 +192,146 @@
     .q-btn {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      padding: 10px 14px;
+      color: var(--text-primary);
+      padding: 10px 12px;
       border-radius: 2px;
+      font-size: 12px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      cursor: pointer;
-      font-family: var(--font-sans);
-      font-size: 12px;
-      color: var(--text-primary);
-      transition: all 0.15s;
+      line-height: 1.4;
     }
     .q-btn:hover:not(:disabled) {
       border-color: var(--border-focus);
       background: #181818;
     }
     .q-btn:disabled {
-      cursor: default;
-      opacity: 0.85;
+      opacity: 0.5;
+      cursor: not-allowed;
     }
     .ans-tag {
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
-      padding: 2px 8px;
+      padding: 2px 6px;
       border-radius: 2px;
+      margin-left: 8px;
+      white-space: nowrap;
     }
-    .ans-tag.yes { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
-    .ans-tag.no { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+    .ans-tag.yes { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+    .ans-tag.no { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
 
-    /* Guessing Column */
+    /* Guess Column */
     .guess-col {
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
-
     .guess-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      border-radius: 4px;
       padding: 16px;
+      border-radius: 4px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       position: relative;
     }
     .guess-input {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       color: var(--text-primary);
-      padding: 10px 14px;
-      border-radius: 2px;
       font-family: var(--font-mono);
       font-size: 13px;
+      padding: 10px 12px;
+      border-radius: 2px;
       outline: none;
     }
-    .guess-input:focus { border-color: var(--border-focus); }
+    .guess-input:focus { border-color: var(--accent-green); }
+
     .btn-guess {
       background: var(--accent-green);
       color: #000;
       border: 1px solid var(--accent-green);
-      padding: 10px 16px;
       font-family: var(--font-mono);
       font-size: 12px;
       font-weight: 700;
+      padding: 10px 16px;
       border-radius: 2px;
       cursor: pointer;
-      transition: filter 0.15s;
+      transition: all 0.15s;
     }
-    .btn-guess:hover { filter: brightness(1.15); }
+    .btn-guess:hover { opacity: 0.9; }
 
-    /* Suggestions */
+    /* Autocomplete */
     .sugg-box {
       position: absolute;
-      top: 96px;
+      top: 90px;
       left: 16px;
       right: 16px;
-      background: #171717;
-      border: 1px solid var(--border-focus);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
       border-radius: 2px;
+      z-index: 50;
       max-height: 180px;
       overflow-y: auto;
-      z-index: 20;
       display: none;
     }
     .sugg-item {
       padding: 8px 12px;
       font-size: 12px;
       font-family: var(--font-mono);
-      color: var(--text-primary);
       cursor: pointer;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-primary);
     }
-    .sugg-item:hover { background: #222; }
+    .sugg-item:hover {
+      background: #1f1f1f;
+      color: var(--accent-green);
+    }
 
-    /* Candidate Pool Log */
+    /* Log Feed */
     .log-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      border-radius: 4px;
       padding: 16px;
+      border-radius: 4px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
       flex: 1;
     }
     .log-feed {
-      background: var(--bg-base);
-      border: 1px solid var(--border-subtle);
-      padding: 10px;
-      border-radius: 2px;
-      height: 180px;
-      overflow-y: auto;
-      font-family: var(--font-mono);
-      font-size: 11px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      max-height: 220px;
+      overflow-y: auto;
     }
 
-    /* Modal Result */
+    /* Modal */
     .modal-backdrop {
       position: fixed;
-      inset: 0;
-      background: rgba(10, 10, 10, 0.9);
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
       display: flex;
-      justify-content: center;
       align-items: center;
-      z-index: 50;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
     }
     .modal-box {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      padding: 28px 32px;
-      border-radius: 4px;
+      padding: 24px;
       max-width: 480px;
-      width: 90%;
-      text-align: center;
+      width: 100%;
+      border-radius: 4px;
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -296,20 +342,30 @@
   <header>
     <div class="brand-group">
       <span class="badge">GAME 05</span>
-      <span class="brand-title">60S SPEEDRUN // GUESS THE CHARACTER</span>
+      <span class="brand-title">60S SPEEDRUN // 20-QUESTIONS SIEVE</span>
     </div>
     <a href="../index.html" class="nav-btn">EXIT TO ARCADE</a>
   </header>
 
   <main>
+    <!-- Category Switcher -->
+    <div class="selector-bar">
+      <span class="selector-label">CATEGORY:</span>
+      <button class="pill-btn active" id="cat-anime" onclick="switchCategory('anime')">Anime & Manga</button>
+      <button class="pill-btn" id="cat-movies" onclick="switchCategory('movies')">Movies & Cinema</button>
+      <button class="pill-btn" id="cat-gaming" onclick="switchCategory('gaming')">Video Games</button>
+      <button class="pill-btn" id="cat-sports" onclick="switchCategory('sports')">Sports & Football</button>
+      <button class="pill-btn" id="cat-music" onclick="switchCategory('music')">Music & Hip-Hop</button>
+    </div>
+
     <!-- 60s Clock Bar -->
     <div class="timer-strip">
       <div>
-        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.5px;">GLOBAL HARD COUNTDOWN</div>
+        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.5px;">GLOBAL SPEEDRUN COUNTDOWN</div>
         <div id="clock-display" class="timer-val">60.00s</div>
       </div>
       <div class="pool-counter">
-        CANDIDATES REMAINING: <strong id="pool-display">45</strong>
+        CANDIDATES REMAINING: <strong id="pool-display">0</strong>
       </div>
     </div>
 
@@ -317,9 +373,9 @@
     <div class="arena-grid">
       <!-- Question Switches -->
       <div class="query-card">
-        <div class="panel-head">RAPID 20-QUESTIONS // INSTANT YES/NO TRIAGE</div>
+        <div class="panel-head">RAPID 20-QUESTIONS // YES/NO TRIAGE</div>
         <div class="questions-list" id="questions-list">
-          <!-- 8 questions dynamically populated -->
+          <!-- Dynamically populated -->
         </div>
       </div>
 
@@ -327,7 +383,7 @@
       <div class="guess-col">
         <div class="guess-card">
           <div class="panel-head">LOCK IN FINAL GUESS</div>
-          <input type="text" id="char-guess-input" class="guess-input" placeholder="Type character name..." autocomplete="off">
+          <input type="text" id="char-guess-input" class="guess-input" placeholder="Type icon name..." autocomplete="off">
           <button class="btn-guess" onclick="submitFinalGuess()">CONFIRM GUESS</button>
           <div id="sugg-container" class="sugg-box"></div>
         </div>
@@ -335,7 +391,7 @@
         <div class="log-card">
           <div class="panel-head">QUERY FEED & CANDIDATE PRUNING</div>
           <div class="log-feed" id="log-feed">
-            <div style="color: var(--text-muted);">// Clock active. Fire questions or submit a character guess!</div>
+            <div style="color: var(--text-muted);">// Clock active. Fire questions or submit an icon guess!</div>
           </div>
         </div>
       </div>
@@ -405,47 +461,8 @@
     }
     const audio = new SoundEngine();
 
-    // Universally Popular Anime Characters Roster
-    const CHARACTERS = [
-      { name: 'Naruto Uzumaki', series: 'Naruto', powers: true, male: true, deceased: false, oldGen: true, student: true, protagonist: true, big3: true, combat: true },
-      { name: 'Sasuke Uchiha', series: 'Naruto', powers: true, male: true, deceased: false, oldGen: true, student: true, protagonist: false, big3: true, combat: true },
-      { name: 'Kakashi Hatake', series: 'Naruto', powers: true, male: true, deceased: false, oldGen: true, student: true, protagonist: false, big3: true, combat: true },
-      { name: 'Itachi Uchiha', series: 'Naruto', powers: true, male: true, deceased: true, oldGen: true, student: false, protagonist: false, big3: true, combat: true },
-      { name: 'Gojo Satoru', series: 'Jujutsu Kaisen', powers: true, male: true, deceased: true, oldGen: false, student: true, protagonist: false, big3: false, combat: true },
-      { name: 'Ryomen Sukuna', series: 'Jujutsu Kaisen', powers: true, male: true, deceased: true, oldGen: true, student: false, protagonist: false, big3: false, combat: true },
-      { name: 'Yuji Itadori', series: 'Jujutsu Kaisen', powers: true, male: true, deceased: false, oldGen: false, student: true, protagonist: true, big3: false, combat: true },
-      { name: 'Megumi Fushiguro', series: 'Jujutsu Kaisen', powers: true, male: true, deceased: false, oldGen: false, student: true, protagonist: false, big3: false, combat: true },
-      { name: 'Monkey D. Luffy', series: 'One Piece', powers: true, male: true, deceased: false, oldGen: true, student: false, protagonist: true, big3: true, combat: true },
-      { name: 'Roronoa Zoro', series: 'One Piece', powers: false, male: true, deceased: false, oldGen: true, student: false, protagonist: false, big3: true, combat: true },
-      { name: 'Sanji', series: 'One Piece', powers: false, male: true, deceased: false, oldGen: true, student: false, protagonist: false, big3: true, combat: true },
-      { name: 'Son Goku', series: 'Dragon Ball Z', powers: true, male: true, deceased: false, oldGen: true, student: false, protagonist: true, big3: false, combat: true },
-      { name: 'Vegeta', series: 'Dragon Ball Z', powers: true, male: true, deceased: false, oldGen: true, student: false, protagonist: false, big3: false, combat: true },
-      { name: 'Eren Yeager', series: 'Attack on Titan', powers: true, male: true, deceased: true, oldGen: false, student: true, protagonist: true, big3: false, combat: true },
-      { name: 'Levi Ackerman', series: 'Attack on Titan', powers: false, male: true, deceased: false, oldGen: false, student: false, protagonist: false, big3: false, combat: true },
-      { name: 'Tanjiro Kamado', series: 'Demon Slayer', powers: true, male: true, deceased: false, oldGen: false, student: false, protagonist: true, big3: false, combat: true },
-      { name: 'Nezuko Kamado', series: 'Demon Slayer', powers: true, male: false, deceased: false, oldGen: false, student: false, protagonist: false, big3: false, combat: true },
-      { name: 'Saitama', series: 'One Punch Man', powers: true, male: true, deceased: false, oldGen: false, student: false, protagonist: true, big3: false, combat: true },
-      { name: 'Light Yagami', series: 'Death Note', powers: true, male: true, deceased: true, oldGen: true, student: true, protagonist: true, big3: false, combat: false },
-      { name: 'L Lawliet', series: 'Death Note', powers: false, male: true, deceased: true, oldGen: true, student: false, protagonist: false, big3: false, combat: false },
-      { name: 'Killua Zoldyck', series: 'Hunter x Hunter', powers: true, male: true, deceased: false, oldGen: true, student: false, protagonist: false, big3: false, combat: true },
-      { name: 'All Might', series: 'My Hero Academia', powers: true, male: true, deceased: false, oldGen: false, student: true, protagonist: false, big3: false, combat: true },
-      { name: 'Izuku Midoriya', series: 'My Hero Academia', powers: true, male: true, deceased: false, oldGen: false, student: true, protagonist: true, big3: false, combat: true },
-      { name: 'Katsuki Bakugo', series: 'My Hero Academia', powers: true, male: true, deceased: false, oldGen: false, student: true, protagonist: false, big3: false, combat: true },
-      { name: 'Ichigo Kurosaki', series: 'Bleach', powers: true, male: true, deceased: false, oldGen: true, student: true, protagonist: true, big3: true, combat: true },
-      { name: 'Edward Elric', series: 'Fullmetal Alchemist', powers: true, male: true, deceased: false, oldGen: true, student: false, protagonist: true, big3: false, combat: true }
-    ];
-
-    const QUESTIONS = [
-      { id: 'powers', label: 'Wields Supernatural / Cursed Powers?' },
-      { id: 'male', label: 'Gender: Identified as Male?' },
-      { id: 'deceased', label: 'Status: Canonically Deceased / Terminated?' },
-      { id: 'oldGen', label: 'Era: Old-Gen Debut (Pre-2005)?' },
-      { id: 'student', label: 'Affiliation: Student or Teacher at an Academy?' },
-      { id: 'protagonist', label: 'Role: Central Series Protagonist?' },
-      { id: 'big3', label: 'Franchise: From the Big 3 (Naruto / Bleach / One Piece)?' },
-      { id: 'combat', label: 'Combat: Front-Line Martial Fighter or Swordsman?' }
-    ];
-
+    // App State
+    let currentCategory = 'anime';
     let target = null;
     let candidatesPool = [];
     let timeLeft = 60.0;
@@ -453,13 +470,40 @@
     let askedQuestions = {};
     let lastTime = performance.now();
 
+    function getCategoryData() {
+      if (window.SIEVE_DATA && window.SIEVE_DATA[currentCategory]) {
+        return window.SIEVE_DATA[currentCategory];
+      }
+      return {
+        characters: [
+          { name: 'Naruto Uzumaki', series: 'Naruto', powers: true, male: true },
+          { name: 'Monkey D. Luffy', series: 'One Piece', powers: true, male: true }
+        ],
+        questions: [
+          { id: 'powers', label: 'Wields Supernatural Powers?' },
+          { id: 'male', label: 'Identified as Male?' }
+        ]
+      };
+    }
+
+    function switchCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.selector-bar .pill-btn').forEach(btn => {
+        if (btn.id.startsWith('cat-')) btn.classList.remove('active');
+      });
+      const activeBtn = document.getElementById(`cat-${cat}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      startNewGame();
+    }
+
     function startNewGame() {
       document.getElementById('end-modal').style.display = 'none';
       document.getElementById('log-feed').innerHTML = '';
       document.getElementById('char-guess-input').value = '';
 
-      target = CHARACTERS[Math.floor(Math.random() * CHARACTERS.length)];
-      candidatesPool = [...CHARACTERS];
+      const data = getCategoryData();
+      target = data.characters[Math.floor(Math.random() * data.characters.length)];
+      candidatesPool = [...data.characters];
       timeLeft = 60.0;
       timerRunning = true;
       askedQuestions = {};
@@ -495,10 +539,11 @@
     }
 
     function renderQuestions() {
+      const data = getCategoryData();
       const container = document.getElementById('questions-list');
       container.innerHTML = '';
 
-      QUESTIONS.forEach(q => {
+      data.questions.forEach(q => {
         const isAsked = askedQuestions[q.id] !== undefined;
         const ans = askedQuestions[q.id];
 
@@ -521,7 +566,6 @@
       const answer = !!target[qId];
       askedQuestions[qId] = answer;
 
-      // Filter candidates
       const prevCount = candidatesPool.length;
       candidatesPool = candidatesPool.filter(c => !!c[qId] === answer);
       const pruned = prevCount - candidatesPool.length;
@@ -551,10 +595,9 @@
       if (val === target.name.toLowerCase()) {
         timerRunning = false;
         audio.playCorrect();
-        endGame(true, `Speedrun Success! You identified ${target.name} (${target.series}) with ${timeLeft.toFixed(2)}s left!`);
+        endGame(true, `Speedrun Success! You identified ${target.name} (${target.series}) with ${timeLeft.toFixed(2)}s remaining!`);
       } else {
         audio.playBuzzer();
-        // 5s time penalty for wrong final guess
         timeLeft = Math.max(0, timeLeft - 5.0);
         const log = document.getElementById('log-feed');
         const item = document.createElement('div');
@@ -572,10 +615,7 @@
 
       title.innerText = isWin ? 'SPEEDRUN VICTORY' : 'TIME EXPIRED';
       title.style.color = isWin ? 'var(--accent-green)' : 'var(--accent-red)';
-      desc.innerHTML = `
-        <div>${msg}</div>
-        ${target.note ? `<div style="font-size: 11px; color: var(--accent-amber); margin-top: 8px;">// Trap Note: ${target.note}</div>` : ''}
-      `;
+      desc.innerHTML = `<div>${msg}</div>`;
       modal.style.display = 'flex';
       if (!isWin) audio.playBuzzer();
     }
@@ -588,7 +628,8 @@
       const q = inp.value.trim().toLowerCase();
       if (!q) { suggBox.style.display = 'none'; return; }
 
-      const matches = CHARACTERS.filter(c => c.name.toLowerCase().includes(q));
+      const data = getCategoryData();
+      const matches = data.characters.filter(c => c.name.toLowerCase().includes(q));
       if (matches.length === 0) { suggBox.style.display = 'none'; return; }
 
       suggBox.innerHTML = '';

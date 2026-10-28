@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connect 5! — Contextual Numeric Decryption</title>
+  <title>Connect 5! — Multi-Category Numeric Decryption</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="../shared/categories.js"></script>
   <style>
     :root {
       --bg-base: #0a0a0a;
@@ -80,12 +81,54 @@
       max-width: 960px;
       margin: 0 auto;
       width: 100%;
-      padding: 24px 16px;
+      padding: 20px 16px;
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
 
+    /* Selector Bars */
+    .selector-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 8px 12px;
+      border-radius: 4px;
+      align-items: center;
+    }
+    .selector-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-right: 4px;
+    }
+    .pill-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .pill-btn:hover {
+      border-color: var(--border-focus);
+      color: var(--text-primary);
+    }
+    .pill-btn.active {
+      background: #1f1f1f;
+      border-color: var(--accent-blue);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    /* Game Status Bar */
     .game-status-bar {
       display: flex;
       justify-content: space-between;
@@ -94,6 +137,8 @@
       border: 1px solid var(--border-subtle);
       padding: 12px 16px;
       border-radius: 4px;
+      flex-wrap: wrap;
+      gap: 8px;
     }
     .hud-metric {
       font-family: var(--font-mono);
@@ -133,7 +178,7 @@
       letter-spacing: 0.5px;
     }
     .char-name {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
       color: var(--text-primary);
     }
@@ -149,9 +194,7 @@
       gap: 12px;
     }
     @media (max-width: 640px) {
-      .numbers-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+      .numbers-grid { grid-template-columns: repeat(2, 1fr); }
     }
     .number-slot {
       background: var(--bg-card);
@@ -187,7 +230,7 @@
     }
     .slot-val {
       font-family: var(--font-mono);
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
       color: var(--text-primary);
     }
@@ -238,63 +281,65 @@
       font-size: 12px;
       text-align: left;
       cursor: pointer;
-      font-family: var(--font-sans);
       transition: all 0.15s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      line-height: 1.4;
     }
     .option-btn:hover:not(:disabled) {
       border-color: var(--border-focus);
-      background: #171717;
+      background: #1c1c1c;
     }
     .option-btn:disabled {
-      cursor: default;
-      opacity: 0.5;
+      opacity: 0.4;
+      cursor: not-allowed;
     }
     .option-btn.wrong-shake {
       border-color: var(--accent-red);
       background: rgba(239, 68, 68, 0.1);
-      color: var(--accent-red);
     }
 
-    /* Modal Result */
+    /* Result Modal */
     .result-modal {
       position: fixed;
-      inset: 0;
-      background: rgba(10, 10, 10, 0.9);
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
       display: flex;
-      justify-content: center;
       align-items: center;
-      z-index: 50;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
     }
     .result-box {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      padding: 28px 32px;
+      padding: 24px;
+      max-width: 480px;
+      width: 100%;
       border-radius: 4px;
-      max-width: 460px;
-      width: 90%;
-      text-align: center;
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
     .result-title {
       font-family: var(--font-mono);
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 700;
     }
     .btn-action {
-      background: var(--accent-green);
-      color: #000;
-      border: 1px solid var(--accent-green);
-      padding: 10px 16px;
+      background: var(--accent-blue);
+      border: 1px solid var(--accent-blue);
+      color: #fff;
       font-family: var(--font-mono);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 600;
+      padding: 10px 16px;
       border-radius: 2px;
       cursor: pointer;
-      transition: filter 0.15s;
+      transition: all 0.15s;
     }
-    .btn-action:hover { filter: brightness(1.15); }
+    .btn-action:hover { opacity: 0.9; }
   </style>
 </head>
 <body>
@@ -307,10 +352,29 @@
   </header>
 
   <main>
+    <!-- Category Switcher -->
+    <div class="selector-bar">
+      <span class="selector-label">CATEGORY:</span>
+      <button class="pill-btn active" id="cat-anime" onclick="switchCategory('anime')">Anime & Manga</button>
+      <button class="pill-btn" id="cat-movies" onclick="switchCategory('movies')">Movies & Cinema</button>
+      <button class="pill-btn" id="cat-gaming" onclick="switchCategory('gaming')">Video Games</button>
+      <button class="pill-btn" id="cat-sports" onclick="switchCategory('sports')">Sports & Football</button>
+      <button class="pill-btn" id="cat-music" onclick="switchCategory('music')">Music & Hip-Hop</button>
+    </div>
+
+    <!-- Mode Switcher -->
+    <div class="selector-bar">
+      <span class="selector-label">MODE:</span>
+      <button class="pill-btn active" id="mode-solo" onclick="switchMode('solo')">Solo Decryption</button>
+      <button class="pill-btn" id="mode-versus" onclick="switchMode('versus')">2-Player Pass & Play</button>
+    </div>
+
     <!-- Game Status Bar -->
     <div class="game-status-bar">
-      <div class="hud-metric">LEVEL <strong id="level-display">1 / 7</strong></div>
-      <div class="hud-metric">SCORE <strong id="score-display">0</strong></div>
+      <div class="hud-metric">LEVEL <strong id="level-display">1 / 3</strong></div>
+      <div class="hud-metric" id="turn-hud" style="display: none;">TURN <strong id="turn-display" style="color: var(--accent-blue);">PLAYER 1</strong></div>
+      <div class="hud-metric" id="score-p1-hud">P1 SCORE <strong id="score-display">0</strong></div>
+      <div class="hud-metric" id="score-p2-hud" style="display: none;">P2 SCORE <strong id="p2-score-display">0</strong></div>
       <div class="hud-metric">SOLVED <strong id="solved-count">0 / 5</strong></div>
       <div style="display: flex; align-items: center; gap: 8px;">
         <span class="hud-metric">STRIKES</span>
@@ -324,14 +388,14 @@
 
     <!-- Character Prompt -->
     <div class="character-card">
-      <div class="char-sub" id="char-series">MY HERO ACADEMIA</div>
-      <div class="char-name" id="char-name">Katsuki Bakugo</div>
+      <div class="char-sub" id="char-series">CATEGORY FRANCHISE</div>
+      <div class="char-name" id="char-name">Character Name</div>
       <div class="char-instructions">
-        Select a mystery number below, then deduce which fact or canonical stat it connects to. You have 3 lives per character.
+        Select a mystery number below, then deduce which canonical stat or milestone it connects to. 3 strikes allowed per stage.
       </div>
     </div>
 
-    <!-- 5 Numbers Grid -->
+    <!-- 5 Mystery Numbers Grid -->
     <div class="numbers-grid" id="numbers-grid">
       <!-- 5 slots rendered via JS -->
     </div>
@@ -373,9 +437,9 @@
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(523.25, now); // C5
-        osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
-        osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.setValueAtTime(659.25, now + 0.08);
+        osc.frequency.setValueAtTime(783.99, now + 0.16);
         gain.gain.setValueAtTime(0.12, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
         osc.connect(gain);
@@ -418,495 +482,116 @@
     }
     const audio = new SoundEngine();
 
-    // Roster of Characters & Authentic Contextual Numbers
-    const ROSTER = [
-      {
-        name: 'Katsuki Bakugo',
-        series: 'My Hero Academia',
-        puzzles: [
-          {
-            number: '1st',
-            correctLabel: 'First-Year UA Sports Festival Champion',
-            options: [
-              'First-Year UA Sports Festival Champion',
-              'Class 1-A Overall Academic Exam Rank',
-              'Hero Billboard JP Debut Rank',
-              'First Student to Manifest a Quirk in Musutafu'
-            ]
-          },
-          {
-            number: '5th',
-            correctLabel: 'Quirk Apprehension Test Overall Rank',
-            options: [
-              'Quirk Apprehension Test Overall Rank',
-              'Number of Explosions Fired Per Second',
-              'Hero Work Studies Agency Choice',
-              'Pro Hero Provisional License Finish Order'
-            ]
-          },
-          {
-            number: '17th',
-            correctLabel: 'Class 1-A Student Seating Order',
-            options: [
-              'Class 1-A Student Seating Order',
-              'Age in the Final War Arc',
-              'Episode of First Villain Attack',
-              'Number of Grenade Bracers Carried'
-            ]
-          },
-          {
-            number: '25',
-            correctLabel: 'Volume Number of First Solo Cover',
-            options: [
-              'Volume Number of First Solo Cover',
-              'Power Percentage Threshold',
-              'Combat Training Score Points',
-              'Middle School Classroom Number'
-            ]
-          },
-          {
-            number: '705.2m',
-            correctLabel: 'Softball Pitch Ball Throw Distance',
-            options: [
-              'Softball Pitch Ball Throw Distance',
-              'Explosion Stun Grenade Blast Radius',
-              'Altitude Reached via Howitzer Impact',
-              'Ground Zero Rescue Zone Radius'
-            ]
-          }
-        ]
-      },
-      {
-        name: 'Roronoa Zoro',
-        series: 'One Piece',
-        puzzles: [
-          {
-            number: '3',
-            correctLabel: 'Number of Swords in Santoryu Style',
-            options: [
-              'Number of Swords in Santoryu Style',
-              'Original Bounty Value in Berries',
-              'Order He Joined the Straw Hat Crew',
-              'Number of Scars Inflicted by Mihawk'
-            ]
-          },
-          {
-            number: '21',
-            correctLabel: 'Grade Number of O Wazamono Meito Swords',
-            options: [
-              'Grade Number of O Wazamono Meito Swords',
-              'Age After the 2-Year Time Skip',
-              'Episode Debut in Romance Dawn',
-              'Number of Days Fasting at Marine Base'
-            ]
-          },
-          {
-            number: '71',
-            correctLabel: 'Number of Crewmembers in the Straw Hat Grand Fleet',
-            options: [
-              'Number of Attack Slashes in Dragon Twister',
-              'Volume Where He Cuts Pica in Half',
-              'Chapter He Replaced Wado Ichimonji',
-              'Percentage of Haki Exhaustion in Wano'
-            ]
-          },
-          {
-            number: '320,000,000',
-            correctLabel: 'Bounty Post-Dressrosa Arc (Berries)',
-            options: [
-              'Bounty Post-Dressrosa Arc (Berries)',
-              'Bounty Post-Alabasta Arc',
-              'Initial Wanted Poster Reward',
-              'Reward Offered by CP9 for His Capture'
-            ]
-          },
-          {
-            number: '1,111,000,000',
-            correctLabel: 'Current Post-Wano Yonko Officer Bounty',
-            options: [
-              'Current Post-Wano Yonko Officer Bounty',
-              'Estimated Worth of Wado Ichimonji',
-              'Straw Hat Fleet Total Worth',
-              'King the Conflagration Final Bounty'
-            ]
-          }
-        ]
-      },
-      {
-        name: 'Satoru Gojo',
-        series: 'Jujutsu Kaisen',
-        puzzles: [
-          {
-            number: '28',
-            correctLabel: 'Age at the Beginning of Jujutsu Kaisen',
-            options: [
-              'Age at the Beginning of Jujutsu Kaisen',
-              'Special Grade Sorcerer Classification ID',
-              'Tokyo Jujutsu High Class Graduation Year',
-              'Number of Sorcerers Exorcised at Shibuya'
-            ]
-          },
-          {
-            number: '0.2s',
-            correctLabel: 'Duration of Unlimited Void in Shibuya Subways',
-            options: [
-              'Duration of Unlimited Void in Shibuya Subways',
-              'Time to Cast Reversed Cursed Technique',
-              'Short-Range Teleport Reaction Window',
-              'Hollow Purple Activation Charge Time'
-            ]
-          },
-          {
-            number: '100%',
-            correctLabel: 'Infinity Filtering Barrier Efficiency',
-            options: [
-              'Infinity Filtering Barrier Efficiency',
-              'Black Flash Probability Rate',
-              'Max Cursed Energy Reserves Consumed',
-              'Sukuna Vessel Suppression Rate'
-            ]
-          },
-          {
-            number: '2018',
-            correctLabel: 'Year of the Shibuya Incident in Canon',
-            options: [
-              'Year of the Shibuya Incident in Canon',
-              'Year He Slew Suguru Geto in Shinjuku',
-              'Year He Was Sealed in the Prison Realm',
-              'Year He Graduated High School'
-            ]
-          },
-          {
-            number: '236',
-            correctLabel: 'Chapter Number of the Legendary Sukuna Climax',
-            options: [
-              'Chapter Number of the Legendary Sukuna Climax',
-              'Volume Number of Hidden Inventory Arc',
-              'Prison Realm Unsealing Chapter',
-              'First Appearance in Jujutsu Kaisen 0'
-            ]
-          }
-        ]
-      },
-      {
-        name: 'Naruto Uzumaki',
-        series: 'Naruto',
-        puzzles: [
-          {
-            number: '7th',
-            correctLabel: 'Seventh Hokage of the Hidden Leaf Village',
-            options: [
-              'Seventh Hokage of the Hidden Leaf Village',
-              'Ranking in Chunin Exam Preliminary Rounds',
-              'Tailed Beast Count Sealed Inside Him',
-              'Team 7 Original Academy Position'
-            ]
-          },
-          {
-            number: '9',
-            correctLabel: 'Number of Tails of Kurama the Fox Spirit',
-            options: [
-              'Number of Tails of Kurama the Fox Spirit',
-              'Number of Chakra Natures Mastered',
-              'Number of Jinchuriki Captured by the Akatsuki',
-              'Age When He Learned the Shadow Clone Jutsu'
-            ]
-          },
-          {
-            number: '12',
-            correctLabel: 'Age During the Chunin Exams & Genin Graduation',
-            options: [
-              'Age During the Chunin Exams & Genin Graduation',
-              'Number of Ninja in the Konoha 11',
-              'Number of Gates Opened Against Gaara',
-              'Number of Rasengan Variations Invented'
-            ]
-          },
-          {
-            number: '1000',
-            correctLabel: 'Multiple Shadow Clone Jutsu Unit Count',
-            options: [
-              'Multiple Shadow Clone Jutsu Unit Count',
-              'Thousand Years of Death Technique Rank',
-              'Number of Wind Style Shurikens Mastered',
-              'Points Scored in the Written Chunin Exam'
-            ]
-          },
-          {
-            number: '64',
-            correctLabel: 'Eight Trigrams Sixty-Four Palms Counter Encounter',
-            options: [
-              'Eight Trigrams Sixty-Four Palms Counter Encounter',
-              'Number of Frogs on Mount Myoboku',
-              'Chapter Number of the Pain Battle Climax',
-              'Total Number of Episodes in the First Arc'
-            ]
-          }
-        ]
-      },
-      {
-        name: 'Levi Ackerman',
-        series: 'Attack on Titan',
-        puzzles: [
-          {
-            number: '160cm',
-            correctLabel: 'Canon Height of Humanity\'s Strongest Soldier',
-            options: [
-              'Canon Height of Humanity\'s Strongest Soldier',
-              'Blade Reach with ODM Wire Extension',
-              'Wall Maria Breach Point Width',
-              'Vertical Leap on Thunder Spear Impact'
-            ]
-          },
-          {
-            number: '65kg',
-            correctLabel: 'Canon Weight Without ODM Gear Harness',
-            options: [
-              'Canon Weight Without ODM Gear Harness',
-              'Maximum Gas Pressure in Cylinder Tank',
-              'Weight of Steel Blade Replacement Box',
-              'Impact Velocity Against the Beast Titan'
-            ]
-          },
-          {
-            number: '30+',
-            correctLabel: 'Canon Approximate Age in Season 1',
-            options: [
-              'Canon Approximate Age in Season 1',
-              'Total Titans Slayed in Trost District',
-              'Number of Survey Corps Cadets in Special Squad',
-              'Minutes of Continuous Air Flight Time'
-            ]
-          },
-          {
-            number: '1st',
-            correctLabel: 'Rank as Humanity\'s Strongest Soldier',
-            options: [
-              'Rank as Humanity\'s Strongest Soldier',
-              'First Soldier to Use Thunder Spears',
-              'Squad Leader Order in Scout Expedition',
-              'Position in 104th Cadet Corps Class'
-            ]
-          },
-          {
-            number: '136',
-            correctLabel: 'Chapter Number of the Final Port Battle Climax',
-            options: [
-              'Chapter Number of the Final Port Battle Climax',
-              'Number of Pure Titans Killed in Shiganshina',
-              'Beast Titan Engagement Distance in Meters',
-              'Wall Rose Underground Sector Code'
-            ]
-          }
-        ]
-      },
-      {
-        name: 'Monkey D. Luffy',
-        series: 'One Piece',
-        puzzles: [
-          {
-            number: '5th',
-            correctLabel: 'Title: Fifth Emperor of the Sea Announcement',
-            options: [
-              'Title: Fifth Emperor of the Sea Announcement',
-              'Number of Devil Fruit Gears Unlocked',
-              'Ranking in Marineford War Priority Targets',
-              'Order He Escaped Impel Down Prison'
-            ]
-          },
-          {
-            number: '10',
-            correctLabel: 'Target Number of Core Straw Hat Crewmembers',
-            options: [
-              'Target Number of Core Straw Hat Crewmembers',
-              'Number of Shadows Absorbed in Nightmare Form',
-              'Minutes Gear Fourth Boundman Lasts',
-              'Number of Supernovas on Sabaody Archipelago'
-            ]
-          },
-          {
-            number: '30,000,000',
-            correctLabel: 'First Ever Bounty Post-Arlong Park (Berries)',
-            options: [
-              'First Ever Bounty Post-Arlong Park (Berries)',
-              'Bounty After Defeating Crocodile in Alabasta',
-              'Price of the Straw Hat Given by Shanks',
-              'Bounty Placed by Captain Kuro'
-            ]
-          },
-          {
-            number: '1,500,000,000',
-            correctLabel: 'Bounty Post-Whole Cake Island Arc (Berries)',
-            options: [
-              'Bounty Post-Whole Cake Island Arc (Berries)',
-              'Bounty Post-Dressrosa Arc',
-              'Katukuri Defeat Bounty Compensation',
-              'Price Offered for the Gomu Gomu no Mi'
-            ]
-          },
-          {
-            number: '3,000,000,000',
-            correctLabel: 'Current Yonko Bounty After Defeating Kaido',
-            options: [
-              'Current Yonko Bounty After Defeating Kaido',
-              'Whitebeard Final Bounty Worth',
-              'Roger Legend Legacy Bounty Value',
-              'Cross Guild Bounty on Fleet Admiral Akainu'
-            ]
-          }
-        ]
-      },
-      {
-        name: 'Son Goku',
-        series: 'Dragon Ball Z',
-        puzzles: [
-          {
-            number: '4',
-            correctLabel: 'Four-Star Dragon Ball Inherited from Grandpa Gohan',
-            options: [
-              'Four-Star Dragon Ball Inherited from Grandpa Gohan',
-              'Number of Super Saiyan Form Tiers in Z',
-              'Kaioken Maximum Multiplier on King Kai Planet',
-              'Number of Androids Slayed in the Cell Games'
-            ]
-          },
-          {
-            number: '7',
-            correctLabel: 'Number of Dragon Balls Needed to Summon Shenron',
-            options: [
-              'Number of Dragon Balls Needed to Summon Shenron',
-              'Universe 7 Team Tournament Position',
-              'Days Spent Inside the Hyperbolic Time Chamber',
-              'Number of Masters He Trained Under in Canon'
-            ]
-          },
-          {
-            number: '50x',
-            correctLabel: 'Base Power Multiplier for Super Saiyan 1',
-            options: [
-              'Base Power Multiplier for Super Saiyan 1',
-              'Maximum Gravity Resistance on Way to Namek',
-              'Kaioken Burst Multiplier Against Frieza',
-              'Spirit Bomb Planet Energy Amplification Rate'
-            ]
-          },
-          {
-            number: '9000',
-            correctLabel: 'Scouter Reading Level ("It\'s Over 9000!")',
-            options: [
-              'Scouter Reading Level ("It\'s Over 9000!")',
-              'Nappa Base Power Level Calculation',
-              'Years Master Roshi Lived Before King Piccolo',
-              'Snake Way Road Length in Miles'
-            ]
-          },
-          {
-            number: '3',
-            correctLabel: 'Super Saiyan 3 Form Debut Against Majin Buu',
-            options: [
-              'Super Saiyan 3 Form Debut Against Majin Buu',
-              'Number of Times He Has Passed to the Other World',
-              'Number of Sons in the Son Family Household',
-              'Minutes of Fusion Dance Fusion Limit'
-            ]
-          }
-        ]
-      },
-      {
-        name: 'Tanjiro Kamado',
-        series: 'Demon Slayer',
-        puzzles: [
-          {
-            number: '13th',
-            correctLabel: 'Thirteenth Form of Sun Breathing (Hinokami Kagura)',
-            options: [
-              'Thirteenth Form of Sun Breathing (Hinokami Kagura)',
-              'Rank in Final Selection Corps Cadets',
-              'Episode of Legendary Hinokami Dance Debut',
-              'Number of Lower Demon Moons Defeated'
-            ]
-          },
-          {
-            number: '10',
-            correctLabel: 'Number of Water Breathing Forms Learned from Urokodaki',
-            options: [
-              'Number of Water Breathing Forms Learned from Urokodaki',
-              'Age When His Family Was Attacked by Muzan',
-              'Number of Hashira in the Demon Slayer Corps',
-              'Days Spent Smashing the Giant Boulder'
-            ]
-          },
-          {
-            number: '2',
-            correctLabel: 'Years of Rigorous Training on Mt. Sagiri',
-            options: [
-              'Years of Rigorous Training on Mt. Sagiri',
-              'Number of Nichirin Swords Broken in Battle',
-              'Years Nezuko Remained Sleeping in the Cabin',
-              'Number of Upper Moons Fought in Entertainment District'
-            ]
-          },
-          {
-            number: '7',
-            correctLabel: 'Days Surviving the Final Selection on Mt. Fujikasane',
-            options: [
-              'Days Surviving the Final Selection on Mt. Fujikasane',
-              'Wisteria Flower Tree Poison Toxicity Level',
-              'Rank on the Ten-Tier Demon Slayer Hierarchy',
-              'Number of Forms in Flame Breathing'
-            ]
-          },
-          {
-            number: '15',
-            correctLabel: 'Age When Officially Inducted as a Demon Slayer',
-            options: [
-              'Age When Officially Inducted as a Demon Slayer',
-              'Chapter Number of Rui Battle Climax',
-              'Minutes of Sun Breathing Stamina Limit',
-              'Weight of the Wooden Carrying Box in Kilograms'
-            ]
-          }
-        ]
-      }
-    ];
-
+    // App State
+    let currentCategory = 'anime';
+    let currentMode = 'solo'; // 'solo' | 'versus'
     let currentStage = 0;
     let selectedSlotIndex = 0;
     let solvedSlots = {};
     let strikes = 0;
     let totalScore = 0;
+    let p2Score = 0;
+    let activePlayer = 1; // 1 or 2
 
-    function initStage(idx) {
-      currentStage = idx;
+    function getCategoryRoster() {
+      if (window.CONNECT5_DATA && window.CONNECT5_DATA[currentCategory]) {
+        return window.CONNECT5_DATA[currentCategory];
+      }
+      return [
+        {
+          name: 'Monkey D. Luffy',
+          series: 'One Piece',
+          puzzles: [
+            { number: '5th', correctLabel: 'Fifth Emperor of the Sea Announcement', options: ['Fifth Emperor of the Sea Announcement', 'Number of Devil Fruit Gears', 'Order He Escaped Impel Down', 'Ranking in Marineford Priority'] },
+            { number: '10', correctLabel: 'Target Number of Core Crewmembers', options: ['Target Number of Core Crewmembers', 'Shadows Absorbed in Nightmare Form', 'Minutes Gear 4 Lasts', 'Supernovas on Sabaody'] },
+            { number: '30,000,000', correctLabel: 'First Ever Bounty Post-Arlong Park (Berries)', options: ['First Ever Bounty Post-Arlong Park (Berries)', 'Bounty After Alabasta Arc', 'Straw Hat Price Given by Shanks', 'Captain Kuro Bounty'] },
+            { number: '1,500,000,000', correctLabel: 'Bounty Post-Whole Cake Island (Berries)', options: ['Bounty Post-Whole Cake Island (Berries)', 'Post-Dressrosa Bounty', 'Katakuri Defeat Bonus', 'Price of Gomu Gomu no Mi'] },
+            { number: '3,000,000,000', correctLabel: 'Current Yonko Bounty After Defeating Kaido', options: ['Current Yonko Bounty After Defeating Kaido', 'Whitebeard Bounty Value', 'Roger Legend Bounty', 'Cross Guild Marine Bounty'] }
+          ]
+        }
+      ];
+    }
+
+    function switchCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.selector-bar .pill-btn').forEach(btn => {
+        if (btn.id.startsWith('cat-')) btn.classList.remove('active');
+      });
+      const activeBtn = document.getElementById(`cat-${cat}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      currentStage = 0;
+      totalScore = 0;
+      p2Score = 0;
+      initStage(0);
+    }
+
+    function switchMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.selector-bar .pill-btn').forEach(btn => {
+        if (btn.id.startsWith('mode-')) btn.classList.remove('active');
+      });
+      const activeBtn = document.getElementById(`mode-${mode}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const turnHud = document.getElementById('turn-hud');
+      const p2Hud = document.getElementById('score-p2-hud');
+      if (mode === 'versus') {
+        turnHud.style.display = 'block';
+        p2Hud.style.display = 'block';
+      } else {
+        turnHud.style.display = 'none';
+        p2Hud.style.display = 'none';
+      }
+
+      currentStage = 0;
+      totalScore = 0;
+      p2Score = 0;
+      activePlayer = 1;
+      initStage(0);
+    }
+
+    function initStage(stageIdx) {
+      const roster = getCategoryRoster();
+      currentStage = stageIdx % roster.length;
       selectedSlotIndex = 0;
       solvedSlots = {};
       strikes = 0;
 
-      const char = ROSTER[currentStage];
-      document.getElementById('level-display').innerText = `${currentStage + 1} / ${ROSTER.length}`;
-      document.getElementById('char-series').innerText = char.series.toUpperCase();
+      const char = roster[currentStage];
       document.getElementById('char-name').innerText = char.name;
+      document.getElementById('char-series').innerText = char.series.toUpperCase();
+      document.getElementById('level-display').innerText = `${currentStage + 1} / ${roster.length}`;
+      document.getElementById('solved-count').innerText = `0 / 5`;
+      document.getElementById('score-display').innerText = totalScore;
+      document.getElementById('p2-score-display').innerText = p2Score;
+      updateTurnHUD();
       updateStrikesHUD();
+
       renderNumbers();
       renderOptions();
     }
 
+    function updateTurnHUD() {
+      if (currentMode === 'versus') {
+        const turnElem = document.getElementById('turn-display');
+        turnElem.innerText = `PLAYER ${activePlayer}`;
+        turnElem.style.color = activePlayer === 1 ? 'var(--accent-blue)' : 'var(--accent-amber)';
+      }
+    }
+
     function renderNumbers() {
+      const roster = getCategoryRoster();
+      const char = roster[currentStage];
       const grid = document.getElementById('numbers-grid');
       grid.innerHTML = '';
-      const char = ROSTER[currentStage];
 
-      char.puzzles.forEach((p, idx) => {
-        const isSolved = solvedSlots[idx] !== undefined;
+      char.puzzles.forEach((puz, idx) => {
+        const slot = document.createElement('div');
+        const isSolved = !!solvedSlots[idx];
         const isSelected = selectedSlotIndex === idx;
 
-        const slot = document.createElement('div');
-        slot.className = `number-slot ${isSolved ? 'solved' : ''} ${isSelected && !isSolved ? 'selected' : ''}`;
-        slot.innerHTML = `
-          <div class="slot-idx">NUMBER 0${idx + 1}</div>
-          <div class="slot-val">${p.number}</div>
-          ${isSolved ? `<div class="slot-solution-label">${p.correctLabel}</div>` : ''}
-        `;
+        slot.className = `number-slot ${isSolved ? 'solved' : ''} ${isSelected ? 'selected' : ''}`;
         slot.onclick = () => {
           if (!isSolved) {
             selectedSlotIndex = idx;
@@ -914,54 +599,79 @@
             renderOptions();
           }
         };
+
+        slot.innerHTML = `
+          <div class="slot-idx">STAT 0${idx + 1}</div>
+          <div class="slot-val">${puz.number}</div>
+          ${isSolved ? `<div class="slot-solution-label">${puz.correctLabel}</div>` : ''}
+        `;
         grid.appendChild(slot);
       });
 
-      const count = Object.keys(solvedSlots).length;
-      document.getElementById('solved-count').innerText = `${count} / 5`;
+      const solvedTotal = Object.keys(solvedSlots).length;
+      document.getElementById('solved-count').innerText = `${solvedTotal} / 5`;
     }
 
     function renderOptions() {
-      const container = document.getElementById('options-list');
-      const title = document.getElementById('deck-title');
-      container.innerHTML = '';
+      const roster = getCategoryRoster();
+      const char = roster[currentStage];
+      const deckTitle = document.getElementById('deck-title');
+      const list = document.getElementById('options-list');
+      list.innerHTML = '';
 
-      const char = ROSTER[currentStage];
-      const curPuzzle = char.puzzles[selectedSlotIndex];
-
-      if (!curPuzzle || solvedSlots[selectedSlotIndex]) {
-        title.innerText = 'SELECT AN UNSOLVED NUMBER TO CONNECT';
+      if (solvedSlots[selectedSlotIndex]) {
+        deckTitle.innerText = `STAT 0${selectedSlotIndex + 1} (${char.puzzles[selectedSlotIndex].number}) IS ALREADY SOLVED!`;
         return;
       }
 
-      title.innerText = `DEDUCE: WHAT DOES "${curPuzzle.number}" CONNECT TO FOR ${char.name.toUpperCase()}?`;
+      const curPuzzle = char.puzzles[selectedSlotIndex];
+      deckTitle.innerText = `WHAT DOES "${curPuzzle.number}" SIGNIFY FOR ${char.name.toUpperCase()}?`;
 
-      // Shuffle options for fun replayability
+      // Shuffle options deterministically
       const opts = [...curPuzzle.options];
-      opts.forEach((opt) => {
+      opts.sort(() => 0.5 - Math.random());
+
+      opts.forEach((optText) => {
         const btn = document.createElement('button');
         btn.className = 'option-btn';
-        btn.innerText = opt;
-        btn.onclick = () => submitGuess(opt, btn);
-        container.appendChild(btn);
+        btn.innerHTML = `<span>${optText}</span>`;
+        btn.onclick = () => submitGuess(optText, btn);
+        list.appendChild(btn);
       });
     }
 
     function submitGuess(chosenOption, btnElem) {
-      const char = ROSTER[currentStage];
+      const roster = getCategoryRoster();
+      const char = roster[currentStage];
       const curPuzzle = char.puzzles[selectedSlotIndex];
 
       if (chosenOption === curPuzzle.correctLabel) {
-        // Correct deduction!
         audio.playCorrect();
         solvedSlots[selectedSlotIndex] = true;
-        totalScore += 200;
-        document.getElementById('score-display').innerText = totalScore;
+
+        if (currentMode === 'versus') {
+          if (activePlayer === 1) {
+            totalScore += 200;
+            document.getElementById('score-display').innerText = totalScore;
+          } else {
+            p2Score += 200;
+            document.getElementById('p2-score-display').innerText = p2Score;
+          }
+        } else {
+          totalScore += 200;
+          document.getElementById('score-display').innerText = totalScore;
+        }
 
         // Auto-select next unsolved number
         const nextUnsolved = [0, 1, 2, 3, 4].find(i => !solvedSlots[i]);
         if (nextUnsolved !== undefined) {
           selectedSlotIndex = nextUnsolved;
+        }
+
+        // Toggle player turn in versus
+        if (currentMode === 'versus') {
+          activePlayer = activePlayer === 1 ? 2 : 1;
+          updateTurnHUD();
         }
 
         renderNumbers();
@@ -970,15 +680,25 @@
         // Check stage win
         if (Object.keys(solvedSlots).length === 5) {
           audio.playVictory();
-          showModal(true, `All 5 numeric connections decrypted for ${char.name}! +1,000 Stage Bonus.`);
+          let winMsg = `All 5 numeric connections decrypted for ${char.name}! +1,000 Stage Bonus.`;
+          if (currentMode === 'versus') {
+            const winner = totalScore > p2Score ? 'PLAYER 1 WINS!' : (p2Score > totalScore ? 'PLAYER 2 WINS!' : 'TIE MATCH!');
+            winMsg += ` Final Score — P1: ${totalScore} pts | P2: ${p2Score} pts. ${winner}`;
+          }
+          showModal(true, winMsg);
         }
       } else {
-        // Wrong choice
         audio.playWrong();
         strikes++;
         updateStrikesHUD();
         btnElem.classList.add('wrong-shake');
         btnElem.disabled = true;
+
+        // Toggle turn on miss in versus mode
+        if (currentMode === 'versus') {
+          activePlayer = activePlayer === 1 ? 2 : 1;
+          updateTurnHUD();
+        }
 
         if (strikes >= 3) {
           showModal(false, `3 Strikes accumulated. You failed to decrypt ${char.name}'s statistics.`);
@@ -994,6 +714,7 @@
     }
 
     function showModal(isWin, msg) {
+      const roster = getCategoryRoster();
       const modal = document.getElementById('round-modal');
       const title = document.getElementById('modal-title');
       const msgDisp = document.getElementById('modal-msg');
@@ -1004,7 +725,7 @@
       msgDisp.innerText = msg;
 
       if (isWin) {
-        btn.innerText = currentStage + 1 < ROSTER.length ? 'NEXT CHARACTER' : 'ARCADE MASTER: RESTART';
+        btn.innerText = currentStage + 1 < roster.length ? 'NEXT CHARACTER' : 'CATEGORY MASTER: RESTART';
       } else {
         btn.innerText = 'RETRY CHARACTER';
       }
@@ -1012,11 +733,12 @@
     }
 
     window.nextStage = function() {
+      const roster = getCategoryRoster();
       document.getElementById('round-modal').style.display = 'none';
       if (strikes >= 3) {
         initStage(currentStage);
       } else {
-        if (currentStage + 1 < ROSTER.length) {
+        if (currentStage + 1 < roster.length) {
           initStage(currentStage + 1);
         } else {
           initStage(0);
