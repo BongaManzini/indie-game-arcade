@@ -9,7 +9,7 @@
 
 ## 1. Project Overview
 
-The **Indie Game Arcade** is a unified browser gaming platform and systems engineering laboratory featuring four complete, playable games written entirely from scratch without external commercial game engines (like Unity, Unreal, or Godot).
+The **Indie Game Arcade** is a unified browser gaming platform and systems engineering laboratory featuring five complete, playable games written entirely from scratch without external commercial game engines (like Unity, Unreal, or Godot).
 
 Every graphic is drawn to an HTML5 Canvas, every sound effect (gunshots, sonar pings, explosions, parries) is synthesized on-the-fly via the Web Audio API, and physics interactions are computed deterministically.
 
@@ -23,6 +23,7 @@ Every graphic is drawn to an HTML5 Canvas, every sound effect (gunshots, sonar p
 | **Impostor: The Blightstead** | [`impostor/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/impostor/) | Gothic Agronomic Extraction | Closed-loop bio-industrial soil chemistry, living ammunition cultivation (Phosphor Flares, Kinetic Slugs, Suture Inhalers), raymarched 2D field-of-view flashlight beam, and extraction tether defense. |
 | **Scale: Resonance Ping** | [`scale/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/scale/) | Hadal Trench Acoustic Combat | 11,000m bathyscaphe operations, hydrophone frequency modulation (ELF to VLF), LSTR-100 reactor power distribution, thermal cavitation avoidance, and deep-sea benthic aggro. |
 | **Crucible: Zone 44 & Grand Cross** | [`crucible/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/crucible/) | Normalized Asymmetric Auto-Brawler | The Chunin Exams Zone 44 Forest of Death scroll extraction, 2.5x poise canopy ambush, and $15 Budget-Draft across 4 sockets (Technique, Hands, Speed, Teammate) with normalized physics. |
+| **Neural Sieve: 60s Protocol** | [`sieve/`](file:///home/bongamanzini/Documents/Coding%20Projects/games/sieve/) | 60s Forensic Bitmask Triage | Rapid binary trait elimination across 45+ target profiles, real-time 60s hard countdown, facility bulkhead seals (+5s bonus), sentry grid defense, and containment override. |
 
 ---
 
@@ -60,11 +61,16 @@ games/
 │   ├── index.html        # Bathyscaphe bridge console
 │   ├── css/              # Analog CRT styles
 │   └── js/               # Hydrophone acoustics, reactor power, game loop
-└── crucible/             # Game 4: Grand Cross Crucible
-    ├── index.html        # $15 Draft Bay and combat arena
-    ├── style.css         # Tactical cyberpunk layout
-    ├── docs/             # GDD and scenario documentation
-    └── src/              # Combat engine, audio synthesis, schemas
+├── crucible/             # Game 4: Grand Cross Crucible
+│   ├── index.html        # $15 Draft Bay and combat arena
+│   ├── style.css         # Tactical cyberpunk layout
+│   ├── docs/             # GDD and scenario documentation
+│   └── src/              # Combat engine, audio synthesis, schemas
+└── sieve/                # Game 5: Neural Sieve: 60s Protocol
+    ├── index.html        # Forensic triage console
+    ├── style.css         # Minimal dark-mode SaaS interface
+    ├── README.md         # GDD and bitmask architecture specs
+    └── src/              # Bitmask filter engine and procedural Web Audio
 ```
 
 ---
@@ -94,3 +100,5 @@ The arcade is deployed directly to GitHub Pages:
   - Impostor: `https://bongamanzini.github.io/indie-game-arcade/impostor/`
   - Scale: `https://bongamanzini.github.io/indie-game-arcade/scale/`
   - Crucible: `https://bongamanzini.github.io/indie-game-arcade/crucible/`
+  - Neural Sieve: `https://bongamanzini.github.io/indie-game-arcade/sieve/`
+

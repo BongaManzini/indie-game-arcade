@@ -3,18 +3,18 @@
    ========================================================= */
 
 :root {
-  --bg-hull: #080c0a;
-  --panel-plate: #101814;
-  --panel-border: #1d2a23;
-  --bezel-dark: #070c09;
-  --phosphor-green: #39d968;
-  --phosphor-bright: #00ff66;
-  --phosphor-dim: #185429;
-  --amber-alert: #f39c12;
-  --red-alert: #e74c3c;
-  --cyan-target: #00ffff;
-  --text-dim: #608870;
-  --font-mono: 'Courier New', Courier, monospace;
+  --bg-hull: #0a0a0a;
+  --panel-plate: #111111;
+  --panel-border: #262626;
+  --bezel-dark: #141414;
+  --phosphor-green: #10b981;
+  --phosphor-bright: #34d399;
+  --phosphor-dim: #059669;
+  --amber-alert: #f59e0b;
+  --red-alert: #ef4444;
+  --cyan-target: #3b82f6;
+  --text-dim: #a1a1aa;
+  --font-mono: 'JetBrains Mono', monospace;
 }
 
 * {
@@ -30,20 +30,18 @@ body {
   font-family: var(--font-mono);
   overflow-x: hidden;
   padding: 12px;
-  background-image: 
-    radial-gradient(circle at 50% 50%, rgba(16, 28, 22, 0.4) 0%, rgba(3, 8, 5, 0.95) 100%),
-    repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.15) 0px, rgba(0, 0, 0, 0.15) 2px, transparent 2px, transparent 8px);
+  background-image: none;
 }
 
 /* CHASSIS CONTAINER */
 .cockpit-chassis {
   max-width: 1540px;
   margin: 0 auto;
-  border: 4px solid #1c2e24;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(0, 0, 0, 0.9);
+  border: 1px solid var(--panel-border);
+  box-shadow: none;
   background: var(--panel-plate);
   padding: 14px;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 /* TOP BRIDGE HEADER */
@@ -75,7 +73,7 @@ body {
   letter-spacing: 4px;
   text-align: center;
   color: #ffffff;
-  text-shadow: 0 0 10px var(--phosphor-bright);
+  text-shadow: none;
 }
 
 .sub-status {
@@ -97,11 +95,11 @@ body {
 /* COMMON PANEL STYLES */
 .panel {
   background: var(--bezel-dark);
-  border: 2px solid var(--panel-border);
+  border: 1px solid var(--panel-border);
   border-radius: 4px;
   padding: 12px;
   position: relative;
-  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.7);
+  box-shadow: none;
 }
 
 .panel-header {
@@ -136,10 +134,10 @@ body {
 .crt-frame {
   position: relative;
   background: #020704;
-  border: 3px solid #14351e;
-  border-radius: 8px;
+  border: 1px solid var(--panel-border);
+  border-radius: 4px;
   overflow: hidden;
-  box-shadow: inset 0 0 25px rgba(0, 255, 102, 0.15), 0 0 10px rgba(0, 0, 0, 0.9);
+  box-shadow: none;
 }
 
 .crt-frame canvas {
@@ -148,15 +146,7 @@ body {
   height: auto;
 }
 
-.crt-glass-glare {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 45%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 100%);
-  pointer-events: none;
-}
+.crt-glass-glare { display: none; }
 
 /* STATION 1: CONTROLS */
 .telemetry-controls {
@@ -198,7 +188,7 @@ body {
 
 .analog-select:focus {
   border-color: var(--phosphor-bright);
-  box-shadow: 0 0 6px var(--phosphor-dim);
+  box-shadow: none;
 }
 
 .dials-row {
@@ -248,7 +238,7 @@ body {
   border: 2px solid #000;
   border-radius: 2px;
   cursor: pointer;
-  box-shadow: 0 0 6px rgba(0, 255, 102, 0.6);
+  box-shadow: none;
 }
 
 /* BUTTONS */
@@ -271,7 +261,7 @@ body {
   background: #183e26;
   border-color: var(--phosphor-bright);
   color: #fff;
-  box-shadow: 0 0 8px rgba(0, 255, 102, 0.4);
+  box-shadow: none;
 }
 
 .chunky-btn:active {
@@ -285,13 +275,13 @@ body {
   border-color: var(--phosphor-bright);
   color: #fff;
   font-size: 12px;
-  text-shadow: 0 0 6px #00ff66;
+  text-shadow: none;
   animation: pulse-border 2s infinite;
 }
 
 @keyframes pulse-border {
   0%, 100% { border-color: var(--phosphor-dim); }
-  50% { border-color: var(--phosphor-bright); box-shadow: 0 0 10px rgba(0, 255, 102, 0.5); }
+  50% { border-color: var(--phosphor-bright); box-shadow: none; }
 }
 
 .btn-secondary {
@@ -333,7 +323,7 @@ body {
 .led-active-red {
   background: var(--red-alert) !important;
   color: #fff !important;
-  box-shadow: 0 0 8px var(--red-alert);
+  box-shadow: none;
 }
 
 .meter-track {
@@ -389,7 +379,7 @@ body {
 .active-silent {
   background: #2980b9 !important;
   color: #fff !important;
-  box-shadow: 0 0 10px rgba(41, 128, 185, 0.8);
+  box-shadow: none;
 }
 
 .vessel-stats-mini {
@@ -566,7 +556,7 @@ body {
 
 .lock-red { color: var(--red-alert) !important; }
 .lock-amber { color: var(--amber-alert) !important; }
-.lock-green { color: var(--phosphor-bright) !important; text-shadow: 0 0 6px var(--phosphor-bright); }
+.lock-green { color: var(--phosphor-bright) !important; text-shadow: none; }
 
 /* TERMINAL LOG */
 .log-container {
@@ -616,11 +606,11 @@ body {
 .modal-dialog {
   background: #0f1c14;
   border: 3px solid var(--phosphor-green);
-  border-radius: 6px;
+  border-radius: 4px;
   max-width: 650px;
   width: 90%;
   padding: 20px;
-  box-shadow: 0 0 30px rgba(0, 255, 102, 0.3);
+  box-shadow: none;
 }
 
 .modal-header {

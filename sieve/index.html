@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neural Sieve: 60s Protocol — Minimal Dark SaaS Triage</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header Navbar -->
+  <header class="top-header">
+    <div class="brand-group">
+      <span class="brand-badge">PROTOCOL 05</span>
+      <span class="brand-title">NEURAL SIEVE // 60S FORENSIC TRIAGE</span>
+    </div>
+    <div class="header-actions">
+      <a href="../index.html" class="btn-ctrl" style="text-decoration: none;">EXIT TO ARCADE</a>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- Welcome Pre-Flight Card -->
+    <section id="welcome-card" class="welcome-card">
+      <h1 class="welcome-h1">NEURAL SIEVE: 60S PROTOCOL</h1>
+      <p class="welcome-desc">
+        An unknown entity has bypassed outer perimeter firewall filters and initiated facility penetration.
+        You have exactly 60.00 seconds to test forensic ontological & biometric trait bitmasks, prune the
+        candidate database down to a single singularity node, and execute the containment override before total
+        facility breach.
+      </p>
+
+      <div class="rules-grid">
+        <div class="rule-box">
+          <h3>60-SECOND HARD CLOCK</h3>
+          <p>Global countdown running continuously in real time. Inconsistent trait queries incur a -3.0s penalty stall.</p>
+        </div>
+        <div class="rule-box">
+          <h3>BITMASK FORENSICS</h3>
+          <p>Query binary attributes (YES / NO). Each verified trait triggers bitwise candidate elimination across 45+ target profiles.</p>
+        </div>
+        <div class="rule-box">
+          <h3>FACILITY DEFENSES</h3>
+          <p>Prune pool below 25 to lock bulkheads (+5s bonus). Prune below 10 to arm sentry grid. Isolate 1 entity to unlock containment override.</p>
+        </div>
+      </div>
+
+      <button id="btn-start-protocol" class="btn-primary-action" style="margin-top: 16px;">
+        INITIALIZE 60S TRIAGE PROTOCOL
+      </button>
+    </section>
+
+    <!-- Protocol Arena Layout -->
+    <section id="protocol-arena" class="protocol-arena" style="display: none;">
+      <!-- Left Column: Query Switches -->
+      <div class="sieve-panel">
+        <div class="panel-head">
+          <span class="panel-title">QUERY DECK // TRAIT SIFTING</span>
+          <div class="timer-box">
+            <div class="timer-bar-track">
+              <div id="timer-bar" class="timer-bar-fill"></div>
+            </div>
+            <div id="timer-display" class="timer-val">60.00s</div>
+          </div>
+        </div>
+        <div id="query-switches-container" class="query-list"></div>
+      </div>
+
+      <!-- Right Column: Candidates & Telemetry -->
+      <div class="facility-panel">
+        <div class="candidates-container">
+          <div class="panel-head">
+            <span class="panel-title">CANDIDATE SIGNATURES</span>
+            <span id="candidates-count-badge" class="brand-badge" style="background:#182030; color:#3b82f6;">45 ACTIVE</span>
+          </div>
+          <div id="candidates-list" class="candidates-body"></div>
+        </div>
+
+        <div class="defense-status-bar">
+          <div id="status-bulkhead" class="status-tag">BULKHEADS: OPEN</div>
+          <div id="status-turret" class="status-tag">TURRETS: STANDBY</div>
+        </div>
+
+        <div class="terminal-card">
+          <div class="terminal-title">TERMINAL TELEMETRY</div>
+          <div id="terminal-log-box" class="terminal-box"></div>
+        </div>
+
+        <button id="btn-execute-override" class="btn-primary-action" disabled>
+          CONTAINMENT OVERRIDE: PRUNING REQUIRED
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Debrief Modal -->
+  <div id="debrief-modal" class="modal-debrief" style="display: none;">
+    <div class="debrief-box">
+      <div id="debrief-title" class="debrief-title">PROTOCOL RESULT</div>
+      <p id="debrief-reason" style="font-size: 12px; color: #a1a1aa; margin-bottom: 16px;"></p>
+
+      <div class="debrief-stats-grid">
+        <div class="stat-cell">
+          <span>TARGET ENTITY</span>
+          <strong id="stat-target">---</strong>
+        </div>
+        <div class="stat-cell">
+          <span>TIME EXPENDED</span>
+          <strong id="stat-time">---</strong>
+        </div>
+        <div class="stat-cell">
+          <span>QUERIES TESTED</span>
+          <strong id="stat-queries">---</strong>
+        </div>
+        <div class="stat-cell">
+          <span>FORENSIC ACCURACY</span>
+          <strong id="stat-accuracy">---</strong>
+        </div>
+      </div>
+
+      <button class="btn-primary-action" onclick="window.sieve.startNewProtocol()">
+        RE-INITIALIZE PROTOCOL
+      </button>
+      <a href="../index.html" class="btn-ctrl" style="display: inline-block; margin-top: 12px; text-decoration: none;">
+        RETURN TO ARCADE
+      </a>
+    </div>
+  </div>
+
+  <script src="src/audio.js"></script>
+  <script src="src/game.js"></script>
+</body>
+</html>

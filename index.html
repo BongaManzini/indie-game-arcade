@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Indie Game Arcade & Systems Lab // Bonga Manzini</title>
-  <meta name="description" content="A curated collection of 4 playable browser games and tactical simulations built from scratch with pure HTML5 Canvas2D and Web Audio API synthesis.">
+  <meta name="description" content="A curated collection of 5 playable browser games and tactical simulations built from scratch with pure HTML5 Canvas2D and Web Audio API synthesis.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -520,7 +520,7 @@
   <!-- Navbar -->
   <header class="top-navbar">
     <div class="brand-group">
-      <div class="brand-logo-badge">LAB // 04</div>
+      <div class="brand-logo-badge">LAB // 05</div>
       <div class="brand-title">BONGA MANZINI ARCADE</div>
     </div>
     <nav class="nav-links">
@@ -535,14 +535,14 @@
     <div class="hero-pre">// DIEGETIC SYSTEMS &middot; ZERO RUNTIME FRAMEWORKS</div>
     <h1 class="hero-h1">Interactive Indie Game Arcade</h1>
     <p class="hero-lead">
-      A collection of four technical browser games engineered from first principles: <strong>Connect5 (Cipher Breach)</strong>, <strong>Impostor (The Blightstead)</strong>, <strong>Scale (Resonance Ping)</strong>, and <strong>Crucible (Zone 44 Chunin Exams & Grand Cross)</strong>. Each simulation is self-contained with pure Canvas2D graphics, real-time procedural Web Audio API synthesis, deterministic physics, and custom state machines—built without commercial game engines.
+      A collection of five technical browser games engineered from first principles: <strong>Connect5 (Cipher Breach)</strong>, <strong>Impostor (The Blightstead)</strong>, <strong>Scale (Resonance Ping)</strong>, <strong>Crucible (Zone 44 Chunin Exams & Grand Cross)</strong>, and <strong>Neural Sieve (60s Protocol)</strong>. Each simulation is self-contained with pure Canvas2D graphics, real-time procedural Web Audio API synthesis, deterministic physics, and custom state machines—built without commercial game engines.
     </p>
 
     <!-- Telemetry Strip -->
     <div class="telemetry-strip">
       <div class="stat-pill">
         <div class="stat-pill-label">ENGINES COMPILED</div>
-        <div class="stat-pill-val">4 PLAYABLE GAMES</div>
+        <div class="stat-pill-val">5 PLAYABLE GAMES</div>
       </div>
       <div class="stat-pill">
         <div class="stat-pill-label">AUDIO RUNTIME</div>
@@ -756,6 +756,53 @@
           </div>
         </div>
       </article>
+
+      <!-- Game 5: Neural Sieve -->
+      <article class="game-card">
+        <div class="card-banner" style="background: #111111;">
+          <div class="card-banner-grid"></div>
+          <div class="banner-top">
+            <span class="genre-badge" style="color: var(--accent-blue); border-color: rgba(59,130,246,0.4); background: rgba(59,130,246,0.1);">
+              SIEVE // 60S FORENSIC TRIAGE & BITMASK
+            </span>
+            <span style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);">60S PROTOCOL</span>
+          </div>
+          <h2 class="card-title">Neural Sieve: 60s Protocol</h2>
+        </div>
+        <div class="card-body">
+          <p class="card-synopsis">
+            High-speed forensic elimination protocol. Query binary ontological and biometric trait bitmasks against 45+ target profiles, trigger facility bulkhead defenses, and execute containment override before the 60s clock collapses.
+          </p>
+          <div class="card-features-list">
+            <div class="feature-item">
+              <span class="feature-bullet">&gt;</span>
+              <span><strong>60s Hard Clock:</strong> Real-time countdown loop with strict -3.0s penalty deductions for trait errors.</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-bullet">&gt;</span>
+              <span><strong>Bitmask Pruning:</strong> Instantaneous 64-bit style bitwise filtering across 8 orthogonal trait axes.</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-bullet">&gt;</span>
+              <span><strong>Facility Milestones:</strong> Seal bulkheads (+5s bonus), arm sentry turrets, and isolate the Singularity.</span>
+            </div>
+          </div>
+          <div class="card-tags">
+            <span class="tech-tag">60s Hard Clock</span>
+            <span class="tech-tag">Bitmask Forensics</span>
+            <span class="tech-tag">Facility Lockdown</span>
+            <span class="tech-tag">Web Audio API</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-play-primary" onclick="launchArcade('sieve/index.html', 'NEURAL SIEVE // 60S FORENSIC TRIAGE')">
+              PLAY SIEVE
+            </button>
+            <a href="sieve/index.html" target="_blank" rel="noopener" class="btn-open-direct">
+              OPEN DIRECT
+            </a>
+          </div>
+        </div>
+      </article>
     </div>
   </section>
 
@@ -799,6 +846,7 @@
         <button class="quick-tab-btn" onclick="switchGame('impostor/index.html', 'IMPOSTOR // THE BLIGHTSTEAD')">Impostor</button>
         <button class="quick-tab-btn" onclick="switchGame('scale/index.html', 'SCALE // RESONANCE PING COMBAT')">Scale</button>
         <button class="quick-tab-btn" onclick="switchGame('crucible/index.html', 'CRUCIBLE // ZONE 44 (FOREST OF DEATH) & GRAND CROSS')">Crucible</button>
+        <button class="quick-tab-btn" onclick="switchGame('sieve/index.html', 'NEURAL SIEVE // 60S FORENSIC TRIAGE')">Neural Sieve</button>
       </div>
 
       <div class="arcade-modal-actions">

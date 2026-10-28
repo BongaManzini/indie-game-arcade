@@ -1,14 +1,14 @@
-/* grid.css - 8x8 Tactical Grid & Unit Visualizer for Cipher Breach */
+/* grid.css - Clean, professional SaaS tactical grid for Connect5: Cipher Breach */
 
 .board-container {
     display: grid;
     grid-template-columns: 28px repeat(8, 54px);
     grid-template-rows: 28px repeat(8, 54px);
-    gap: 3px;
-    background: #030805;
-    padding: 10px;
-    border: 2px solid var(--panel-border);
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(26, 58, 42, 0.4);
+    gap: 2px;
+    background: #0a0a0a;
+    padding: 12px;
+    border: 1px solid #262626;
+    border-radius: 4px;
     position: relative;
 }
 
@@ -18,56 +18,56 @@
     align-items: center;
     justify-content: center;
     font-size: 11px;
-    color: var(--phosphor-dim);
-    font-weight: bold;
+    color: #71717a;
+    font-weight: 600;
 }
 
 /* Base Cell */
 .grid-cell {
     width: 54px;
     height: 54px;
-    background: #06110a;
-    border: 1px solid #102418;
+    background: #141414;
+    border: 1px solid #262626;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
+    transition: background 0.12s, border-color 0.12s;
 }
 
 .grid-cell:hover {
-    background: #0c2014;
-    border-color: var(--phosphor-dim);
+    background: #1c1c1c;
+    border-color: #383838;
 }
 
 /* Terrain Modifiers */
 .grid-cell.mountain {
-    background: #181d19;
-    border-color: #333d36;
+    background: #1a1a1a;
+    border-color: #2e2e2e;
 }
 
 .grid-cell.mountain::after {
-    content: '▲▲';
-    font-size: 14px;
-    color: #4a594e;
+    content: '^';
+    font-size: 16px;
+    font-weight: 700;
+    color: #52525b;
 }
 
 .grid-cell.water {
-    background: #031522;
-    border-color: #0d3858;
+    background: #0f172a;
+    border-color: #1e293b;
 }
 
 .grid-cell.water::after {
-    content: '≈≈';
-    font-size: 16px;
-    color: #1472b8;
+    content: '~';
+    font-size: 18px;
+    color: #38bdf8;
 }
 
 .grid-cell.objective {
-    background: rgba(0, 180, 255, 0.08);
-    border: 1px dashed #00b4ff;
-    box-shadow: inset 0 0 8px rgba(0, 180, 255, 0.2);
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px dashed #3b82f6;
 }
 
 .grid-cell.objective::before {
@@ -75,31 +75,25 @@
     position: absolute;
     bottom: 2px;
     font-size: 8px;
-    color: #00b4ff;
+    font-weight: 600;
+    color: #3b82f6;
     letter-spacing: 0.5px;
 }
 
 /* Telegraphed Attack Zone (Red Warning Line) */
 .grid-cell.telegraphed {
-    background: rgba(255, 51, 68, 0.22) !important;
-    border-color: var(--red-alert) !important;
-    animation: pulseTelegraph 1.4s infinite alternate;
+    background: rgba(239, 68, 68, 0.15) !important;
+    border-color: #ef4444 !important;
 }
 
 .grid-cell.telegraphed::after {
     content: '!';
     position: absolute;
     top: 2px;
-    right: 2px;
+    right: 3px;
     font-size: 10px;
     font-weight: bold;
-    color: var(--red-alert);
-    opacity: 0.9;
-}
-
-@keyframes pulseTelegraph {
-    from { background-color: rgba(255, 51, 68, 0.15); }
-    to { background-color: rgba(255, 51, 68, 0.35); }
+    color: #ef4444;
 }
 
 /* Units on Grid */
@@ -110,7 +104,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: 3px;
+    padding: 4px;
     z-index: 5;
     position: relative;
     border-radius: 2px;
@@ -118,20 +112,18 @@
 
 /* Player Mechs */
 .unit-entity.player {
-    background: rgba(57, 255, 116, 0.15);
-    border: 1px solid var(--phosphor-green);
-    box-shadow: 0 0 8px rgba(57, 255, 116, 0.3);
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid #10b981;
 }
 
 .unit-entity.player.selected {
-    border: 2px solid #ffffff;
-    box-shadow: 0 0 14px var(--phosphor-green);
-    background: rgba(57, 255, 116, 0.28);
+    border: 1px solid #ffffff;
+    background: rgba(16, 185, 129, 0.22);
 }
 
 .unit-name-badge {
     font-size: 9px;
-    font-weight: bold;
+    font-weight: 700;
     letter-spacing: 0.5px;
 }
 
@@ -144,32 +136,32 @@
 
 .hp-pip {
     width: 6px;
-    height: 4px;
-    background: var(--phosphor-green);
+    height: 3px;
+    background: #10b981;
+    border-radius: 1px;
 }
 
 .hp-pip.lost {
-    background: #1e3325;
+    background: #27272a;
 }
 
 .ap-indicator {
     font-size: 9px;
-    color: var(--amber-glow);
+    color: #f59e0b;
 }
 
 /* Enemy Units */
 .unit-entity.enemy {
-    background: rgba(255, 51, 68, 0.18);
-    border: 1px solid var(--red-alert);
-    box-shadow: 0 0 8px rgba(255, 51, 68, 0.3);
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid #ef4444;
 }
 
 .unit-entity.enemy.boss-cell {
-    background: rgba(255, 51, 68, 0.25);
-    border-color: #ff6677;
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #f87171;
 }
 
-/* Shield Effect */
+/* Shield Effect - Flat crisp outline */
 .unit-entity.shielded::before {
     content: '';
     position: absolute;
@@ -177,30 +169,16 @@
     left: -2px;
     right: -2px;
     bottom: -2px;
-    border: 2px solid var(--cyan-sigint);
-    background: rgba(0, 240, 255, 0.15);
-    box-shadow: 0 0 10px var(--cyan-sigint);
+    border: 1px solid #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
     pointer-events: none;
     z-index: 10;
-    animation: shieldFlicker 2s infinite ease-in-out;
-}
-
-@keyframes shieldFlicker {
-    0%, 100% { opacity: 0.7; }
-    50% { opacity: 0.95; }
 }
 
 /* Exposed Core Weakpoint */
 .unit-entity.weakpoint {
-    background: rgba(255, 184, 51, 0.4) !important;
-    border: 2px dashed var(--amber-glow) !important;
-    box-shadow: 0 0 14px var(--amber-glow) !important;
-    animation: weakpointPulse 0.8s infinite alternate;
-}
-
-@keyframes weakpointPulse {
-    from { transform: scale(0.96); }
-    to { transform: scale(1.04); }
+    background: rgba(245, 158, 11, 0.25) !important;
+    border: 1px dashed #f59e0b !important;
 }
 
 /* Stunned Indicator */
@@ -212,19 +190,18 @@
     transform: translate(-50%, -50%);
     font-size: 9px;
     font-weight: bold;
-    color: #ffea00;
-    text-shadow: 0 0 6px #ffea00;
+    color: #f59e0b;
     z-index: 20;
 }
 
 /* Action Targetable Highlights */
 .grid-cell.target-move {
-    background: rgba(57, 255, 116, 0.2);
-    border: 1px dashed var(--phosphor-green);
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px dashed #10b981;
 }
 
 .grid-cell.target-attack {
-    background: rgba(255, 184, 51, 0.25);
-    border: 1px solid var(--amber-glow);
+    background: rgba(245, 158, 11, 0.18);
+    border: 1px solid #f59e0b;
     cursor: crosshair;
 }
