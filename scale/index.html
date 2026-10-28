@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RESONANCE PING // HADAL TRENCH TARTARUS-7</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="cockpit-chassis">
+    <!-- TOP HEADER / BRIDGE CLASSIFICATION -->
+    <header class="bridge-header">
+      <div class="header-left">
+        <span class="vessel-tag">BATHYSCAPHE TRITON-IV</span>
+        <span class="dept-tag">DEPT. OF BENTHIC BIO-ACOUSTICS // HADAL SURVEY</span>
+      </div>
+      <div class="header-center">
+        <h1 class="game-title">RESONANCE PING</h1>
+        <span class="sub-status">SECTOR: TARTARUS CHASM [DEPTH: 9,200m - 11,000m]</span>
+      </div>
+      <div class="header-right">
+        <button id="help-toggle-btn" class="chunky-btn btn-secondary">MISSION DOSSIER [?]</button>
+      </div>
+    </header>
+
+    <!-- MAIN CONSOLE GRID: 4 DIEGETIC STATIONS -->
+    <main class="console-grid">
+
+      <!-- ============================================== -->
+      <!-- STATION 1: SENSOR & TELEMETRY ARRAY            -->
+      <!-- ============================================== -->
+      <section class="panel station-sensor">
+        <div class="panel-header">
+          <span class="panel-num">STATION 01</span>
+          <h2>ACOUSTIC TELEMETRY & RESONANCE PROBE</h2>
+          <span class="panel-cap">CAPACITOR: <strong id="sensor-cap-disp">100%</strong></span>
+        </div>
+
+        <div class="crt-frame main-crt">
+          <canvas id="tac-canvas" width="620" height="340"></canvas>
+          <div class="crt-glass-glare"></div>
+        </div>
+
+        <div class="telemetry-controls">
+          <div class="control-row">
+            <div class="control-group">
+              <label for="domain-select">TAXONOMIC DOMAIN</label>
+              <select id="domain-select" class="analog-select"></select>
+            </div>
+            <div class="control-group">
+              <label for="matrix-select">STRUCTURAL MATRIX</label>
+              <select id="matrix-select" class="analog-select"></select>
+            </div>
+            <div class="control-group">
+              <label for="metab-select">METABOLIC OUTPUT</label>
+              <select id="metab-select" class="analog-select"></select>
+            </div>
+          </div>
+
+          <div class="control-row dials-row">
+            <div class="dial-control">
+              <label>CARRIER FREQ: <span id="freq-display" class="val-pill">14.2 kHz</span></label>
+              <input type="range" id="freq-slider" min="3.0" max="30.0" step="0.2" value="14.2" class="slider">
+              <div class="range-labels"><span>3 kHz (ELF)</span><span>30 kHz (VLF)</span></div>
+            </div>
+
+            <div class="dial-control">
+              <label>AZIMUTH BEARING: <span id="azimuth-display" class="val-pill">280°</span></label>
+              <input type="range" id="azimuth-slider" min="0" max="359" step="1" value="280" class="slider">
+              <div class="range-labels"><span>000° (N)</span><span>180° (S)</span><span>359°</span></div>
+            </div>
+
+            <div class="fire-control">
+              <button id="fire-ping-btn" class="chunky-btn btn-fire-ping">
+                DISCHARGE PROBE [PING]
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- STATION 2: LIQUID SODIUM REACTOR & ACOUSTICS   -->
+      <!-- ============================================== -->
+      <section class="panel station-reactor">
+        <div class="panel-header">
+          <span class="panel-num">STATION 02</span>
+          <h2>LSTR-100 REACTOR & ACOUSTIC SIGNATURE</h2>
+          <span class="panel-cap" id="total-power-disp">100 / 100 PU</span>
+        </div>
+
+        <!-- ACOUSTIC NOISE & THREAT METER -->
+        <div class="acoustic-meter-box">
+          <div class="meter-head">
+            <span>WATER COLUMN NOISE: <strong id="db-meter-disp">38 dB</strong></span>
+            <div class="led-strip">
+              <span id="cav-led" class="led-pill">CAVITATION</span>
+              <span id="aggro-led" class="led-pill">STALKER AGGRO</span>
+            </div>
+          </div>
+          <div class="meter-track">
+            <div id="db-meter-bar" class="meter-fill" style="width: 15%;"></div>
+          </div>
+          <div class="meter-thresholds">
+            <span>35dB (AMBIENT)</span>
+            <span>65dB (CAV)</span>
+            <span>75dB (AGGRO)</span>
+            <span>95dB (APEX CHARGE)</span>
+          </div>
+        </div>
+
+        <!-- POWER DISTRIBUTION BUS MATRIX (FTL-STYLE) -->
+        <div class="power-matrix">
+          <div class="power-channel">
+            <label>TELEMETRY <span id="pwr-telemetry-disp">30 PU</span></label>
+            <input type="range" id="pwr-telemetry" min="0" max="50" value="30" class="slider pwr-slider">
+          </div>
+          <div class="power-channel">
+            <label>PROPULSION <span id="pwr-propulsion-disp">20 PU</span></label>
+            <input type="range" id="pwr-propulsion" min="0" max="50" value="20" class="slider pwr-slider">
+          </div>
+          <div class="power-channel">
+            <label>BALLAST PUMPS <span id="pwr-ballast-disp">15 PU</span></label>
+            <input type="range" id="pwr-ballast" min="0" max="50" value="15" class="slider pwr-slider">
+          </div>
+          <div class="power-channel">
+            <label>WEAPONS BANK <span id="pwr-weapons-disp">25 PU</span></label>
+            <input type="range" id="pwr-weapons" min="0" max="50" value="25" class="slider pwr-slider">
+          </div>
+          <div class="power-channel">
+            <label>LIFE SUPPORT <span id="pwr-lifeSupport-disp">10 PU</span></label>
+            <input type="range" id="pwr-lifeSupport" min="0" max="50" value="10" class="slider pwr-slider">
+          </div>
+        </div>
+
+        <div class="reactor-actions">
+          <button id="silent-run-btn" class="chunky-btn btn-silent">SILENT RUNNING: OFF</button>
+          <div class="vessel-stats-mini">
+            <span>BATTERY: <strong id="battery-disp">100%</strong></span>
+            <span>O2: <strong id="o2-disp">100%</strong></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- STATION 3: HELM, BALLAST & OCEANOGRAPHY        -->
+      <!-- ============================================== -->
+      <section class="panel station-helm">
+        <div class="panel-header">
+          <span class="panel-num">STATION 03</span>
+          <h2>HELM TELEGRAPH & TRENCH BATHYMETRY</h2>
+          <span class="panel-cap">HULL: <strong id="hull-integrity-disp">100%</strong></span>
+        </div>
+
+        <div class="gauges-cluster">
+          <div class="gauge-pod">
+            <span class="gauge-label">HEADING</span>
+            <span class="gauge-val" id="heading-disp">000°</span>
+          </div>
+          <div class="gauge-pod">
+            <span class="gauge-label">BENTHIC DEPTH</span>
+            <span class="gauge-val" id="depth-disp">9,200 m</span>
+            <span class="gauge-sub">CRUSH: 11,000m</span>
+          </div>
+          <div class="gauge-pod">
+            <span class="gauge-label">SPEED</span>
+            <span class="gauge-val" id="speed-disp">0.0 KTS</span>
+          </div>
+        </div>
+
+        <div class="helm-controls">
+          <div class="throttle-telegraph">
+            <span class="sub-label">ENGINE TELEGRAPH:</span>
+            <div class="btn-group">
+              <button id="throttle-stop" class="telegraph-btn">STOP</button>
+              <button id="throttle-slow" class="telegraph-btn">1/3 (SLOW)</button>
+              <button id="throttle-std" class="telegraph-btn">2/3 (STD)</button>
+              <button id="throttle-flank" class="telegraph-btn btn-danger">FLANK</button>
+            </div>
+          </div>
+
+          <div class="ballast-section">
+            <div class="ballast-slider-box">
+              <label>FWD BALLAST: <span id="fwd-ballast-disp">50%</span></label>
+              <input type="range" id="fwd-ballast" min="0" max="100" value="50" class="slider">
+            </div>
+            <div class="ballast-slider-box">
+              <label>AFT BALLAST: <span id="aft-ballast-disp">50%</span></label>
+              <input type="range" id="aft-ballast" min="0" max="100" value="50" class="slider">
+            </div>
+            <button id="blow-ballast-btn" class="chunky-btn btn-warning">BLOW BALLAST</button>
+          </div>
+
+          <div class="rudder-control">
+            <label>RUDDER ANGLE: <span id="rudder-display">0° MID</span></label>
+            <input type="range" id="rudder-slider" min="-30" max="30" value="0" class="slider">
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- STATION 4: TACTICAL WEAPONS & TELEMETRY DECRYPT-->
+      <!-- ============================================== -->
+      <section class="panel station-weapons">
+        <div class="panel-header">
+          <span class="panel-num">STATION 04</span>
+          <h2>TACTICAL COMBAT & HARMONIC OSCILLOSCOPE</h2>
+          <span class="panel-cap" id="weap-lock-status">INTERLOCK LOCKED [R < 90%]</span>
+        </div>
+
+        <div class="crt-frame sub-crt">
+          <canvas id="tel-canvas" width="460" height="230"></canvas>
+          <div class="crt-glass-glare"></div>
+        </div>
+
+        <div class="torpedo-bays">
+          <div class="tube-card">
+            <div class="tube-info">
+              <span class="tube-title">TUBE 1: HADAL-8 TORPEDO</span>
+              <span id="tube1-status" class="tube-state">DRY // LOADED</span>
+            </div>
+            <div class="tube-btns">
+              <button id="tube1-flood-btn" class="chunky-btn btn-small">FLOOD TUBE</button>
+              <button id="tube1-fire-btn" class="chunky-btn btn-fire-torp">FIRE TUBE 1</button>
+            </div>
+          </div>
+
+          <div class="tube-card">
+            <div class="tube-info">
+              <span class="tube-title">TUBE 2: ACOUSTIC DECOY</span>
+              <span id="tube2-status" class="tube-state">DRY // LOADED</span>
+            </div>
+            <div class="tube-btns">
+              <button id="tube2-flood-btn" class="chunky-btn btn-small">FLOOD TUBE</button>
+              <button id="tube2-fire-btn" class="chunky-btn btn-fire-decoy">EJECT DECOY</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TACTICAL TERMINAL LOG -->
+        <div class="log-container">
+          <div class="log-header">TACTICAL BRIDGE TELEMETRY LOG</div>
+          <div id="tactical-log" class="terminal-text"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- INSTRUCTIONS / MISSION BRIEFING MODAL -->
+    <div id="instructions-modal" class="modal-backdrop hidden">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3>OPERATIONAL DOSSIER: PROJECT RESONANCE PING</h3>
+          <button id="modal-close-btn" class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="dossier-section">
+            <h4>1. THE HUNT (SEMANTIC HOT-COLD TRIANGULATION)</h4>
+            <p>You are blind in the hadal deep. To find and kill the Apex Leviathan, you must fire targeted frequency probes across 4 parameters: <strong>Taxonomic Domain</strong>, <strong>Structural Matrix</strong>, <strong>Metabolic Output</strong>, and <strong>Carrier Frequency</strong>.</p>
+            <ul>
+              <li><strong>0 - 39% (Scatter):</strong> Total mismatch. Generates a deafening 25dB acoustic reverberation that draws stalkers.</li>
+              <li><strong>40 - 69% (Harmonic):</strong> Isolates target quadrant and coarse depth stratum.</li>
+              <li><strong>70 - 89% (Sub-Harmonic):</strong> Unmasks trench bathymetry contours and creature trajectory.</li>
+              <li><strong>90 - 99% (Resonant Coherence):</strong> Unlocks weapons targeting interlock and exposes vulnerable organs.</li>
+              <li><strong>100% (Harmonic Singularity):</strong> Paralyzes creature nervous system for immediate execution.</li>
+            </ul>
+          </div>
+          <div class="dossier-section">
+            <h4>2. THE ACOUSTIC BUDGET</h4>
+            <p>Every active ping, propeller cavitation burst, or ballast discharge radiates noise into the water column. Keep noise below <strong>75 dB</strong> to avoid alerting predatory swarms. If noise reaches <strong>95 dB</strong>, the Leviathan will initiate an emergency cavitation charge straight for your hull!</p>
+          </div>
+          <div class="dossier-section">
+            <h4>3. THERMOCLINES & SILENT RUNNING</h4>
+            <p>A density inversion layer (Thermocline) sits at <strong>9,400 meters</strong>. Pinging or moving beneath this layer traps sound beneath the shelf, concealing your submarine from predators cruising above.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VICTORY MODAL -->
+    <div id="victory-modal" class="modal-backdrop hidden">
+      <div class="modal-dialog modal-victory">
+        <h2>>>> TARGET NEUTRALIZED <<<</h2>
+        <p>The Hadal-8 Torpedo matched the Leviathan's resonance profile, penetrating its silicated carapace and detonating the ventral siphon.</p>
+        <p>The carcass is settling into the abyssal sediment. Benthic specimens recovered. The Triton-IV survived the depths.</p>
+        <button onclick="location.reload()" class="chunky-btn btn-fire-ping">RE-ENTER HADAL TRENCH</button>
+      </div>
+    </div>
+
+    <!-- DEFEAT MODAL -->
+    <div id="defeat-modal" class="modal-backdrop hidden">
+      <div class="modal-dialog modal-defeat">
+        <h2>!!! HULL LOST - IMPLOSION DETECTED !!!</h2>
+        <p id="defeat-reason">Catastrophic structural failure under 1,100 atmospheres.</p>
+        <p>The abyss claims the Triton-IV.</p>
+        <button onclick="location.reload()" class="chunky-btn btn-danger">RETRY MISSION</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="js/game.js"></script>
+</body>
+</html>

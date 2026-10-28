@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Indie Game Arcade & Systems Lab // Bonga Manzini</title>
+  <meta name="description" content="A curated collection of 4 playable browser games and tactical simulations built from scratch with pure HTML5 Canvas2D and Web Audio API synthesis.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #080a0f;
+      --bg-surface: #0e121a;
+      --bg-card: #131824;
+      --border-subtle: #1c2438;
+      --border-focus: #2d3b5c;
+      --accent-green: #39ff74;
+      --accent-blue: #40c8ff;
+      --accent-amber: #ffea00;
+      --accent-red: #ff3344;
+      --text-primary: #f1f5f9;
+      --text-muted: #94a3b8;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    /* Ambient Scanline overlay */
+    .crt-scanlines {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 50;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 3px;
+      opacity: 0.35;
+    }
+
+    /* Header */
+    .top-navbar {
+      background: rgba(14, 18, 26, 0.95);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 14px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(8px);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo-badge {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 11px;
+      background: #192236;
+      color: var(--accent-green);
+      border: 1px solid var(--accent-green);
+      padding: 4px 8px;
+      border-radius: 3px;
+      letter-spacing: 1px;
+    }
+
+    .brand-title {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: 0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .nav-link {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--accent-green);
+    }
+
+    /* Hero */
+    .hero-section {
+      padding: 56px 24px 36px;
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .hero-pre {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-blue);
+      letter-spacing: 1.5px;
+      margin-bottom: 10px;
+    }
+
+    .hero-h1 {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 14px;
+      color: var(--text-primary);
+    }
+
+    .hero-lead {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 780px;
+      line-height: 1.6;
+    }
+
+    /* System Telemetry Bar */
+    .telemetry-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    @media (max-width: 860px) {
+      .telemetry-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .telemetry-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 12px 18px;
+      border-radius: 6px;
+    }
+
+    .stat-pill-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .stat-pill-val {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-green);
+      margin-top: 4px;
+    }
+
+    /* Games Showcase Grid */
+    .games-section {
+      padding: 16px 24px 60px;
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 14px;
+      margin-bottom: 28px;
+    }
+
+    .section-title {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--text-primary);
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .games-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .game-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
+
+    .game-card:hover {
+      border-color: var(--border-focus);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-banner {
+      height: 140px;
+      background: #0d121c;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-banner-grid {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+    }
+
+    .banner-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .genre-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 3px;
+      letter-spacing: 0.5px;
+      background: rgba(64, 200, 255, 0.12);
+      color: var(--accent-blue);
+      border: 1px solid rgba(64, 200, 255, 0.3);
+    }
+
+    .card-title {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      position: relative;
+      z-index: 2;
+      letter-spacing: 0.5px;
+    }
+
+    .card-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .card-synopsis {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .card-features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .feature-item {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .feature-bullet {
+      color: var(--accent-green);
+      font-family: var(--font-mono);
+    }
+
+    .card-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tech-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      background: #1a2234;
+      color: #94a3b8;
+      padding: 3px 8px;
+      border-radius: 3px;
+      border: 1px solid #232d44;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .btn-play-primary {
+      flex: 1;
+      background: var(--accent-green);
+      color: #06090e;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 10px 18px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-play-primary:hover {
+      filter: brightness(1.15);
+      box-shadow: 0 0 16px rgba(57, 255, 116, 0.35);
+    }
+
+    .btn-open-direct {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 9px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn-open-direct:hover {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    /* Engine Specs Section */
+    .deep-dive-section {
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
+      padding: 48px 24px;
+    }
+
+    .deep-dive-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .deep-dive-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .deep-dive-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .deep-dive-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 20px;
+      border-radius: 6px;
+    }
+
+    .deep-dive-h3 {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-green);
+      margin-bottom: 8px;
+    }
+
+    .deep-dive-p {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Fullscreen Diegetic Arcade Runner Modal */
+    .arcade-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 6, 10, 0.95);
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+    }
+
+    .arcade-modal-header {
+      background: #0f131d;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .arcade-modal-title {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-green);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .arcade-quick-tabs {
+      display: flex;
+      gap: 8px;
+    }
+
+    .quick-tab-btn {
+      background: #161c2b;
+      border: 1px solid #232d44;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .quick-tab-btn:hover, .quick-tab-btn.active {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    .arcade-modal-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .arcade-viewport {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background: #000;
+    }
+
+    .arcade-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
+      padding: 24px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="crt-scanlines"></div>
+
+  <!-- Navbar -->
+  <header class="top-navbar">
+    <div class="brand-group">
+      <div class="brand-logo-badge">LAB // 04</div>
+      <div class="brand-title">BONGA MANZINI ARCADE</div>
+    </div>
+    <nav class="nav-links">
+      <a href="https://bongamanzini.github.io/portfolio/" class="nav-link">PORTFOLIO</a>
+      <a href="https://github.com/BongaManzini/indie-game-arcade" class="nav-link" target="_blank" rel="noopener">SOURCE REPO</a>
+      <a href="https://github.com/BongaManzini" class="nav-link" target="_blank" rel="noopener">GITHUB</a>
+    </nav>
+  </header>
+
+  <!-- Hero Header -->
+  <section class="hero-section">
+    <div class="hero-pre">// DIEGETIC SYSTEMS &middot; ZERO RUNTIME FRAMEWORKS</div>
+    <h1 class="hero-h1">Interactive Indie Game Arcade</h1>
+    <p class="hero-lead">
+      A collection of four technical browser games engineered from first principles. Each simulation is self-contained with pure Canvas2D graphics, real-time procedural Web Audio API synthesis, deterministic physics, and custom state machines—built without commercial game engines.
+    </p>
+
+    <!-- Telemetry Strip -->
+    <div class="telemetry-strip">
+      <div class="stat-pill">
+        <div class="stat-pill-label">ENGINES COMPILED</div>
+        <div class="stat-pill-val">4 PLAYABLE GAMES</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-pill-label">AUDIO RUNTIME</div>
+        <div class="stat-pill-val">100% WEB AUDIO API</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-pill-label">EXTERNAL ASSET DEPS</div>
+        <div class="stat-pill-val">0 B (PURE CODE)</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-pill-label">HOSTING PIPELINE</div>
+        <div class="stat-pill-val">GITHUB PAGES LIVE</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Games Showcase Grid -->
+  <section class="games-section">
+    <div class="section-header">
+      <div class="section-title">01 // PLAYABLE CATALOG</div>
+      <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted);">
+        CLICK "PLAY IN ARCADE" TO LAUNCH EMBEDDED
+      </div>
+    </div>
+
+    <div class="games-grid">
+      <!-- Game 1: Cipher Breach -->
+      <article class="game-card">
+        <div class="card-banner" style="background: linear-gradient(135deg, #091310 0%, #102418 100%);">
+          <div class="card-banner-grid"></div>
+          <div class="banner-top">
+            <span class="genre-badge" style="color: var(--accent-green); border-color: rgba(57,255,116,0.4); background: rgba(57,255,116,0.1);">
+              TACTICAL EW // DETERMINISTIC GRID
+            </span>
+            <span style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);">v1.0.4</span>
+          </div>
+          <h2 class="card-title">Cipher Breach</h2>
+        </div>
+        <div class="card-body">
+          <p class="card-synopsis">
+            Tactical electronic warfare simulator. Intercept hostile SIGINT spectrums, route parameter registers to achieve harmonic bypass, and command an 8x8 deterministic mech hologrid against siege colossi.
+          </p>
+          <div class="card-features-list">
+            <div class="feature-item">
+              <span class="feature-bullet">&gt;</span>
+              <span><strong>SIGINT Patchbay:</strong> Decrypt enemy telemetry and execute frequency bypasses.</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-bullet">&gt;</span>
+              <span><strong>Colossus Telegraphs:</strong> Shunt bosses out of spinal railgun firing lines.</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-bullet">&gt;</span>
+              <span><strong>Vent Cascade:</strong> Exploit exposed cooling vents for critical combat stuns.</span>
+            </div>
+          </div>
+          <div class="card-tags">
+            <span class="tech-tag">HTML5 Canvas</span>
+            <span class="tech-tag">Synthesized Audio</span>
+            <span class="tech-tag">Deterministic Combat</span>
+            <span class="tech-tag">SIGINT Decoder</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-play-primary" onclick="launchArcade('connect5/index.html', 'CIPHER BREACH // TACTICAL EW SIMULATOR')">
+              PLAY IN ARCADE
+            </button>
+            <a href="connect5/index.html" target="_blank" rel="noopener" class="btn-open-direct">
+              OPEN DIRECT
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Game 2: The Blightstead -->
+      <article class="game-card">
+        <div class="card-banner" style="background: linear-gradient(135deg, #130a0d 0%, #241018 100%);">
+          <div class="card-banner-grid"></div>
+          <div class="banner-top">
+            <span class="genre-badge" style="color: var(--accent-red); border-color: rgba(255,51,68,0.4); background: rgba(255,51,68,0.1);">
+              GOTHIC AGRONOMY // EXTRACTION HORROR
+            </span>
+            <span style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);">PROTOTYPE</span>
+          </div>
+          <h2 class="card-title">The Blightstead</h2>
+        </div>
+        <div class="card-body">
+          <p class="card-synopsis">
+            Atmospheric isometric survival and agronomic extraction prototype. Cultivate limestone soil, bio-engineer ammunition from mutant flora, and venture into pitch-black exclusion zones with a raymarched flashlight beam.
+          </p>
+          <div class="card-features-list">
+            <div class="feature-item">
+              <span class="feature-bullet">&gt;</span>
+              <span><strong>Closed-Loop Agronomy:</strong> Grow Phosphor Flare slugs and Cinnabar ammo.</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-bullet">&gt;</span>
+              <span><strong>Raymarched FoV:</strong> Pure dynamic 2D lighting and volumetric darkness.</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-bullet">&gt;</span>
+              <span><strong>Winch Defense:</strong> Defend extraction tether against swarm aggression.</span>
+            </div>
+          </div>
+          <div class="card-tags">
+            <span class="tech-tag">2D Light Rays</span>
+            <span class="tech-tag">Crop Biochemistry</span>
+            <span class="tech-tag">Procedural Horror SFX</span>
+            <span class="tech-tag">Extraction Loop</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-play-primary" onclick="launchArcade('impostor/index.html', 'THE BLIGHTSTEAD // GOTHIC EXTRACTION')">
+              PLAY IN ARCADE
+            </button>
+            <a href="impostor/index.html" target="_blank" rel="noopener" class="btn-open-direct">
+              OPEN DIRECT
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Game 3: Resonance Ping -->
+      <article class="game-card">
+        <div class="card-banner" style="background: linear-gradient(135deg, #071520 0%, #0d283c 100%);">
+          <div class="card-banner-grid"></div>
+          <div class="banner-top">
+            <span class="genre-badge" style="color: var(--accent-blue); border-color: rgba(64,200,255,0.4); background: rgba(64,200,255,0.1);">
+              HADAL TRENCH // ACOUSTIC SIMULATOR
+            </span>
+            <span style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);">DEPTH 11,000M</span>
+          </div>
+          <h2 class="card-title">Resonance Ping</h2>
+        </div>
+        <div class="card-body">
+          <p class="card-synopsis">
+            Deep-sea bathyscaphe acoustic combat simulator. Command the Triton-IV into the 11,000m Tartarus Trench. Manage hydrophone sonar frequencies, reactor thermal cavitation, and benthic megafauna aggro.
+          </p>
+          <div class="card-features-list">
+            <div class="feature-item">
+              <span class="feature-bullet">&gt;</span>
+              <span><strong>Acoustic Propagation:</strong> Modulate ELF to VLF probes against benthic hulls.</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-bullet">&gt;</span>
+              <span><strong>LSTR-100 Reactor:</strong> Balance power draw to prevent lethal cavitation noise.</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-bullet">&gt;</span>
+              <span><strong>Depth Telemetry:</strong> Track thermal layers, echolocation, and ballast buoyancy.</span>
+            </div>
+          </div>
+          <div class="card-tags">
+            <span class="tech-tag">Hydrophone Synthesis</span>
+            <span class="tech-tag">Thermal Layers</span>
+            <span class="tech-tag">CRT Screen Shader</span>
+            <span class="tech-tag">Submarine Mechanics</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-play-primary" onclick="launchArcade('scale/index.html', 'RESONANCE PING // HADAL TRENCH COMBAT')">
+              PLAY IN ARCADE
+            </button>
+            <a href="scale/index.html" target="_blank" rel="noopener" class="btn-open-direct">
+              OPEN DIRECT
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Game 4: Grand Cross: Crucible -->
+      <article class="game-card">
+        <div class="card-banner" style="background: linear-gradient(135deg, #161007 0%, #2d200e 100%);">
+          <div class="card-banner-grid"></div>
+          <div class="banner-top">
+            <span class="genre-badge" style="color: var(--accent-amber); border-color: rgba(255,234,0,0.4); background: rgba(255,234,0,0.1);">
+              TACTICAL AUTO-BRAWLER // $15 DRAFT
+            </span>
+            <span style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);">ECS ENGINE</span>
+          </div>
+          <h2 class="card-title">Grand Cross: Crucible</h2>
+        </div>
+        <div class="card-body">
+          <p class="card-synopsis">
+            Modular asymmetric combat arena with normalized cross-verse physics. Draft your loadout under a strict $15 cap across 4 sockets (Technique, Hands, Speed, Teammate) and battle across 4 distinct hazard arenas.
+          </p>
+          <div class="card-features-list">
+            <div class="feature-item">
+              <span class="feature-bullet">&gt;</span>
+              <span><strong>$15 Budget Draft:</strong> Pick abilities from JJK, Dragon Ball, One Piece, and Naruto.</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-bullet">&gt;</span>
+              <span><strong>Null Realm Ring-Outs:</strong> Eject opponents into the void with 2.5x kinetic knockback.</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-bullet">&gt;</span>
+              <span><strong>Normalized ECS:</strong> Standardized poise break thresholds, frame buffers, and spatial swaps.</span>
+            </div>
+          </div>
+          <div class="card-tags">
+            <span class="tech-tag">2D Vector Physics</span>
+            <span class="tech-tag">Modular ECS</span>
+            <span class="tech-tag">Poise Breaks</span>
+            <span class="tech-tag">Anime Synergies</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-play-primary" onclick="launchArcade('crucible/index.html', 'GRAND CROSS: CRUCIBLE // ASYMMETRIC BRAWLER')">
+              PLAY IN ARCADE
+            </button>
+            <a href="crucible/index.html" target="_blank" rel="noopener" class="btn-open-direct">
+              OPEN DIRECT
+            </a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Engineering Architecture Section -->
+  <section class="deep-dive-section">
+    <div class="deep-dive-inner">
+      <div class="section-title">// TECHNICAL ARCHITECTURE &middot; STUDENT INSIGHTS</div>
+      <div class="deep-dive-grid">
+        <div class="deep-dive-card">
+          <h3 class="deep-dive-h3">01. Web Audio Procedural Synthesis</h3>
+          <p class="deep-dive-p">
+            Traditional web games load hundreds of megabytes of compressed MP3 or OGG audio files. These games generate every gunshot, submarine ping, shockwave blast, and parry clang using raw OscillatorNode frequencies, BiquadFilter sweeps, and procedural white noise buffers on the fly.
+          </p>
+        </div>
+        <div class="deep-dive-card">
+          <h3 class="deep-dive-h3">02. Deterministic 2D Physics & ECS</h3>
+          <p class="deep-dive-p">
+            Instead of bundling multi-megabyte physics runtimes, collision detection and kinematics use normalized vector math, mass-dependent knockback multipliers, poise thresholds, and component-based entity pools that execute at a solid 60 FPS.
+          </p>
+        </div>
+        <div class="deep-dive-card">
+          <h3 class="deep-dive-h3">03. Zero Third-Party Dependencies</h3>
+          <p class="deep-dive-p">
+            Every game is built exclusively using standards-compliant HTML5, CSS3, and vanilla modern JavaScript. No webpack bundle bloat, no framework lock-in, and zero external CDNs—ensuring instant page loads and complete offline resilience.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Arcade Runner Modal -->
+  <div id="arcadeModal" class="arcade-modal">
+    <div class="arcade-modal-header">
+      <div class="arcade-modal-title">
+        <span class="brand-logo-badge">PLAYING</span>
+        <span id="activeGameTitle">CIPHER BREACH // TACTICAL EW SIMULATOR</span>
+      </div>
+
+      <div class="arcade-quick-tabs">
+        <button class="quick-tab-btn" onclick="switchGame('connect5/index.html', 'CIPHER BREACH // TACTICAL EW SIMULATOR')">Cipher Breach</button>
+        <button class="quick-tab-btn" onclick="switchGame('impostor/index.html', 'THE BLIGHTSTEAD // GOTHIC EXTRACTION')">The Blightstead</button>
+        <button class="quick-tab-btn" onclick="switchGame('scale/index.html', 'RESONANCE PING // HADAL TRENCH COMBAT')">Resonance Ping</button>
+        <button class="quick-tab-btn" onclick="switchGame('crucible/index.html', 'GRAND CROSS: CRUCIBLE // ASYMMETRIC BRAWLER')">Crucible</button>
+      </div>
+
+      <div class="arcade-modal-actions">
+        <button class="btn-open-direct" onclick="toggleFullscreen()">FULLSCREEN</button>
+        <button class="btn-open-direct" style="border-color: var(--accent-red); color: var(--accent-red);" onclick="closeArcade()">EXIT [ESC]</button>
+      </div>
+    </div>
+
+    <div class="arcade-viewport">
+      <iframe id="arcadeFrame" class="arcade-iframe" src="" allow="autoplay"></iframe>
+    </div>
+  </div>
+
+  <footer>
+    <div>DEVELOPED BY BONGA MANZINI &middot; INDIE GAME ARCADE &middot; HOSTED ON GITHUB PAGES</div>
+    <div style="font-size: 11px; margin-top: 6px; color: #64748b;">
+      All game mechanics, shaders, audio engines, and systems written in pure JavaScript, HTML5 Canvas, and Web Audio API.
+    </div>
+  </footer>
+
+  <script>
+    const modal = document.getElementById('arcadeModal');
+    const frame = document.getElementById('arcadeFrame');
+    const titleDisp = document.getElementById('activeGameTitle');
+
+    function launchArcade(url, title) {
+      frame.src = url;
+      titleDisp.innerText = title;
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      updateTabState(url);
+    }
+
+    function switchGame(url, title) {
+      frame.src = url;
+      titleDisp.innerText = title;
+      updateTabState(url);
+    }
+
+    function updateTabState(url) {
+      document.querySelectorAll('.quick-tab-btn').forEach(btn => {
+        const matches = btn.getAttribute('onclick').includes(url);
+        btn.classList.toggle('active', matches);
+      });
+    }
+
+    function closeArcade() {
+      frame.src = '';
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    function toggleFullscreen() {
+      const elem = document.getElementById('arcadeModal');
+      if (!document.fullscreenElement) {
+        elem.requestFullscreen().catch(err => console.warn(err));
+      } else {
+        document.exitFullscreen().catch(err => console.warn(err));
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.style.display === 'flex') {
+        closeArcade();
+      }
+    });
+  </script>
+</body>
+</html>

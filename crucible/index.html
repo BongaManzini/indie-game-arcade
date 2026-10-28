@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grand Cross: Crucible - Normalized Asymmetric Auto-Brawler</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="crucible-header">
+    <div>
+      <div class="brand-title">GRAND CROSS // CRUCIBLE</div>
+      <div class="brand-sub">NORMALIZED CROSS-VERSE COMBAT SIMULATOR &middot; $15 BUDGET DRAFT</div>
+    </div>
+    <div class="header-status">
+      <div class="budget-badge" id="budget-display">$12 / $15</div>
+      <button class="btn-ctrl" id="btn-audio-toggle" onclick="window.CrucibleAudio.toggleMute(); this.innerText = window.CrucibleAudio.muted ? 'AUDIO: MUTED' : 'AUDIO: ON';">AUDIO: ON</button>
+      <button class="btn-ctrl" id="btn-restart" onclick="window.crucible.returnToDraft();">RESET DRAFT</button>
+    </div>
+  </header>
+
+  <div class="app-container">
+    <!-- View 1: $15 Budget-Draft Bay -->
+    <div id="draft-view" class="draft-wrapper">
+      <!-- Scenario Selector & Meta Bar -->
+      <div class="draft-meta-bar">
+        <div>
+          <div style="font-size: 11px; font-family: var(--font-mono); color: var(--accent-blue); letter-spacing: 1px; margin-bottom: 8px;">
+            01 // SELECT BATTLEFIELD ENGAGEMENT
+          </div>
+          <div class="scenario-pills-row" id="scenario-selector">
+            <!-- Dynamic scenario pills -->
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <div id="budget-remaining" style="font-family: var(--font-mono); font-size: 13px; font-weight: bold; color: var(--accent-green);">
+            Remaining: $3
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+            Resource Cap: Max $15 across 4 sockets
+          </div>
+        </div>
+      </div>
+
+      <!-- Sockets Grid -->
+      <div class="sockets-grid">
+        <!-- Socket 1: Technique -->
+        <div class="socket-column">
+          <div class="socket-header">
+            <span>SOCKET 1: TECHNIQUE</span>
+            <span>$1 - $5</span>
+          </div>
+          <div class="socket-body" id="tech-list">
+            <!-- Dynamic technique items -->
+          </div>
+        </div>
+
+        <!-- Socket 2: Hands -->
+        <div class="socket-column">
+          <div class="socket-header">
+            <span>SOCKET 2: HANDS</span>
+            <span>$1 - $5</span>
+          </div>
+          <div class="socket-body" id="hands-list">
+            <!-- Dynamic hands items -->
+          </div>
+        </div>
+
+        <!-- Socket 3: Speed -->
+        <div class="socket-column">
+          <div class="socket-header">
+            <span>SOCKET 3: SPEED</span>
+            <span>$1 - $5</span>
+          </div>
+          <div class="socket-body" id="speed-list">
+            <!-- Dynamic speed items -->
+          </div>
+        </div>
+
+        <!-- Socket 4: Teammate -->
+        <div class="socket-column">
+          <div class="socket-header">
+            <span>SOCKET 4: TEAMMATE</span>
+            <span>$1 - $5</span>
+          </div>
+          <div class="socket-body" id="teammate-list">
+            <!-- Dynamic teammate items -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Synergy Preview & Deploy Bar -->
+      <div class="deploy-footer">
+        <div id="synergy-preview" style="max-width: 600px;">
+          <!-- Dynamic synergy readout -->
+        </div>
+        <button class="btn-start" id="btn-start-battle" onclick="window.crucible.startBattle();">
+          ENTER THE CRUCIBLE
+        </button>
+      </div>
+    </div>
+
+    <!-- View 2: Live Tactical Combat Arena -->
+    <div id="battle-view" class="battle-wrapper" style="display: none;">
+      <div class="battle-hud-top">
+        <div class="stat-bar-group">
+          <div class="bar-box">
+            <div class="bar-label">OPERATIVE INTEGRITY (HP)</div>
+            <div class="bar-track"><div class="bar-fill bar-hp" id="hud-hp-bar" style="width: 100%;"></div></div>
+          </div>
+          <div class="bar-box">
+            <div class="bar-label">POISE SHIELD (STUN BARRIER)</div>
+            <div class="bar-track"><div class="bar-fill bar-poise" id="hud-poise-bar" style="width: 100%;"></div></div>
+          </div>
+          <div class="bar-box">
+            <div class="bar-label">STAMINA MOTOR</div>
+            <div class="bar-track"><div class="bar-fill bar-stam" id="hud-stam-bar" style="width: 100%;"></div></div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 20px; align-items: center; font-family: var(--font-mono); font-size: 13px;">
+          <span id="hud-tech-cd" style="color: var(--accent-green);">TECH: READY [Q/RMB]</span>
+          <span id="hud-timer" style="color: var(--text-main); font-weight: bold;">TIME: 180s</span>
+          <button class="btn-ctrl" onclick="window.crucible.returnToDraft();">EXIT MATCH</button>
+        </div>
+      </div>
+
+      <div class="canvas-container">
+        <canvas id="battleCanvas"></canvas>
+      </div>
+
+      <div class="battle-controls-hint">
+        <span>CONTROLS: WASD to Move &middot; Left Click: Strike &middot; Right Click / Q: Active Technique &middot; Space: Dash &middot; E: Assist Rush</span>
+        <span>ENGINE: Normalized Physics &middot; Vector Knockback &middot; Frame Buffer</span>
+      </div>
+    </div>
+
+    <!-- View 3: Post-Match Debrief Modal -->
+    <div id="post-match-view" class="post-match-modal" style="display: none;">
+      <div class="post-card">
+        <h2 id="post-title" style="font-family: var(--font-mono); font-size: 18px; margin-bottom: 8px;">
+          MISSION ACCOMPLISHED // CRUCIBLE VICTOR
+        </h2>
+        <p style="font-size: 12px; color: var(--text-muted);">Tactical engagement results recorded on normalized physics ledger.</p>
+
+        <div class="post-stats-grid">
+          <div class="stat-item">
+            <span>DAMAGE INFLICTED</span>
+            <strong id="stat-damage">0</strong>
+          </div>
+          <div class="stat-item">
+            <span>TARGETS ELIMINATED</span>
+            <strong id="stat-kills">0</strong>
+          </div>
+          <div class="stat-item">
+            <span>RING-OUTS TRIGGERED</span>
+            <strong id="stat-ringouts">0</strong>
+          </div>
+          <div class="stat-item">
+            <span>SCENARIO</span>
+            <strong id="stat-scenario" style="font-size: 12px; color: var(--accent-blue);">Null Realm</strong>
+          </div>
+          <div class="stat-item" style="grid-column: span 2;">
+            <span>BUDGET UTILIZATION</span>
+            <strong id="stat-budget">$12 / $15</strong>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: center;">
+          <button class="btn-start" onclick="window.crucible.startBattle();">RETRY BATTLE</button>
+          <button class="btn-ctrl" style="padding: 12px 20px;" onclick="window.crucible.returnToDraft();">TWEAK DRAFT</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="src/audio.js"></script>
+  <script src="src/game.js"></script>
+</body>
+</html>

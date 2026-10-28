@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THE BLIGHTSTEAD - Gothic Agronomic Extraction Prototype</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- The Render Surface -->
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- Diegetic UI Overlays -->
+  <div id="uiLayer">
+    <div class="top-header">
+      <div class="game-title">The Blightstead</div>
+      <button class="help-btn" id="guideBtn">[TAB / F1] Field Manual</button>
+    </div>
+
+    <div id="audioPrompt">CLICK ANYWHERE TO INITIALIZE AUDIO ENGINE</div>
+
+    <!-- Field Manual Modal -->
+    <div id="guideModal" class="modal-overlay hidden">
+      <div class="modal-box">
+        <div class="modal-title">Warden's Field Manual: Outpost 4</div>
+        <div class="modal-subtitle">System Directive: Closed-Loop Bio-Industrial Agronomy & Ossuary Extraction</div>
+
+        <div class="guide-grid">
+          <div class="guide-card">
+            <h3>I. Homestead Agronomy</h3>
+            <p>Your soil is dead limestone. Normal crops will not germinate without careful biochemical calibration:</p>
+            <ul>
+              <li><strong>Till Soil:</strong> Use Spade to break earth.</li>
+              <li><strong>Irrigate:</strong> Refill water at the well. Keep beds moist (40-80%).</li>
+              <li><strong>Compost:</strong> Deposit Zone carcasses in the Vat to brew nitrogen slurry.</li>
+              <li><strong>Harvest:</strong> Mature glowing pods yield combat-grade ammunition.</li>
+            </ul>
+          </div>
+
+          <div class="guide-card">
+            <h3>II. Munitions & Apothecary</h3>
+            <p>You cannot purchase ammunition; everything fired is grown in your soil:</p>
+            <ul>
+              <li><strong>Phosphor-Gourd:</strong> Crafts <em>Phosphor Flare Slugs</em>. Burns gloom shields & illuminates darkness.</li>
+              <li><strong>Cinnabar Core:</strong> Crafts <em>Heavy Kinetic Slugs</em>. Delivers devastating pneumatic impact.</li>
+              <li><strong>Iron-Sap Reed:</strong> Distills <em>Suture Inhalers</em> to restore health & sanity.</li>
+            </ul>
+          </div>
+
+          <div class="guide-card">
+            <h3>III. Exclusion Zone Extraction</h3>
+            <p>Deploy through the Decontamination Airlock at the north gate into the pitch-black ruins:</p>
+            <ul>
+              <li><strong>Raymarched FoV:</strong> Horrors conceal themselves in absolute darkness outside your flashlight beam.</li>
+              <li><strong>Gloom Shields:</strong> Stalkers absorb kinetic fire. Hit them with a Phosphor Flare or sustained light beam to shatter their shroud!</li>
+              <li><strong>Extraction Winch:</strong> Spool the tether at the far side. Defend against attracted hordes until 100% ready.</li>
+            </ul>
+          </div>
+
+          <div class="guide-card">
+            <h3>IV. Controls Reference</h3>
+            <p>Unified input scheme across both phases:</p>
+            <ul>
+              <li><strong>WASD:</strong> Locomotion | <strong>Shift:</strong> Sprint</li>
+              <li><strong>Mouse Aim:</strong> Facing / Flashlight Vector</li>
+              <li><strong>LMB / Space:</strong> Till / Water / Harvest / Fire Weapon</li>
+              <li><strong>1 - 6 or Q / E:</strong> Switch Tool or Weapon</li>
+              <li><strong>E:</strong> Interact with Stations, Nodes, or Winch</li>
+              <li><strong>F:</strong> Flashlight Toggle | <strong>R:</strong> Inhale Neuro-Suture</li>
+            </ul>
+          </div>
+        </div>
+
+        <button class="close-btn" id="closeGuideBtn">Acknowledge & Resume Protocol</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="src/audio.js"></script>
+  <script src="src/homestead.js"></script>
+  <script src="src/entities.js"></script>
+  <script src="src/zone.js"></script>
+  <script src="src/input.js"></script>
+  <script src="src/renderer.js"></script>
+  <script src="src/game.js"></script>
+
+  <script>
+    // Audio prompt dismissal and manual modal toggle
+    window.addEventListener('click', () => {
+      const p = document.getElementById('audioPrompt');
+      if (p) p.style.display = 'none';
+    }, { once: true });
+
+    const modal = document.getElementById('guideModal');
+    const guideBtn = document.getElementById('guideBtn');
+    const closeGuideBtn = document.getElementById('closeGuideBtn');
+
+    function toggleGuide() {
+      modal.classList.toggle('hidden');
+    }
+
+    guideBtn.addEventListener('click', toggleGuide);
+    closeGuideBtn.addEventListener('click', toggleGuide);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Tab' || e.code === 'F1') {
+        e.preventDefault();
+        toggleGuide();
+      }
+    });
+  </script>
+</body>
+</html>

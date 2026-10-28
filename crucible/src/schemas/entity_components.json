@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CrucibleNormalizedEntityComponents",
+  "description": "Normalized ECS Component Data Schemas for Grand Cross: Crucible",
+  "type": "object",
+  "properties": {
+    "CharacterStats": {
+      "type": "object",
+      "properties": {
+        "MaxHP": { "type": "number", "default": 500.0 },
+        "CurrentHP": { "type": "number", "default": 500.0 },
+        "MaxStamina": { "type": "number", "default": 100.0 },
+        "CurrentStamina": { "type": "number", "default": 100.0 },
+        "MaxPoise": { "type": "number", "default": 250.0 },
+        "CurrentPoise": { "type": "number", "default": 250.0 },
+        "PoiseRegenRate": { "type": "number", "default": 25.0 },
+        "MassKg": { "type": "number", "default": 75.0 }
+      },
+      "required": ["MaxHP", "CurrentHP", "MaxStamina", "CurrentStamina", "MaxPoise", "CurrentPoise", "PoiseRegenRate", "MassKg"]
+    },
+    "KinematicMotorComponent": {
+      "type": "object",
+      "properties": {
+        "BaseSprintSpeed": { "type": "number", "default": 10.0 },
+        "Acceleration": { "type": "number", "default": 35.0 },
+        "GroundFriction": { "type": "number", "default": 1.0 },
+        "AirControlRatio": { "type": "number", "default": 0.4 },
+        "MaxSlopeAngleDegrees": { "type": "number", "default": 45.0 },
+        "IsPhasing": { "type": "boolean", "default": false },
+        "PhasingDurationRemaining": { "type": "number", "default": 0.0 },
+        "WallAdhesionEnabled": { "type": "boolean", "default": false }
+      },
+      "required": ["BaseSprintSpeed", "Acceleration", "GroundFriction"]
+    },
+    "CombatStringComponent": {
+      "type": "object",
+      "properties": {
+        "CombatStringID": { "type": "string" },
+        "CostTier": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "ComboIndex": { "type": "integer", "default": 0 },
+        "MaxComboHits": { "type": "integer" },
+        "BufferWindowSeconds": { "type": "number", "default": 0.25 },
+        "HasSuperArmorOnStartup": { "type": "boolean", "default": false },
+        "TrueArmorBypass": { "type": "boolean", "default": false }
+      },
+      "required": ["CombatStringID", "CostTier", "MaxComboHits"]
+    },
+    "ActiveSkillComponent": {
+      "type": "object",
+      "properties": {
+        "SkillID": { "type": "string" },
+        "CostTier": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "CooldownDuration": { "type": "number" },
+        "CurrentCooldown": { "type": "number", "default": 0.0 },
+        "MaxCharges": { "type": "integer", "default": 1 },
+        "AvailableCharges": { "type": "integer", "default": 1 },
+        "StaminaCost": { "type": "number", "default": 0.0 },
+        "IsChanneling": { "type": "boolean", "default": false },
+        "ChannelTimeRemaining": { "type": "number", "default": 0.0 }
+      },
+      "required": ["SkillID", "CostTier", "CooldownDuration", "MaxCharges"]
+    },
+    "CompanionSpawner": {
+      "type": "object",
+      "properties": {
+        "CompanionID": { "type": "string" },
+        "CostTier": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "AIBehaviorMode": {
+          "type": "string",
+          "enum": ["SCOUT_RADAR", "HEALER_SUPPORT", "BERSERK_AGGRESSOR", "CLONE_DECOY", "APEX_WILDCARD"]
+        },
+        "SpawnCount": { "type": "integer", "default": 1 },
+        "SpawnOffsetDistance": { "type": "number", "default": 3.0 }
+      },
+      "required": ["CompanionID", "CostTier", "AIBehaviorMode"]
+    }
+  }
+}

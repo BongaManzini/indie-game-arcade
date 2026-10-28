@@ -1,0 +1,119 @@
+{
+  "skills": [
+    {
+      "id": "tech_01_paper_bomb_kunai",
+      "name": "Paper Bomb Kunai / Wire Detonation",
+      "socket": "Technique",
+      "cost": 1,
+      "cooldown": 6.0,
+      "stamina_cost": 15.0,
+      "charges": 1,
+      "tags": ["Trap", "Tether", "Manual Detonation"],
+      "frame_data": {
+        "startup": 8,
+        "active": 24,
+        "recovery": 10
+      },
+      "kinetics": {
+        "projectile_velocity_mps": 35.0,
+        "blast_impulse": { "x": 0.0, "y": 250.0, "z": 350.0 }
+      },
+      "combat_values": {
+        "damage": 140.0,
+        "poise_damage": 75.0,
+        "tether_duration_seconds": 1.2
+      }
+    },
+    {
+      "id": "tech_02_substitution_log",
+      "name": "Shadow Clone Substitution (Kawarimi)",
+      "socket": "Technique",
+      "cost": 2,
+      "cooldown": 11.0,
+      "stamina_cost": 20.0,
+      "charges": 1,
+      "tags": ["Evasion", "Decoy", "Aggro Shed"],
+      "frame_data": {
+        "counter_window_frames": 27,
+        "iframes_on_trigger_frames": 24,
+        "recovery": 8
+      },
+      "kinetics": {
+        "relocation_distance_meters": 6.0
+      },
+      "combat_values": {
+        "absorbed_damage_ratio": 1.0
+      }
+    },
+    {
+      "id": "tech_03_shadow_possession",
+      "name": "Shadow Possession (Kagemane no Jutsu)",
+      "socket": "Technique",
+      "cost": 3,
+      "cooldown": 16.0,
+      "stamina_cost": 35.0,
+      "charges": 1,
+      "tags": ["Hard CC", "Shadow Tether", "Damage Mirror"],
+      "frame_data": {
+        "startup": 12,
+        "active": 210,
+        "recovery": 16
+      },
+      "kinetics": {
+        "shadow_extension_speed_mps": 26.0,
+        "max_range_meters": 18.0
+      },
+      "combat_values": {
+        "tether_duration_seconds": 3.5,
+        "damage_mirror_percent": 100.0
+      }
+    },
+    {
+      "id": "tech_04_tsukuyomi",
+      "name": "Tsukuyomi (Perception Dilation)",
+      "socket": "Technique",
+      "cost": 4,
+      "cooldown": 22.0,
+      "stamina_cost": 40.0,
+      "charges": 1,
+      "tags": ["Input Inversion", "Slow", "Poise Backlash"],
+      "frame_data": {
+        "startup": 14,
+        "active": 1,
+        "recovery": 18
+      },
+      "combat_values": {
+        "duration_seconds": 3.0,
+        "speed_reduction_percent": 65.0,
+        "input_vector_inverted": true,
+        "whiff_poise_backlash": 40.0
+      }
+    },
+    {
+      "id": "tech_05_flying_thunder_god",
+      "name": "Flying Thunder God (Hiraishin Formula)",
+      "socket": "Technique",
+      "cost": 5,
+      "cooldown": 8.0,
+      "stamina_cost": 25.0,
+      "charges": 2,
+      "tags": ["Instant Teleport", "Map-Wide Range", "Super Armor Arrival"],
+      "frame_data": {
+        "startup": 0,
+        "active": 1,
+        "recovery": 6,
+        "arrival_super_armor_duration_seconds": 0.8
+      },
+      "kinetics": {
+        "transit_time_seconds": 0.0,
+        "arrival_shockwave_radius_meters": 2.5
+      },
+      "combat_values": {
+        "arrival_poise_damage": 120.0,
+        "critical_hit_multiplier": 1.5,
+        "max_marks": 6,
+        "mark_duration_seconds": 30.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "cipher-breach",
+  "version": "1.0.0",
+  "description": "Tactical EW & Numeric Stat Decryption Combat Simulator",
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 8085"
+  },
+  "keywords": ["game", "tactics", "puzzle", "into-the-breach", "cryptmaster"],
+  "author": "Antigravity",
+  "license": "MIT"
+}

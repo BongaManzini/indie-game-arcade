@@ -1,0 +1,11 @@
+{
+  "name": "resonance-ping",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Diegetic submarine telemetry simulation and scalar proximity hunting game",
+  "scripts": {
+    "start": "python3 server.py"
+  },
+  "author": "Principal Systems Designer",
+  "license": "MIT"
+}
