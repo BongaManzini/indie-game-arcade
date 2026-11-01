@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows OS Environment | Anime Game Suite</title>
+    <meta name="description" content="Windows OS environment with individual game apps, Fact Numbers Quiz, Captures & Media, and Edge Leaderboards.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Windows Lock Screen -->
+    <div id="win14-lockscreen" class="win14-lockscreen">
+        <div class="lock-clock-box">
+            <div id="lock-clock-time" class="lock-clock-time">10:43</div>
+            <div id="lock-clock-date" class="lock-clock-date">Sunday, September 27</div>
+        </div>
+        <div class="lock-prompt animate-pulse">
+            <span>🪟 Click anywhere or press Enter to unlock Windows</span>
+        </div>
+    </div>
+
+    <!-- Windows Login Modal -->
+    <div id="win14-login-modal" class="modal-overlay">
+        <div class="modal-card login-card animate-pop">
+            <div class="login-header">
+                <div class="login-avatar-ring">
+                    <span class="user-avatar-val">🥷</span>
+                </div>
+                <h2 class="login-title">WINDOWS AUTHENTICATION</h2>
+                <div class="login-tabs">
+                    <button id="tab-login" class="tab-btn active">Sign In</button>
+                    <button id="tab-signup" class="tab-btn">Create Account</button>
+                </div>
+            </div>
+
+            <form id="form-win14-login" class="login-form">
+                <div class="input-group">
+                    <label class="input-label">Username / Email</label>
+                    <input type="text" id="input-auth-user" class="input-text" placeholder="e.g. OtakuKing99" required autocomplete="username">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Password</label>
+                    <input type="password" id="input-auth-pass" class="input-text" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <div id="auth-error-msg" class="auth-error"></div>
+
+                <button type="submit" class="btn-send btn-auth-submit">
+                    <span id="btn-submit-text">Sign In</span> ➔
+                </button>
+            </form>
+
+            <div class="login-divider"><span>OR</span></div>
+
+            <button id="btn-login-guest" class="btn-send btn-guest-login">
+                <span>👤 Continue as Guest</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Windows Desktop Environment -->
+    <div id="win14-desktop" class="win14-desktop" style="display:none;">
+
+        <!-- Desktop Shortcuts Direct Icons -->
+        <div class="desktop-icons">
+            <div class="desktop-icon active-app" data-app="anime-1v1">
+                <span class="icon-img">👺</span>
+                <span class="icon-label">1v1 Solo Guess</span>
+            </div>
+            <div class="desktop-icon" data-app="duos-relay">
+                <span class="icon-img">⚔️</span>
+                <span class="icon-label">2v2 Duos Relay</span>
+            </div>
+            <div class="desktop-icon" data-app="cipher-game">
+                <span class="icon-img">🔢</span>
+                <span class="icon-label">Number Matrix</span>
+            </div>
+            <div class="desktop-icon" data-app="fact-quiz">
+                <span class="icon-img">🧠</span>
+                <span class="icon-label">Fact Numbers Quiz</span>
+            </div>
+            <div class="desktop-icon" data-app="scale-game">
+                <span class="icon-img">🎯</span>
+                <span class="icon-label">Anime Scale</span>
+            </div>
+            <div class="desktop-icon" data-app="poster-game">
+                <span class="icon-img">🖼️</span>
+                <span class="icon-label">Poster Impostor</span>
+            </div>
+            <div class="desktop-icon" data-app="documents">
+                <span class="icon-img">📸</span>
+                <span class="icon-label">Captures & Media</span>
+            </div>
+            <div class="desktop-icon" data-app="browser">
+                <span class="icon-img">🌐</span>
+                <span class="icon-label">Edge Browser</span>
+            </div>
+        </div>
+
+        <!-- APP 1: ANIME 1v1 SOLO WINDOW -->
+        <div id="app-window-1v1" class="os-window" style="display:flex;">
+            <div class="os-titlebar">
+                <div class="os-title-info">
+                    <span class="os-title-icon">👺</span>
+                    <span class="os-title-text">Anime Guess 1v1 Solo Duel</span>
+                </div>
+                <div class="os-window-controls">
+                    <button class="os-win-btn os-btn-min">─</button>
+                    <button class="os-win-btn os-btn-max">□</button>
+                    <button class="os-win-btn os-btn-close">✕</button>
+                </div>
+            </div>
+
+            <div class="os-window-body">
+                <div class="video-call-container">
+                    <header class="call-header">
+                        <div class="brand">
+                            <span class="brand-icon">👺</span>
+                            <span class="brand-title">1v1 SOLO DUEL</span>
+                        </div>
+                        <div class="hud-stats">
+                            <div class="stat-pill">SCORE: <span id="hud-score" class="stat-value">0</span></div>
+                            <div class="stat-pill">STREAK: <span id="hud-streak" class="stat-value">0 🔥</span></div>
+                        </div>
+                    </header>
+
+                    <div id="card-player-b" class="main-video-view">
+                        <video id="video-remote" class="cam-video" autoplay playsinline style="display:none;"></video>
+                        <canvas id="canvas-remote" class="cam-canvas"></canvas>
+
+                        <div class="stranger-status-tag">
+                            <span id="stranger-name">STRANGER (SEARCHING...)</span>
+                            <span id="badge-stranger-status" class="badge">WAITING</span>
+                        </div>
+
+                        <div id="secret-badge" class="secret-badge" style="display:none;">
+                            <img id="secret-thumb" src="" alt="Secret Character" class="secret-thumb">
+                            <div class="secret-info">
+                                <div class="secret-label">Opponent's Secret Character</div>
+                                <div id="secret-name" class="secret-name">???</div>
+                            </div>
+                        </div>
+
+                        <div id="card-player-a" class="pip-video-window turn-active">
+                            <div class="pip-header">
+                                <span>YOU</span>
+                                <span id="badge-your-status" class="badge turn-your">ACTIVE</span>
+                            </div>
+                            <div class="pip-body">
+                                <video id="video-local" class="cam-video" autoplay playsinline muted style="display:none;"></video>
+                                <canvas id="canvas-local" class="cam-canvas"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="call-control-dock">
+                            <button id="btn-toggle-mute" class="dock-btn">
+                                <span class="icon">🎙️</span>
+                                <span class="label">Mute</span>
+                            </button>
+                            <button id="btn-toggle-cam" class="dock-btn">
+                                <span class="icon">📷</span>
+                                <span class="label">Cam Off</span>
+                            </button>
+                            <button id="btn-toggle-avatar" class="dock-btn active">
+                                <span class="icon">✨</span>
+                                <span class="label">Avatar</span>
+                            </button>
+                            <button id="btn-find-match" class="dock-btn dock-btn-start">
+                                <span class="icon">🎮</span>
+                                <span class="label">Find Match</span>
+                            </button>
+                            <button id="btn-next-match" class="dock-btn dock-btn-end">
+                                <span class="icon">✖</span>
+                                <span class="label">Next</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <aside class="side-drawer">
+                        <div class="drawer-card clue-panel">
+                            <div class="drawer-header">
+                                <div class="drawer-title">
+                                    <span>💡</span>
+                                    <span>YOUR SECRET CLUES</span>
+                                </div>
+                                <span id="next-clue-timer" class="sub-timer">Next: 30s</span>
+                            </div>
+                            <div id="clue-feed" class="clue-feed">
+                                <div class="clue-item">Click "Find Match" to start 1v1!</div>
+                            </div>
+                        </div>
+
+                        <div class="drawer-card interrogate-panel">
+                            <div class="turn-bar">
+                                <div id="turn-badge" class="badge turn-your">YOUR TURN (Ask/Guess)</div>
+                                <div id="turn-timer-num" class="turn-timer-val">15s</div>
+                            </div>
+                            <div class="timer-bar-wrapper">
+                                <div id="timer-progress-bar" class="timer-bar"></div>
+                            </div>
+
+                            <div id="chat-feed" class="chat-feed">
+                                <div class="chat-msg msg-bot"><strong>System:</strong> 1v1 Solo Duel ready.</div>
+                            </div>
+
+                            <form id="form-interrogate" class="guess-box">
+                                <input type="text" id="input-question" class="input-text" placeholder="Type a question or guess..." autocomplete="off">
+                                <button type="submit" class="btn-send">Send</button>
+                            </form>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+
+        <!-- APP 2: 2v2 TIMED RELAY DUOS WINDOW -->
+        <div id="app-window-duos" class="os-window" style="display:none;">
+            <div class="os-titlebar">
+                <div class="os-title-info">
+                    <span class="os-title-icon">⚔️</span>
+                    <span class="os-title-text">2v2 Timed Synchronized Relay Duos Battle</span>
+                </div>
+                <div class="os-window-controls">
+                    <button class="os-win-btn os-btn-min">─</button>
+                    <button class="os-win-btn os-btn-max">□</button>
+                    <button class="os-win-btn os-btn-close">✕</button>
+                </div>
+            </div>
+
+            <div class="os-window-body">
+                <div class="duos-relay-stage">
+                    <div id="duos-queue-section" class="duos-queue-card">
+                        <div class="queue-header">
+                            <div class="queue-title">
+                                <span>⚔️ 2v2 DUOS MATCHMAKING QUEUE</span>
+                            </div>
+                            <div id="queue-status-pill" class="queue-status-pill">LOBBY IDLE</div>
+                        </div>
+
+                        <div class="party-slots-grid">
+                            <div class="party-slot slot-filled">
+                                <span class="party-avatar">🥷</span>
+                                <div class="party-info">
+                                    <span class="party-role">TEAM ALPHA CAPTAIN</span>
+                                    <span class="user-name-val party-name">You</span>
+                                </div>
+                                <span class="ready-badge">READY</span>
+                            </div>
+
+                            <div id="partner-slot" class="party-slot slot-seeking">
+                                <span id="partner-avatar" class="party-avatar">👤</span>
+                                <div class="party-info">
+                                    <span class="party-role">TEAMMATE PARTNER</span>
+                                    <span id="partner-name" class="party-name">Searching for Teammate...</span>
+                                </div>
+                                <span id="partner-ready-badge" class="ready-badge pending">WAITING</span>
+                            </div>
+                        </div>
+
+                        <div class="queue-action-bar">
+                            <div class="queue-info-box">
+                                <span>PLAYERS IN QUEUE: <strong id="queue-count">18</strong></span>
+                                <span>EST. WAIT: <strong id="queue-wait">3s</strong></span>
+                            </div>
+                            <button id="btn-enter-2v2-queue" class="btn-send btn-primary" style="padding: 12px 24px;">
+                                <span>🎮 ENTER 2v2 QUEUE</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <header class="duos-header">
+                        <div class="duos-team-pill team-alpha-pill">
+                            <span>TEAM ALPHA</span>
+                            <span id="duos-score-alpha" class="score-num">0</span>
+                        </div>
+                        <div class="duos-relay-clock">
+                            <span class="label">SYNCHRONIZED TIMED BATTLE</span>
+                            <span id="duos-relay-timer" class="time-num">60s</span>
+                        </div>
+                        <div class="duos-team-pill team-omega-pill">
+                            <span>TEAM OMEGA</span>
+                            <span id="duos-score-omega" class="score-num">0</span>
+                        </div>
+                    </header>
+
+                    <div class="duos-grid">
+                        <div class="duel-slot-card">
+                            <div class="slot-header">
+                                <span>DUEL SLOT 1: YOU VS RIVAL A</span>
+                                <span class="badge turn-your">ACTIVE</span>
+                            </div>
+                            <div class="slot-body">
+                                <canvas id="canvas-duos-local" class="cam-canvas"></canvas>
+                                <div class="slot-secret-overlay">
+                                    <span>Opponent Secret: Son Goku</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="duel-slot-card">
+                            <div class="slot-header">
+                                <span>DUEL SLOT 2: PARTNER VS RIVAL B</span>
+                                <span id="slot2-status" class="badge turn-their">SYNCHRONIZING</span>
+                            </div>
+                            <div class="slot-body">
+                                <canvas id="canvas-duos-partner" class="cam-canvas"></canvas>
+                                <div class="slot-secret-overlay">
+                                    <span>Opponent Secret: Spike Spiegel</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- APP 3: NUMBER MATRIX CIPHER WINDOW -->
+        <div id="app-window-cipher" class="os-window" style="display:none;">
+            <div class="os-titlebar">
+                <div class="os-title-info">
+                    <span class="os-title-icon">🔢</span>
+                    <span class="os-title-text">Number Matrix Cipher</span>
+                </div>
+                <div class="os-window-controls">
+                    <button class="os-win-btn os-btn-min">─</button>
+                    <button class="os-win-btn os-btn-max">□</button>
+                    <button class="os-win-btn os-btn-close">✕</button>
+                </div>
+            </div>
+
+            <div class="os-window-body cipher-body">
+                <div class="cipher-stage">
+                    <div class="cipher-player-card">
+                        <div class="cipher-card-header">
+                            <span>YOUR MATRIX VIEW (CHARACTER + NUMBER NODES)</span>
+                            <span class="badge turn-your">DECRYPTING</span>
+                        </div>
+                        <div class="cipher-node-canvas-box">
+                            <img id="cipher-char-img" class="cipher-char-center" src="https://upload.wikimedia.org/wikipedia/en/a/af/Son_Goku_Dragon_Ball.png" alt="Matrix Character">
+                            <div class="matrix-node node-1">#1</div>
+                            <div class="matrix-node node-2">#2</div>
+                            <div class="matrix-node node-3">#3</div>
+                            <div class="matrix-node node-4">#4</div>
+                        </div>
+                    </div>
+
+                    <div class="cipher-legend-card">
+                        <div class="cipher-card-header">
+                            <span>OPPONENT'S LEGEND VIEW (CATEGORY MAPPING KEY)</span>
+                            <span class="badge turn-their">TRANSMITTING</span>
+                        </div>
+                        <div id="cipher-legend-list" class="cipher-legend-list">
+                            <div class="legend-row"><span class="legend-num">#1</span> <span class="legend-cat">Power System:</span> <span class="legend-val">Ki & Kaioken / Super Saiyan</span></div>
+                            <div class="legend-row"><span class="legend-num">#2</span> <span class="legend-cat">Homeworld:</span> <span class="legend-val">Planet Vegeta / Saiyan Race</span></div>
+                            <div class="legend-row"><span class="legend-num">#3</span> <span class="legend-cat">Technique:</span> <span class="legend-val">Kamehameha Wave</span></div>
+                            <div class="legend-row"><span class="legend-num">#4</span> <span class="legend-cat">Weakness:</span> <span class="legend-val">Enormous Appetite</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cipher-controls-bar">
+                    <form id="form-cipher-guess" class="guess-box" style="flex:1;">
+                        <input type="text" id="input-cipher-guess" class="input-text" placeholder="Decrypt the Number Matrix and enter character name..." autocomplete="off">
+                        <button type="submit" class="btn-send">Decrypt Guess</button>
+                    </form>
+                    <button id="btn-next-cipher" class="btn-send btn-guest-login" style="width:auto;">New Matrix</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- APP 4: NEW GAME - FACT NUMBERS QUIZ WINDOW -->
+        <div id="app-window-fact-quiz" class="os-window" style="display:none;">
+            <div class="os-titlebar">
+                <div class="os-title-info">
+                    <span class="os-title-icon">🧠</span>
+                    <span class="os-title-text">Fact Numbers Quiz - Guess Life & Lore Numbers</span>
+                </div>
+                <div class="os-window-controls">
+                    <button class="os-win-btn os-btn-min">─</button>
+                    <button class="os-win-btn os-btn-max">□</button>
+                    <button class="os-win-btn os-btn-close">✕</button>
+                </div>
+            </div>
+
+            <div class="os-window-body cipher-body">
+                <div class="cipher-stage">
+                    <!-- Guesser View: Character surrounded by 5 Fact Number Badges -->
+                    <div class="cipher-player-card" style="grid-column: span 2;">
+                        <div class="cipher-card-header">
+                            <span>CHARACTER FACT NUMBERS (5 LORE NUMBERS OF THEIR LIFE & SHOW)</span>
+                            <span class="badge turn-your">GUESS THE FACTS</span>
+                        </div>
+                        <div class="fact-quiz-node-box">
+                            <img id="fact-char-img" class="cipher-char-center" src="https://upload.wikimedia.org/wikipedia/en/a/af/Son_Goku_Dragon_Ball.png" alt="Fact Character">
+                            
+                            <!-- 5 Random Number Badges Floating around Character -->
+                            <div id="fact-badge-1" class="fact-number-badge fnode-1">
+                                <span class="fact-num-val">#7</span>
+                                <span class="fact-hint-text">????</span>
+                            </div>
+                            <div id="fact-badge-2" class="fact-number-badge fnode-2">
+                                <span class="fact-num-val">#100</span>
+                                <span class="fact-hint-text">????</span>
+                            </div>
+                            <div id="fact-badge-3" class="fact-number-badge fnode-3">
+                                <span class="fact-num-val">#4</span>
+                                <span class="fact-hint-text">????</span>
+                            </div>
+                            <div id="fact-badge-4" class="fact-number-badge fnode-4">
+                                <span class="fact-num-val">#9000</span>
+                                <span class="fact-hint-text">????</span>
+                            </div>
+                            <div id="fact-badge-5" class="fact-number-badge fnode-5">
+                                <span class="fact-num-val">#59</span>
+                                <span class="fact-hint-text">????</span>
+                            </div>
+                        </div>
+
+                        <!-- Revealed Fact Log -->
+                        <div id="fact-reveal-log" class="fact-reveal-log">
+                            <div class="log-title">Revealed Fact Meanings:</div>
+                            <div id="fact-log-list" class="fact-log-list">
+                                <div class="fact-item">Guess what these 5 numbers represent in the character's life/show!</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cipher-controls-bar">
+                    <form id="form-fact-guess" class="guess-box" style="flex:1;">
+                        <input type="text" id="input-fact-guess" class="input-text" placeholder="Enter what a number relates to (or character name)..." autocomplete="off">
+                        <button type="submit" class="btn-send">Submit Fact Guess</button>
+                    </form>
+                    <button id="btn-next-fact" class="btn-send btn-guest-login" style="width:auto;">New Character</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- APP 7: NEW GAME - ANIME GUESSING SCALE (0-100% CLOSENESS) WINDOW -->
+        <div id="app-window-scale" class="os-window" style="display:none;">
+            <div class="os-titlebar">
+                <div class="os-title-info">
+                    <span class="os-title-icon">🎯</span>
+                    <span class="os-title-text">Anime Guessing Scale - 0 to 100% Closeness Gauge</span>
+                </div>
+                <div class="os-window-controls">
+                    <button class="os-win-btn os-btn-min">─</button>
+                    <button class="os-win-btn os-btn-max">□</button>
+                    <button class="os-win-btn os-btn-close">✕</button>
+                </div>
+            </div>
+
+            <div class="os-window-body cipher-body">
+                <div class="scale-game-layout">
+                    <!-- Closeness Meter & Target Overview -->
+                    <div class="scale-main-panel">
+                        <div class="scale-card-header">
+                            <span>AI CLOSENESS JUDGE (SCALE: 0% TO 100% PERFECT MATCH)</span>
+                            <span id="scale-judge-badge" class="badge turn-your">JUDGE READY</span>
+                        </div>
+
+                        <!-- Visual Closeness Gauge -->
+                        <div class="scale-gauge-box">
+                            <div class="gauge-header">
+                                <span class="gauge-title">CURRENT CLOSENESS SCORE</span>
+                                <span id="scale-score-display" class="scale-score-num">0%</span>
+                            </div>
+                            <div class="gauge-track">
+                                <div id="scale-meter-bar" class="gauge-fill-bar" style="width: 0%;"></div>
+                            </div>
+                            <div class="gauge-labels">
+                                <span>0% Cold</span>
+                                <span>25% Warm</span>
+                                <span>50% Hot</span>
+                                <span>75% Very Close</span>
+                                <span>100% Match!</span>
+                            </div>
+                        </div>
+
+                        <!-- Last Verdict Breakdown Card -->
+                        <div id="scale-verdict-card" class="scale-verdict-card">
+                            <div class="verdict-icon">⚖️</div>
+                            <div class="verdict-content">
+                                <div id="verdict-character-title" class="verdict-title">Enter any anime character name to judge closeness!</div>
+                                <div id="verdict-reasoning" class="verdict-text">The AI Judge evaluates Series, Power Systems, Race, Universe, and Trait overlaps.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Previous Guesses History Feed -->
+                    <div class="scale-history-panel">
+                        <div class="scale-card-header">
+                            <span>GUESS HISTORY & JUDGE VERDICTS</span>
+                            <span class="sub-timer">Evaluated Guesses</span>
+                        </div>
+                        <div id="scale-log-feed" class="scale-log-feed">
+                            <div class="scale-log-item">
+                                <span class="log-guess-name">Sample: Vegeta</span>
+                                <span class="log-score-badge warm">85% Close</span>
+                                <span class="log-reason">Same Series (Dragon Ball Z) & Saiyan Race!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cipher-controls-bar">
+                    <form id="form-scale-guess" class="guess-box" style="flex:1;">
+                        <input type="text" id="input-scale-guess" class="input-text" placeholder="Type an anime character (e.g. Vegeta, Naruto, Luffy, Levi)..." autocomplete="off">
+                        <button type="submit" class="btn-send">Submit Character Guess</button>
+                    </form>
+                    <button id="btn-next-scale" class="btn-send btn-guest-login" style="width:auto;">New Target</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- APP 8: NEW GAME - ANIME POSTER IMPOSTOR WINDOW -->
+        <div id="app-window-poster" class="os-window" style="display:none;">
+            <div class="os-titlebar">
+                <div class="os-title-info">
+                    <span class="os-title-icon">🖼️</span>
+                    <span class="os-title-text">Anime Poster Impostor - Spot the Odd Character</span>
+                </div>
+                <div class="os-window-controls">
+                    <button class="os-win-btn os-btn-min">─</button>
+                    <button class="os-win-btn os-btn-max">□</button>
+                    <button class="os-win-btn os-btn-close">✕</button>
+                </div>
+            </div>
+
+            <div class="os-window-body cipher-body">
+                <div class="poster-game-layout">
+                    <div class="poster-header-box">
+                        <h2 class="poster-prompt-title">🖼️ ANIME POSTER LINEUP - SPOT THE IMPOSTOR!</h2>
+                        <p class="poster-prompt-sub">3 characters belong to the SAME anime show. Click the 1 character who is from a DIFFERENT show!</p>
+                    </div>
+
+                    <div id="poster-cards-container" class="poster-cards-grid">
+                        <!-- 4 Character Cards loaded dynamically -->
+                    </div>
+
+                    <div id="poster-verdict-box" class="poster-verdict-box">
+                        <span>💡 Click any character card above to make your pick!</span>
+                    </div>
+                </div>
+
+                <div class="cipher-controls-bar">
+                    <button id="btn-next-poster" class="btn-send btn-guest-login" style="width:100%; justify-content:center; padding:12px;">Next Poster Lineup ➔</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- APP 5: CAPTURES & MEDIA (SCREENSHOTS & REPLAYS) WINDOW -->
+        <div id="app-window-documents" class="os-window" style="display:none;">
+            <div class="os-titlebar">
+                <div class="os-title-info">
+                    <span class="os-title-icon">📸</span>
+                    <span class="os-title-text">Captures & Media - Game Screenshots & Replays</span>
+                </div>
+                <div class="os-window-controls">
+                    <button class="os-win-btn os-btn-min">─</button>
+                    <button class="os-win-btn os-btn-max">□</button>
+                    <button class="os-win-btn os-btn-close">✕</button>
+                </div>
+            </div>
+
+            <div class="os-window-body explorer-body">
+                <aside class="explorer-sidebar">
+                    <div class="exp-tree-item active">📸 Match Screenshots (SS)</div>
+                    <div class="exp-tree-item">🎥 Video Replays</div>
+                    <div class="exp-tree-item">🖼️ Victory Cards</div>
+                    <div class="exp-tree-item">📄 Match_Logs.txt</div>
+                </aside>
+                <div class="explorer-content">
+                    <div class="exp-address-bar">
+                        <span>C:\Users\<span class="user-name-val">User</span>\Pictures\Game_Captures</span>
+                    </div>
+                    <div class="exp-files-grid">
+                        <div class="file-item">
+                            <span class="file-icon">📸</span>
+                            <span class="file-name">Goku_Victory_SS_2026.png</span>
+                        </div>
+                        <div class="file-item">
+                            <span class="file-icon">📸</span>
+                            <span class="file-name">Duos_Relay_Win_SS.png</span>
+                        </div>
+                        <div class="file-item">
+                            <span class="file-icon">🎥</span>
+                            <span class="file-name">Match_Replay_01.mp4</span>
+                        </div>
+                        <div class="file-item">
+                            <span class="file-icon">🖼️</span>
+                            <span class="file-name">Naruto_Clue_SS.png</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- APP 6: EDGE BROWSER (LEADERBOARDS & ANIME ANALYTICS) WINDOW -->
+        <div id="app-window-browser" class="os-window" style="display:none;">
+            <div class="os-titlebar">
+                <div class="os-title-info">
+                    <span class="os-title-icon">🌐</span>
+                    <span class="os-title-text">Edge Browser - High Score Leaderboards & Anime Analytics</span>
+                </div>
+                <div class="os-window-controls">
+                    <button class="os-win-btn os-btn-min">─</button>
+                    <button class="os-win-btn os-btn-max">□</button>
+                    <button class="os-win-btn os-btn-close">✕</button>
+                </div>
+            </div>
+
+            <div class="os-window-body browser-body">
+                <div class="browser-nav-bar">
+                    <button class="browser-btn">◄</button>
+                    <button class="browser-btn">►</button>
+                    <button class="browser-btn">↻</button>
+                    <input type="text" class="browser-url-input" value="https://anime-leaderboards.org/stats" readonly>
+                </div>
+                <div class="browser-web-content">
+                    <!-- Leaderboards Header -->
+                    <div class="wiki-hero">
+                        <h2>GLOBAL HIGH SCORE LEADERBOARDS & STATS</h2>
+                        <p>Live rankings per game mode and real-time anime character guess statistics.</p>
+                    </div>
+
+                    <!-- High Score Leaderboards Table -->
+                    <div class="leaderboard-section">
+                        <h3 class="section-title">🏆 TOP PLAYER HIGH SCORES</h3>
+                        <table class="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Player</th>
+                                    <th>Mode</th>
+                                    <th>High Score</th>
+                                    <th>Win Streak</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>🥇 #1</td>
+                                    <td>OtakuMaster_X</td>
+                                    <td>2v2 Duos Relay</td>
+                                    <td>4,250 pts</td>
+                                    <td>18 🔥</td>
+                                </tr>
+                                <tr>
+                                    <td>🥈 #2</td>
+                                    <td>CyberShinobi</td>
+                                    <td>1v1 Solo Duel</td>
+                                    <td>3,800 pts</td>
+                                    <td>14 🔥</td>
+                                </tr>
+                                <tr>
+                                    <td>🥉 #3</td>
+                                    <td>MatrixDecryptor</td>
+                                    <td>Number Cipher</td>
+                                    <td>3,150 pts</td>
+                                    <td>11 🔥</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Game Analytics & Facts -->
+                    <div class="analytics-grid">
+                        <div class="wiki-card">
+                            <h3>🔥 Most Guessable Character</h3>
+                            <p><strong>Son Goku (Dragon Ball Z)</strong></p>
+                            <span class="stat-badge">94.2% Win Rate</span>
+                        </div>
+                        <div class="wiki-card">
+                            <h3>⚡ Hardest Character</h3>
+                            <p><strong>Spike Spiegel (Cowboy Bebop)</strong></p>
+                            <span class="stat-badge hard">42.8% Win Rate</span>
+                        </div>
+                        <div class="wiki-card">
+                            <h3>👑 Most Popular Series</h3>
+                            <p><strong>Dragon Ball Z & One Piece</strong></p>
+                            <span class="stat-badge">12,450 Matches Played</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Windows Taskbar -->
+        <footer class="win14-taskbar">
+            <div class="taskbar-left">
+                <button id="win-start-btn" class="taskbar-btn win-start-btn">
+                    <span>🪟</span>
+                </button>
+                <div class="taskbar-search">
+                    <span>🔍 Search Windows...</span>
+                </div>
+            </div>
+
+            <div class="taskbar-center">
+                <button class="taskbar-btn active" data-app="anime-1v1">
+                    <span>👺</span>
+                </button>
+                <button class="taskbar-btn" data-app="duos-relay">
+                    <span>⚔️</span>
+                </button>
+                <button class="taskbar-btn" data-app="cipher-game">
+                    <span>🔢</span>
+                </button>
+                <button class="taskbar-btn" data-app="fact-quiz">
+                    <span>🧠</span>
+                </button>
+                <button class="taskbar-btn" data-app="scale-game">
+                    <span>🎯</span>
+                </button>
+                <button class="taskbar-btn" data-app="poster-game">
+                    <span>🖼️</span>
+                </button>
+                <button class="taskbar-btn" data-app="documents">
+                    <span>📸</span>
+                </button>
+                <button class="taskbar-btn" data-app="browser">
+                    <span>🌐</span>
+                </button>
+            </div>
+
+            <div class="taskbar-right">
+                <div class="tray-icon">📶</div>
+                <div class="tray-icon">🔊</div>
+                <div id="tray-clock" class="tray-clock">10:43</div>
+
+                <button id="tray-profile-btn" class="tray-profile-btn">
+                    <span class="user-avatar-val">🥷</span>
+                    <span class="user-name-val">User</span>
+                </button>
+            </div>
+        </footer>
+
+        <!-- Windows 14 Interactive Start Menu Flyout -->
+        <div id="start-menu-flyout" class="win14-startmenu">
+            <div class="start-search-box">
+                <span>🔍</span>
+                <input type="text" class="start-search-input" placeholder="Type here to search apps, settings, and anime games...">
+            </div>
+
+            <div class="start-section-title">
+                <span>PINNED GAMES & APPS</span>
+                <span style="font-size: 10px; color: var(--text-muted);">All Apps ➔</span>
+            </div>
+
+            <div class="start-pins-grid">
+                <div class="start-pin-item" data-app="anime-1v1">
+                    <span class="start-pin-icon">👺</span>
+                    <span class="start-pin-label">1v1 Solo</span>
+                </div>
+                <div class="start-pin-item" data-app="duos-relay">
+                    <span class="start-pin-icon">⚔️</span>
+                    <span class="start-pin-label">2v2 Duos</span>
+                </div>
+                <div class="start-pin-item" data-app="cipher-game">
+                    <span class="start-pin-icon">🔢</span>
+                    <span class="start-pin-label">Matrix Cipher</span>
+                </div>
+                <div class="start-pin-item" data-app="fact-quiz">
+                    <span class="start-pin-icon">🧠</span>
+                    <span class="start-pin-label">Fact Quiz</span>
+                </div>
+                <div class="start-pin-item" data-app="scale-game">
+                    <span class="start-pin-icon">🎯</span>
+                    <span class="start-pin-label">Anime Scale</span>
+                </div>
+                <div class="start-pin-item" data-app="poster-game">
+                    <span class="start-pin-icon">🖼️</span>
+                    <span class="start-pin-label">Poster Impostor</span>
+                </div>
+                <div class="start-pin-item" data-app="documents">
+                    <span class="start-pin-icon">📸</span>
+                    <span class="start-pin-label">Captures</span>
+                </div>
+                <div class="start-pin-item" data-app="browser">
+                    <span class="start-pin-icon">🌐</span>
+                    <span class="start-pin-label">Edge Browser</span>
+                </div>
+            </div>
+
+            <div class="start-section-title">
+                <span>RECOMMENDED ANIME POSTERS</span>
+            </div>
+
+            <div class="legend-row" style="background:var(--win-card); margin-bottom:0;">
+                <span>🔥 Recommended: Dragon Ball Z vs Naruto Impostor Match</span>
+            </div>
+
+            <div class="start-footer">
+                <div class="start-user-pill">
+                    <span class="user-avatar-val">🥷</span>
+                    <span class="user-name-val">User</span>
+                </div>
+                <button id="btn-start-power" class="os-win-btn" style="width:auto; padding: 4px 10px;" title="Power Options">⏻</button>
+            </div>
+        </div>
+
+        <!-- Profile & Sign-Out Flyout Menu -->
+        <div id="profile-flyout" class="profile-flyout">
+            <div class="flyout-header">
+                <div class="flyout-avatar-box">
+                    <span class="user-avatar-val">🥷</span>
+                </div>
+                <div class="flyout-user-info">
+                    <div class="user-name-val flyout-name">User Name</div>
+                    <div class="user-role-val flyout-role">Challenger</div>
+                </div>
+            </div>
+            <div class="flyout-stats-grid">
+                <div class="flyout-stat">
+                    <span class="label">Total Score</span>
+                    <span class="user-score-val value">0</span>
+                </div>
+                <div class="flyout-stat">
+                    <span class="label">Account Status</span>
+                    <span class="value" style="color:var(--neon-cyan);">ACTIVE</span>
+                </div>
+            </div>
+            <button id="btn-profile-logout" class="btn-send btn-logout">
+                <span>🚪 Sign Out of Windows</span>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Victory Modal -->
+    <div id="win-modal" class="modal-overlay">
+        <div class="modal-card animate-pop">
+            <h2 id="modal-title" class="modal-title">🎉 VICTORY!</h2>
+            <img id="modal-char-img" class="modal-char-img" src="" alt="Character Reveal">
+            <div id="modal-char-series" class="modal-char-name">Character Name</div>
+            <p id="modal-body" style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">You guessed your character correctly!</p>
+            <button id="modal-btn-next" class="btn-send" style="width: 100%; justify-content: center; padding: 14px;">Next Match ➔</button>
+        </div>
+    </div>
+
+    <!-- JavaScript Dependencies -->
+    <script src="characters.js"></script>
+    <script src="webrtc.js"></script>
+    <script src="bot.js"></script>
+    <script src="game.js"></script>
+    <script src="auth.js"></script>
+
+    <!-- OS Window & Fact Quiz Orchestration Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const videoLocal = document.getElementById("video-local");
+            const canvasLocal = document.getElementById("canvas-local");
+            const canvasRemote = document.getElementById("canvas-remote");
+
+            const btnFindMatch = document.getElementById("btn-find-match");
+            const btnNextMatch = document.getElementById("btn-next-match");
+            const btnToggleMute = document.getElementById("btn-toggle-mute");
+            const btnToggleCam = document.getElementById("btn-toggle-cam");
+            const btnToggleAvatar = document.getElementById("btn-toggle-avatar");
+
+            const formInterrogate = document.getElementById("form-interrogate");
+            const inputQuestion = document.getElementById("input-question");
+            const modalOverlay = document.getElementById("win-modal");
+            const modalBtnNext = document.getElementById("modal-btn-next");
+
+            // Desktop App Window Manager
+            const appWindows = {
+                "anime-1v1": document.getElementById("app-window-1v1"),
+                "duos-relay": document.getElementById("app-window-duos"),
+                "cipher-game": document.getElementById("app-window-cipher"),
+                "fact-quiz": document.getElementById("app-window-fact-quiz"),
+                "scale-game": document.getElementById("app-window-scale"),
+                "poster-game": document.getElementById("app-window-poster"),
+                "documents": document.getElementById("app-window-documents"),
+                "browser": document.getElementById("app-window-browser")
+            };
+
+            const desktopIcons = document.querySelectorAll(".desktop-icon, .taskbar-btn[data-app], .start-pin-item[data-app]");
+            
+            const openApp = (appId) => {
+                Object.keys(appWindows).forEach(id => {
+                    if (appWindows[id]) appWindows[id].style.display = "none";
+                });
+                desktopIcons.forEach(icon => icon.classList.remove("active-app", "active"));
+
+                if (appWindows[appId]) {
+                    appWindows[appId].style.display = "flex";
+                }
+
+                document.querySelectorAll(`[data-app="${appId}"]`).forEach(el => el.classList.add("active-app", "active"));
+
+                // Close start menu flyout on app launch
+                const startMenu = document.getElementById("start-menu-flyout");
+                if (startMenu) startMenu.classList.remove("active");
+            };
+
+            desktopIcons.forEach(icon => {
+                icon.addEventListener("click", () => {
+                    const appId = icon.dataset.app;
+                    if (appId) openApp(appId);
+                });
+            });
+
+            // Windows 14 Start Menu Flyout Handler
+            const winStartBtn = document.getElementById("win-start-btn");
+            const startMenuFlyout = document.getElementById("start-menu-flyout");
+
+            if (winStartBtn && startMenuFlyout) {
+                winStartBtn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    startMenuFlyout.classList.toggle("active");
+                });
+
+                document.addEventListener("click", (e) => {
+                    if (!startMenuFlyout.contains(e.target) && e.target !== winStartBtn) {
+                        startMenuFlyout.classList.remove("active");
+                    }
+                });
+            }
+
+            document.querySelectorAll(".os-win-btn").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const win = e.target.closest(".os-window");
+                    if (win) win.style.display = "none";
+                });
+            });
+
+            // Fact Numbers Quiz Game Logic
+            let activeFactChar = ANIME_CHARACTERS[0];
+            const loadFactQuiz = () => {
+                activeFactChar = ANIME_CHARACTERS[Math.floor(Math.random() * ANIME_CHARACTERS.length)];
+                const charImg = document.getElementById("fact-char-img");
+                const factLogList = document.getElementById("fact-log-list");
+                
+                if (charImg) charImg.src = activeFactChar.image;
+                if (factLogList) factLogList.innerHTML = `<div class="fact-item">Guess what these 5 numbers represent in ${activeFactChar.name}'s life/show!</div>`;
+
+                if (activeFactChar.factNumbers) {
+                    for (let i = 1; i <= 5; i++) {
+                        const badgeVal = document.querySelector(`#fact-badge-${i} .fact-num-val`);
+                        const hintText = document.querySelector(`#fact-badge-${i} .fact-hint-text`);
+                        if (badgeVal && activeFactChar.factNumbers[i-1]) {
+                            badgeVal.textContent = `#${activeFactChar.factNumbers[i-1].num}`;
+                            if (hintText) hintText.textContent = "????";
+                        }
+                    }
+                }
+            };
+            loadFactQuiz();
+
+            const formFact = document.getElementById("form-fact-guess");
+            const inputFact = document.getElementById("input-fact-guess");
+            const btnNextFact = document.getElementById("btn-next-fact");
+
+            if (formFact) {
+                formFact.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    const text = inputFact.value.trim();
+                    if (!text) return;
+                    inputFact.value = "";
+
+                    // Test if guess matches character name or any fact number label
+                    const isCharCorrect = window.gameEngine.validateGuess(text, activeFactChar);
+                    const factLogList = document.getElementById("fact-log-list");
+
+                    if (isCharCorrect) {
+                        alert(`PERFECT FACT DECRYPTION! You solved all numbers for ${activeFactChar.name}! (+200 pts)`);
+                        if (window.authManager) window.authManager.recordGameWin(200);
+                        loadFactQuiz();
+                    } else {
+                        // Reveal one number fact
+                        const randomFact = activeFactChar.factNumbers[Math.floor(Math.random() * activeFactChar.factNumbers.length)];
+                        if (factLogList) {
+                            const item = document.createElement("div");
+                            item.className = "fact-item animate-pop";
+                            item.innerHTML = `<strong>#${randomFact.num} (${randomFact.label}):</strong> ${randomFact.fact}`;
+                            factLogList.appendChild(item);
+                        }
+                    }
+                });
+            }
+
+            if (btnNextFact) {
+                btnNextFact.addEventListener("click", loadFactQuiz);
+            }
+
+            // Anime Guessing Scale Game Logic (0-100% Closeness Gauge)
+            let activeScaleTarget = ANIME_CHARACTERS[0];
+            const loadScaleGame = () => {
+                activeScaleTarget = ANIME_CHARACTERS[Math.floor(Math.random() * ANIME_CHARACTERS.length)];
+                const meterBar = document.getElementById("scale-meter-bar");
+                const scoreDisplay = document.getElementById("scale-score-display");
+                const titleEl = document.getElementById("verdict-character-title");
+                const reasoningEl = document.getElementById("verdict-reasoning");
+                const logFeed = document.getElementById("scale-log-feed");
+
+                if (meterBar) meterBar.style.width = "0%";
+                if (scoreDisplay) scoreDisplay.textContent = "0%";
+                if (titleEl) titleEl.textContent = "Enter any anime character name to evaluate closeness!";
+                if (reasoningEl) reasoningEl.textContent = "The AI Judge evaluates Series, Power Systems, Race, Universe, and Trait overlaps.";
+                if (logFeed) logFeed.innerHTML = `<div class="scale-log-item"><span class="log-guess-name">New Secret Target Assigned</span><span class="log-score-badge">Scale Ready</span><span class="log-reason">Type any anime character to start evaluating!</span></div>`;
+            };
+            loadScaleGame();
+
+            const formScale = document.getElementById("form-scale-guess");
+            const inputScale = document.getElementById("input-scale-guess");
+            const btnNextScale = document.getElementById("btn-next-scale");
+
+            if (formScale) {
+                formScale.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    const text = inputScale.value.trim();
+                    if (!text) return;
+                    inputScale.value = "";
+
+                    const result = window.gameEngine.calculateClosenessScore(text, activeScaleTarget);
+                    
+                    const meterBar = document.getElementById("scale-meter-bar");
+                    const scoreDisplay = document.getElementById("scale-score-display");
+                    const titleEl = document.getElementById("verdict-character-title");
+                    const reasoningEl = document.getElementById("verdict-reasoning");
+                    const logFeed = document.getElementById("scale-log-feed");
+
+                    if (meterBar) meterBar.style.width = `${result.score}%`;
+                    if (scoreDisplay) scoreDisplay.textContent = `${result.score}%`;
+                    if (titleEl) titleEl.textContent = `Guessed: ${text.toUpperCase()} ➔ ${result.score}% CLOSENESS`;
+                    if (reasoningEl) reasoningEl.textContent = result.reasoning;
+
+                    if (logFeed) {
+                        const badgeClass = result.score >= 90 ? "exact" : result.score >= 60 ? "hot" : result.score >= 35 ? "warm" : "cold";
+                        const logItem = document.createElement("div");
+                        logItem.className = "scale-log-item animate-pop";
+                        logItem.innerHTML = `
+                            <span class="log-guess-name">${text}</span>
+                            <span class="log-score-badge ${badgeClass}">${result.score}% Match</span>
+                            <span class="log-reason">${result.reasoning}</span>
+                        `;
+                        logFeed.prepend(logItem);
+                    }
+
+                    if (result.isExact) {
+                        alert(`🎯 100% PERFECT MATCH! You correctly guessed ${activeScaleTarget.name}! (+250 pts)`);
+                        if (window.authManager) window.authManager.recordGameWin(250);
+                        setTimeout(loadScaleGame, 1500);
+                    }
+                });
+            }
+
+            if (btnNextScale) {
+                btnNextScale.addEventListener("click", loadScaleGame);
+            }
+
+            // Anime Poster Impostor Game Logic (Find the Odd Character in Poster)
+            let activePosterLineup = [];
+            let activeImpostorChar = null;
+            let activeMainSeries = "";
+
+            const loadPosterGame = () => {
+                const container = document.getElementById("poster-cards-container");
+                const verdictBox = document.getElementById("poster-verdict-box");
+                if (!container) return;
+
+                // Group characters by series
+                const seriesGroups = {};
+                ANIME_CHARACTERS.forEach(c => {
+                    if (!seriesGroups[c.series]) seriesGroups[c.series] = [];
+                    seriesGroups[c.series].push(c);
+                });
+
+                const validSeries = Object.keys(seriesGroups).filter(s => seriesGroups[s].length >= 2);
+                activeMainSeries = validSeries[Math.floor(Math.random() * validSeries.length)];
+
+                const mainChars = [...seriesGroups[activeMainSeries]].sort(() => 0.5 - Math.random()).slice(0, 3);
+                const otherChars = ANIME_CHARACTERS.filter(c => c.series !== activeMainSeries);
+                activeImpostorChar = otherChars[Math.floor(Math.random() * otherChars.length)];
+
+                activePosterLineup = [...mainChars, activeImpostorChar].sort(() => 0.5 - Math.random());
+
+                container.innerHTML = "";
+                activePosterLineup.forEach(char => {
+                    const card = document.createElement("div");
+                    card.className = "poster-card animate-pop";
+                    card.dataset.charId = char.id;
+                    card.innerHTML = `
+                        <img class="poster-card-img" src="${char.image}" alt="${char.name}">
+                        <div class="poster-card-name">${char.name}</div>
+                        <div class="poster-card-hint">Tap to Spot Impostor</div>
+                    `;
+
+                    card.addEventListener("click", () => {
+                        if (char.id === activeImpostorChar.id) {
+                            card.style.borderColor = "#0078d4";
+                            card.style.boxShadow = "0 0 20px rgba(0, 120, 212, 0.8)";
+                            if (verdictBox) {
+                                verdictBox.innerHTML = `<strong>🎯 PERFECT SPOT!</strong> ${char.name} is from '<em>${char.series}</em>', while the other 3 are all from '<em>${activeMainSeries}</em>'! (+150 pts)`;
+                                verdictBox.style.borderColor = "#0078d4";
+                            }
+                            if (window.gameEngine) window.gameEngine.playSound("win");
+                            if (window.authManager) window.authManager.recordGameWin(150);
+                            setTimeout(loadPosterGame, 2000);
+                        } else {
+                            card.style.borderColor = "#d13438";
+                            card.style.boxShadow = "0 0 20px rgba(209, 52, 56, 0.8)";
+                            if (verdictBox) {
+                                verdictBox.innerHTML = `<strong>❌ WRONG PICK!</strong> ${char.name} is a legitimate member of '<em>${activeMainSeries}</em>'! Look for the character from a different anime show.`;
+                                verdictBox.style.borderColor = "#d13438";
+                            }
+                            if (window.gameEngine) window.gameEngine.playSound("fail");
+                        }
+                    });
+
+                    container.appendChild(card);
+                });
+
+                if (verdictBox) {
+                    verdictBox.innerHTML = `<span>💡 3 characters belong to the same show. Click the 1 IMPOSTOR from a different anime!</span>`;
+                    verdictBox.style.borderColor = "var(--border-color)";
+                }
+            };
+            loadPosterGame();
+
+            const btnNextPoster = document.getElementById("btn-next-poster");
+            if (btnNextPoster) btnNextPoster.addEventListener("click", loadPosterGame);
+
+            // Init Auth & Lock Screen
+            window.authManager.init();
+
+            document.body.addEventListener("click", () => {
+                window.gameEngine.initAudio();
+            }, { once: true });
+
+            window.mediaManager.initLocalStream(videoLocal, canvasLocal);
+
+            btnToggleMute.addEventListener("click", () => window.mediaManager.toggleMute(btnToggleMute));
+            btnToggleCam.addEventListener("click", () => window.mediaManager.toggleCam(videoLocal, canvasLocal, btnToggleCam));
+            btnToggleAvatar.addEventListener("click", () => window.mediaManager.toggleAvatarMode(videoLocal, canvasLocal, btnToggleAvatar));
+
+            const triggerMatch = () => {
+                modalOverlay.classList.remove("active");
+                document.getElementById("clue-feed").innerHTML = "";
+                document.getElementById("chat-feed").innerHTML = "";
+                document.getElementById("stranger-name").textContent = "SEARCHING FOR STRANGER...";
+                document.getElementById("badge-stranger-status").textContent = "WAITING";
+                document.getElementById("secret-badge").style.display = "none";
+
+                window.gameEngine.startMatchmaking((matchData) => {
+                    document.getElementById("stranger-name").textContent = matchData.botName.toUpperCase();
+                    document.getElementById("badge-stranger-status").textContent = "CONNECTED";
+                    document.getElementById("badge-stranger-status").className = "badge turn-your";
+
+                    const secretBadge = document.getElementById("secret-badge");
+                    const secretThumb = document.getElementById("secret-thumb");
+                    const secretName = document.getElementById("secret-name");
+                    secretThumb.src = matchData.playerBSecret.image;
+                    secretName.textContent = `${matchData.playerBSecret.name} (${matchData.playerBSecret.series})`;
+                    secretBadge.style.display = "flex";
+
+                    window.shadowBot.startBotCanvas(canvasRemote);
+                });
+            };
+
+            btnFindMatch.addEventListener("click", triggerMatch);
+            btnNextMatch.addEventListener("click", triggerMatch);
+            modalBtnNext.addEventListener("click", triggerMatch);
+
+            formInterrogate.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const text = inputQuestion.value.trim();
+                if (!text) return;
+                inputQuestion.value = "";
+
+                const guessResult = window.gameEngine.submitPlayerGuess(text);
+                if (!guessResult.success) {
+                    window.gameEngine.submitPlayerQuestion(text);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
