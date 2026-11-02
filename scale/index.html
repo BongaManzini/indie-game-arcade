@@ -300,7 +300,58 @@
       border-radius: 4px;
       display: flex;
       flex-direction: column;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
+      padding: 16px 20px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    @media (min-width: 768px) {
+      footer {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+    .footer-primary {
+      color: var(--text-muted);
+    }
+    .footer-secondary {
+      display: flex;
+      align-items: center;
       gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footer-attribution {
+      color: var(--text-primary);
+    }
+    .footer-repo-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    .footer-repo-link:hover {
+      color: var(--accent-blue);
+    }
+    .repo-badge {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 2px 6px;
+      border-radius: 2px;
+      font-size: 10px;
+      color: var(--accent-blue);
     }
   </style>
 </head>
@@ -359,8 +410,19 @@
       <div class="feed-list" id="feed-list">
         <!-- Log items rendered dynamically -->
       </div>
-    </div>
   </main>
+
+  <footer>
+    <div class="footer-primary">
+      <span>&copy; 2026 Scale Versus&trade; &bull; 1–100 Relational Radar &bull; Zero Server SLA</span>
+    </div>
+    <div class="footer-secondary">
+      <span class="footer-attribution">Platform Architecture &amp; Development by Bonga Manzini</span>
+      <a href="https://github.com/BongaManzini/indie-game-arcade" target="_blank" rel="noopener" class="footer-repo-link">
+        <span class="repo-badge">GIT</span> github.com/BongaManzini/indie-game-arcade
+      </a>
+    </div>
+  </footer>
 
   <!-- Victory Modal -->
   <div id="win-modal" class="modal-backdrop" style="display: none;">

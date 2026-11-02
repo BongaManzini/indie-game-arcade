@@ -277,7 +277,7 @@ class GuessGameEngine {
                 score: 100,
                 isExact: true,
                 matchedCharName: targetChar.name,
-                reasoning: `🎯 100% PERFECT MATCH! You correctly identified ${targetChar.name}!`
+                reasoning: ` 100% PERFECT MATCH! You correctly identified ${targetChar.name}!`
             };
         }
 
@@ -325,7 +325,7 @@ class GuessGameEngine {
                 score: score,
                 isExact: false,
                 matchedCharName: matchedChar.name,
-                reasoning: `🔥 ${score}% CLOSENESS: ${matchedChar.name} vs ${targetChar.name}. Reasons: ${rationaleText}`
+                reasoning: ` ${score}% CLOSENESS: ${matchedChar.name} vs ${targetChar.name}. Reasons: ${rationaleText}`
             };
         }
 
@@ -386,7 +386,7 @@ class GuessGameEngine {
         const seriesEl = document.getElementById("modal-char-series");
 
         if (modal) {
-            titleEl.textContent = isPlayerWin ? `🎉 ${this.gameMode.toUpperCase()} VICTORY!` : "⚡ MATCH ENDED";
+            titleEl.textContent = isPlayerWin ? ` ${this.gameMode.toUpperCase()} VICTORY!` : "⚡ MATCH ENDED";
             bodyEl.textContent = resultMessage;
             imgEl.src = this.playerACharacter.image;
             seriesEl.textContent = `${this.playerACharacter.name} (${this.playerACharacter.series})`;

@@ -381,7 +381,58 @@
       flex-direction: column;
       align-items: center;
       gap: 14px;
-      border-radius: 4px;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
+      padding: 16px 20px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    @media (min-width: 768px) {
+      footer {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+    .footer-primary {
+      color: var(--text-muted);
+    }
+    .footer-secondary {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footer-attribution {
+      color: var(--text-primary);
+    }
+    .footer-repo-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    .footer-repo-link:hover {
+      color: var(--accent-blue);
+    }
+    .repo-badge {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 2px 6px;
+      border-radius: 2px;
+      font-size: 10px;
+      color: var(--accent-blue);
     }
   </style>
 </head>
@@ -508,8 +559,19 @@
         <button class="vote-btn" onclick="castVote(3)">VOTE PLAYER 3</button>
         <button class="vote-btn" onclick="castVote(4)">VOTE MYSELF</button>
       </div>
-    </div>
   </main>
+
+  <footer>
+    <div class="footer-primary">
+      <span>&copy; 2026 Zero Tempo Imposter&trade; &bull; Social Deduction Engine &bull; Serverless WebRTC SLA</span>
+    </div>
+    <div class="footer-secondary">
+      <span class="footer-attribution">Platform Architecture &amp; Development by Bonga Manzini</span>
+      <a href="https://github.com/BongaManzini/indie-game-arcade" target="_blank" rel="noopener" class="footer-repo-link">
+        <span class="repo-badge">GIT</span> github.com/BongaManzini/indie-game-arcade
+      </a>
+    </div>
+  </footer>
 
   <!-- Reveal Modal -->
   <div id="result-modal" class="modal-backdrop" style="display: none;">

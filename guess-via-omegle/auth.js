@@ -117,7 +117,7 @@ class AuthManager {
             this.currentUser = {
                 username: username,
                 password: password,
-                avatar: "🥷",
+                avatar: "",
                 role: "Anime Challenger",
                 score: 0,
                 wins: 0,
@@ -137,7 +137,7 @@ class AuthManager {
         this.currentUser = {
             username: `Guest_${guestId}`,
             password: "",
-            avatar: "👤",
+            avatar: "",
             role: "Guest Player",
             score: 0,
             wins: 0,
@@ -168,7 +168,7 @@ class AuthManager {
         const userRoleEls = document.querySelectorAll(".user-role-val");
         const userScoreEls = document.querySelectorAll(".user-score-val");
 
-        userAvatarEls.forEach(el => el.textContent = this.currentUser.avatar || "👤");
+        userAvatarEls.forEach(el => el.textContent = this.currentUser.avatar || "");
         userNameEls.forEach(el => el.textContent = this.currentUser.username || "Guest");
         userRoleEls.forEach(el => el.textContent = this.currentUser.role || "Player");
         userScoreEls.forEach(el => el.textContent = this.currentUser.score || 0);

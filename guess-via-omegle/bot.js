@@ -39,7 +39,7 @@ class ShadowBot {
         let eyeTimer = 0;
         let isBlinking = false;
         const botAvatarConfig = this.botCharacter ? this.botCharacter.fallbackAvatar : {
-            bg: "#1a0033", hair: "#aa00ff", eyes: "#00ffff", symbol: "🤖"
+            bg: "#1a0033", hair: "#aa00ff", eyes: "#00ffff", symbol: ""
         };
 
         const render = () => {

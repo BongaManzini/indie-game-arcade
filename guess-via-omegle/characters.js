@@ -121,7 +121,7 @@ const ANIME_CHARACTERS = [
         series: "Cowboy Bebop",
         aliases: ["spike", "spike spiegel", "bounty hunter", "space cowboy"],
         image: "https://upload.wikimedia.org/wikipedia/en/a/a9/Spike_Spiegel.png",
-        fallbackAvatar: { bg: "#0078d4", hair: "#1b3323", eyes: "#ffb900", symbol: "🎷" },
+        fallbackAvatar: { bg: "#0078d4", hair: "#1b3323", eyes: "#ffb900", symbol: "" },
         clues: {
             demographics: "Male • Sci-Fi / Noir • Bounty Hunter (Cowboy) • Bebop Crew",
             appearance: "Fluffy dark green/brown hair, wearing a blue leisure suit, yellow shirt, and dark tie.",

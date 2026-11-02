@@ -33,7 +33,7 @@ class MediaManager {
                 bg: "#1e1e2e",
                 hair: "#313244",
                 eyes: "#cba6f7",
-                symbol: "👤",
+                symbol: "",
                 name: "You (Player)"
             });
             return false;

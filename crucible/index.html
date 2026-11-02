@@ -313,6 +313,58 @@
     .log-line { color: var(--text-muted); line-height: 1.4; }
     .log-win { color: var(--accent-green); font-weight: 700; }
     .log-loss { color: var(--accent-red); font-weight: 700; }
+
+    /* Footer */
+    footer {
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
+      padding: 16px 20px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    @media (min-width: 768px) {
+      footer {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+    .footer-primary {
+      color: var(--text-muted);
+    }
+    .footer-secondary {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footer-attribution {
+      color: var(--text-primary);
+    }
+    .footer-repo-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    .footer-repo-link:hover {
+      color: var(--accent-blue);
+    }
+    .repo-badge {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 2px 6px;
+      border-radius: 2px;
+      font-size: 10px;
+      color: var(--accent-blue);
+    }
   </style>
 </head>
 <body>
@@ -367,8 +419,19 @@
       <div class="battle-log" id="battle-feed">
         <div class="log-line">// Battle simulator initialized. Draft your loadout across all 4 sockets above to begin encounter simulation.</div>
       </div>
-    </div>
   </main>
+
+  <footer>
+    <div class="footer-primary">
+      <span>&copy; 2026 The Crucible&trade; &bull; $15 Tactical Draft &amp; Scenario Combat Simulator &bull; Zero Server SLA</span>
+    </div>
+    <div class="footer-secondary">
+      <span class="footer-attribution">Platform Architecture &amp; Development by Bonga Manzini</span>
+      <a href="https://github.com/BongaManzini/indie-game-arcade" target="_blank" rel="noopener" class="footer-repo-link">
+        <span class="repo-badge">GIT</span> github.com/BongaManzini/indie-game-arcade
+      </a>
+    </div>
+  </footer>
 
   <script>
     // Web Audio Synthesizer
